@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261016-5 · 2026-10-16 · fewer samples for residual site LoRAs
+- because: T-20261016-3, L-005; the owner chose this default on 2026-10-16
+- files: ../brandwright/scripts/bw.py (train_config, cmd_train, --samples, --sample-every), SKILL.md (Step 3 defaults), ../../tests/test_bw.py
+- In test 2, 5 sample sets of 4 took about 40 of the site LoRA's 121 minutes, and residual samples leave the brand LoRA out anyway. Residual site LoRAs now sample 2 prompts every 200 steps with no step-0 sample (about 8 min for 400 steps); brand LoRAs keep 4 at every checkpoint. `--samples 0` sets ai-toolkit's `disable_sampling`; field names checked in ai-toolkit's `TrainConfig` (2026-10-09 checkout).
+
 ### C-20261016-4 · 2026-10-16 · judge residual checkpoints on brand + site
 - because: T-20261016-3, L-005
 - files: SKILL.md (Step 5)

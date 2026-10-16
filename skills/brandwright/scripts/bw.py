@@ -845,7 +845,11 @@ def train_config(kit, lora, args):
         elif mode == "continue":
             net["pretrained_lora_path"] = str(brand_lora)
     trig = kit.triggers(lora)
-    prompts = ["%s, %s" % (trig, p) for p in HELD_OUT[: args.samples]]
+    # Residual samples leave the brand LoRA out (train L-005) and cost about 2 min a picture: fewer, later, no step 0.
+    residual = mode == "residual"
+    n_samples = args.samples if args.samples is not None else (2 if residual else 4)
+    every = args.sample_every or (200 if residual else args.save_every)
+    prompts = ["%s, %s" % (trig, p) for p in HELD_OUT[: max(1, n_samples)]]
     proc = {
         "type": "sd_trainer", "training_folder": str(kit.root / "train" / "out"), "device": "cuda:0",
         "trigger_word": trig.split()[-1], "network": net,
@@ -855,9 +859,10 @@ def train_config(kit, lora, args):
         "train": {"batch_size": 1, "steps": steps, "gradient_accumulation": 1, "train_unet": True, "train_text_encoder": False,
                   "gradient_checkpointing": True, "noise_scheduler": "flowmatch", "optimizer": "adamw8bit", "lr": args.lr,
                   "timestep_type": spec["timestep_type"], "dtype": "bf16",
-                  "cache_text_embeddings": bool(spec.get("cache_text_embeddings"))},
+                  "cache_text_embeddings": bool(spec.get("cache_text_embeddings")),
+                  "skip_first_sample": residual, "disable_sampling": n_samples == 0},
         "model": mdl,
-        "sample": {"sampler": "flowmatch", "sample_every": args.save_every, "width": 1024, "height": 768,
+        "sample": {"sampler": "flowmatch", "sample_every": every, "width": 1024, "height": 768,
                    "prompts": prompts, "neg": "", "seed": 42, "walk_seed": False, **spec["sample"]},
     }
     cfg = {"job": "extension", "config": {"name": name, "process": [proc]},
@@ -891,7 +896,11 @@ def cmd_train(args):
     spec = MODELS[args.model or kit.model]
     print("config %s\n  %s LoRA on %s (%s), %d images, %d steps, rank %d, lr %g, mode %s"
           % (path, args.lora, spec["label"], spec["licence"], n, steps, args.rank, args.lr, mode))
-    print("  needs about %d GB of GPU memory; checkpoints and samples every %d steps under train/out/%s" % (spec["vram"], args.save_every, name))
+    tr, sm = cfg["config"]["process"][0]["train"], cfg["config"]["process"][0]["sample"]
+    samples = "no samples" if tr["disable_sampling"] else "%d sample prompts every %d steps%s" % (
+        len(sm["prompts"]), sm["sample_every"], ", none at step 0" if tr["skip_first_sample"] else "")
+    print("  needs about %d GB of GPU memory; checkpoints every %d steps, %s, under train/out/%s"
+          % (spec["vram"], args.save_every, samples, name))
     if not args.run:
         print("not started: add --run to start it here, or run on the training machine:\n  python run.py \"%s\"  (from the ai-toolkit folder)" % path)
         return 0
@@ -1152,8 +1161,12 @@ def main(argv=None):
     p.add_argument("--rank", type=int, default=32)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--res", type=int, nargs="+", default=[768, 1024])
-    p.add_argument("--save-every", type=int, default=100, help="checkpoint and samples every N steps")
-    p.add_argument("--samples", type=int, default=4)
+    p.add_argument("--save-every", type=int, default=100, help="checkpoint every N steps")
+    p.add_argument("--samples", type=int,
+                   help="sample prompts drawn during training; 0 turns sampling off (default: 4, or 2 for residual site LoRAs)")
+    p.add_argument("--sample-every", type=int,
+                   help="draw samples every N steps (default: --save-every, or 200 for residual site LoRAs, which also "
+                        "skip the step-0 sample)")
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
     p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
     p.add_argument("--wait", action="store_true", help="with --run: block until training ends (for job queues)")

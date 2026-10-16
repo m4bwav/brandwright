@@ -198,7 +198,8 @@ class TestTrain(KitCase):
             (d / ("%04d.png" % i)).write_bytes(b"x")
 
     def args(self, **kw):
-        base = dict(model=None, mode=None, brand_lora=None, steps=None, rank=32, lr=1e-4, res=[768, 1024], save_every=100, samples=4)
+        base = dict(model=None, mode=None, brand_lora=None, steps=None, rank=32, lr=1e-4, res=[768, 1024], save_every=100, samples=None,
+                    sample_every=None)
         base.update(kw)
         return type("A", (), base)()
 
@@ -230,6 +231,24 @@ class TestTrain(KitCase):
         self.assertIn("pretrained_lora_path", cfg["config"]["process"][0]["network"])
         with self.assertRaises(SystemExit):
             bw.train_config(bw.Kit(self.kit), "shop", self.args(model="klein4b", mode="residual"))
+
+    def test_sampling_defaults(self):
+        # Brand LoRAs are picked from their samples: 4 prompts at every checkpoint, step 0 included.
+        self.dataset("brand")
+        p = bw.train_config(bw.Kit(self.kit), "brand", self.args())[1]["config"]["process"][0]
+        self.assertEqual((len(p["sample"]["prompts"]), p["sample"]["sample_every"]), (4, 100))
+        self.assertFalse(p["train"]["skip_first_sample"] or p["train"]["disable_sampling"])
+        # Residual samples leave the brand LoRA out (train L-005): 2 prompts every 200 steps, no step 0.
+        self.dataset("shop")
+        (self.kit / "loras").mkdir()
+        (self.kit / "loras" / "brand-zimage.safetensors").write_bytes(b"x")
+        p = bw.train_config(bw.Kit(self.kit), "shop", self.args())[1]["config"]["process"][0]
+        self.assertEqual((len(p["sample"]["prompts"]), p["sample"]["sample_every"]), (2, 200))
+        self.assertTrue(p["train"]["skip_first_sample"])
+        p = bw.train_config(bw.Kit(self.kit), "shop", self.args(samples=3, sample_every=100))[1]["config"]["process"][0]
+        self.assertEqual((len(p["sample"]["prompts"]), p["sample"]["sample_every"]), (3, 100))
+        p = bw.train_config(bw.Kit(self.kit), "shop", self.args(samples=0))[1]["config"]["process"][0]
+        self.assertTrue(p["train"]["disable_sampling"])
 
     def test_train_writes_config_without_running(self):
         self.dataset("brand", 60)

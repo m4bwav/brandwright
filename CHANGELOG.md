@@ -2,6 +2,10 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
+## Unreleased
+
+- `train`: residual site LoRAs draw 2 sample prompts every 200 steps and skip the step-0 sample, which cut about 30 minutes from a 400-step run in the second training test. Brand LoRAs keep 4 at every checkpoint. New `--sample-every`; `--samples 0` turns sampling off.
+
 ## 0.1.1 · 2026-10-16
 
 Fixes from a fresh-install dry run of the code route and from the second training test. The code route has since been used on a work computer without trouble.
