@@ -2,13 +2,14 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
-## Unreleased
+## 0.1.1 · 2026-10-16
+
+Fixes from a fresh-install dry run of the code route and from the second training test. The code route has since been used on a work computer without trouble.
 
 - `tokens` no longer takes an unstyled browser-default button as the primary button, and says when the capture has no call-to-action button.
 - `render` warns when a font fails to load (behind a login, or refusing pages opened from disk), instead of quietly drawing a fallback font.
 - The code-route guide lists the real `--bw-*` variable names and drops fallback values, which hid wrong names.
 - README: work-machine notes from a fresh-install dry run.
-
 - `pick --to` no longer crashes on Windows when ComfyUI has the old LoRA loaded: it writes a step-named copy (`<brand>-<lora>-s250.safetensors`) and `gen` uses it.
 
 ## 0.1.0 · 2026-10-16
