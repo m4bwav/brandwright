@@ -886,6 +886,12 @@ def cmd_train(args):
     else:
         kw["start_new_session"] = True
     env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
+    if args.wait:  # block until training ends (for job runners that must know when the GPU is free)
+        kw.pop("creationflags", None)
+        kw.pop("start_new_session", None)
+        code = subprocess.call([py, "run.py", str(path)], env=env, **kw)
+        print("training ended with exit code %d; log %s" % (code, log))
+        return code
     p = subprocess.Popen([py, "run.py", str(path)], env=env, **kw)
     (tdir / ("%s.pid" % name)).write_text(str(p.pid), encoding="utf-8")
     print("started pid %d; log %s\n  progress: bw.py status %s" % (p.pid, log, args.kit))
@@ -1008,14 +1014,16 @@ def cmd_score(args):
 def contact_sheet(Image, paths, out, cols=4, cell=384, labels=None):
     from PIL import ImageDraw
     rows = math.ceil(len(paths) / cols)
-    sheet = Image.new("RGB", (cols * cell, rows * (cell + 22)), "white")
+    ratio = max(Image.open(p).size[1] / Image.open(p).size[0] for p in paths)  # wide pictures get short cells
+    cell_h = max(64, int(cell * min(1.0, ratio)))
+    sheet = Image.new("RGB", (cols * cell, rows * (cell_h + 22)), "white")
     d = ImageDraw.Draw(sheet)
     for i, p in enumerate(paths):
         im = Image.open(p).convert("RGB")
-        im.thumbnail((cell, cell))
-        x, y = (i % cols) * cell, (i // cols) * (cell + 22)
+        im.thumbnail((cell, cell_h))
+        x, y = (i % cols) * cell, (i // cols) * (cell_h + 22)
         sheet.paste(im, (x + (cell - im.size[0]) // 2, y))
-        d.text((x + 4, y + cell + 4), (labels[i] if labels else Path(p).stem)[:60], fill="black")
+        d.text((x + 4, y + cell_h + 4), (labels[i] if labels else Path(p).stem)[:60], fill="black")
     sheet.save(out, quality=88)
     return out
 
@@ -1117,6 +1125,7 @@ def main(argv=None):
     p.add_argument("--samples", type=int, default=4)
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
     p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
+    p.add_argument("--wait", action="store_true", help="with --run: block until training ends (for job queues)")
 
     p = sub.add_parser("status", help="training progress, checkpoints and samples")
     p.add_argument("kit", help="kit folder (made by new)")
