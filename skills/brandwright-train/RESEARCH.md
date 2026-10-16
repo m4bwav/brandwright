@@ -1,6 +1,6 @@
 # Research: brandwright-train
 
-Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); test runs in [TESTS.md](TESTS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
 ## Current understanding
 
@@ -15,10 +15,26 @@ Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](
 
 ## Search plan
 
-- Subject: new image models with LoRA support and company-usable licences; licence revisions
-- Tooling: ai-toolkit commits and example configs; musubi-tuner, OneTrainer releases
-- Practice: "Z-Image LoRA" OR "Qwen-Image LoRA" training settings 16GB <year>
-- Testing: LoRA overfitting detection; checkpoint selection metrics
+Four tracks; every refresh runs at least one query on each, scoped to the period since the last refresh. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+
+Subject (the goal and the latest thinking on reaching it):
+
+- `new image models with LoRA support and company-usable licences`
+- `licence revisions`
+
+Tooling (skills, plugins, MCP servers, scripts built for this subject):
+
+- `ai-toolkit commits and example configs`
+- `musubi-tuner, OneTrainer releases`
+
+Practice (how others use agents on this goal):
+
+- `"Z-Image LoRA" OR "Qwen-Image LoRA" training settings 16GB <year>`
+
+Testing (how work on this subject is verified, and how skills for it are tuned):
+
+- `LoRA overfitting detection`
+- `checkpoint selection metrics`
 
 ## Findings
 

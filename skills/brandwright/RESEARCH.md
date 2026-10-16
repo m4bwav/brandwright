@@ -1,6 +1,6 @@
 # Research: brandwright
 
-Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); test runs in [TESTS.md](TESTS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
 ## Current understanding
 
@@ -16,10 +16,30 @@ Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](
 
 ## Search plan
 
-- Subject: "UI mockup" OR "design system" diffusion LoRA <year>; new open image models with text rendering; licence changes (Z-Image, Qwen-Image, FLUX.2/3 klein)
-- Tooling: path:SKILL.md "design tokens" OR brand mockup; dembrandt releases; ComfyUI brand or UI LoRA nodes
-- Practice: "brand LoRA" OR "style LoRA" UI screenshots workflow <year>; Claude Design, Figma Make, Stitch DESIGN.md updates
-- Testing: OCR text accuracy benchmarks for image models; CSD style similarity; brand consistency evaluation <year>
+Four tracks; every refresh runs at least one query on each, scoped to the period since the last refresh. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+
+Subject (the goal and the latest thinking on reaching it):
+
+- `"UI mockup" OR "design system" diffusion LoRA <year>`
+- `new open image models with text rendering`
+- `licence changes (Z-Image, Qwen-Image, FLUX.2/3 klein)`
+
+Tooling (skills, plugins, MCP servers, scripts built for this subject):
+
+- `path:SKILL.md "design tokens" OR brand mockup`
+- `dembrandt releases`
+- `ComfyUI brand or UI LoRA nodes`
+
+Practice (how others use agents on this goal):
+
+- `"brand LoRA" OR "style LoRA" UI screenshots workflow <year>`
+- `Claude Design, Figma Make, Stitch DESIGN.md updates`
+
+Testing (how work on this subject is verified, and how skills for it are tuned):
+
+- `OCR text accuracy benchmarks for image models`
+- `CSD style similarity`
+- `brand consistency evaluation <year>`
 
 ## Findings
 

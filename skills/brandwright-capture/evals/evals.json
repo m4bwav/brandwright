@@ -10,6 +10,28 @@
         "the brandwright-capture skill is invoked"
       ],
       "runs": 3
+    },
+    {
+      "id": "decoy-4",
+      "kind": "trigger",
+      "prompt": "take a screenshot of the settings page of my app so I can attach it to a bug report",
+      "expectations": [
+        "the brandwright-capture skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
+      "id": "action-3",
+      "kind": "action",
+      "prompt": "Capture the page tests/fixtures/site/index.html into the kit ./kits/northwind as site shop (create the kit for brand Northwind first).",
+      "expectations": [
+        "the brandwright-capture skill is invoked",
+        "a Bash call runs bw.py"
+      ],
+      "runs": 1,
+      "evidence": "tool_used Bash matching bw\\.py[\\s\\S]*capture",
+      "baseline": "without the skill the agent describes LoRA training in general and writes no kit or config"
     }
   ]
 }

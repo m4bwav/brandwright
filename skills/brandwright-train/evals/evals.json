@@ -12,6 +12,16 @@
       "runs": 3
     },
     {
+      "id": "decoy-5",
+      "kind": "trigger",
+      "prompt": "train a LoRA of my own face for profile pictures",
+      "expectations": [
+        "the brandwright-train skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
       "id": "action-2",
       "kind": "action",
       "prompt": "Write (do not start) the training config for the brand LoRA of the kit in ./fixture-kit.",
