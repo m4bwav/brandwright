@@ -14,11 +14,14 @@
   "topic": "Training LoRAs for UI and brand style: ostris ai-toolkit configs and model support, Z-Image / Qwen-Image / FLUX.2 klein training memory and settings, Blackwell requirements, other trainers, private hosted training, licences of base models",
   "tier": "fast",
   "interval_days": 14.0,
-  "last_checked": "2026-10-15",
+  "last_checked": "2026-10-16",
   "next_due": "2026-10-29",
   "verify_at_use": true,
   "volatile_claims": [
-    "ai-toolkit trains Z-Image on 16 GB with qfloat8 + low_vram; assistant_lora_path merges a LoRA during training only (z_image.py, 2026-10-15)",
+    {
+      "claim": "ai-toolkit trains Z-Image on 16 GB with qfloat8 + low_vram; assistant_lora_path merges a LoRA during training only (z_image.py, 2026-10-15)",
+      "checked": "2026-10-16"
+    },
     "Qwen-Image-2512 on 24 GB needs ostris/accuracy_recovery_adapters/qwen_image_2512_torchao_uint3 (2026-10-15)",
     "Blackwell needs PyTorch 2.7+ with CUDA 12.8+; ai-toolkit pins cu130 (driver 580+) (2026-10-15)",
     "Z-Image, Qwen-Image-2512 and FLUX.2 klein base 4B are Apache-2.0; Qwen-Image-2.1 is research-only (2026-10-15)"
@@ -29,7 +32,7 @@
     "quiet": 0,
     "pinned_min": 0,
     "pinned_max": 0,
-    "vau_quiet": 0
+    "vau_quiet": 1
   },
   "history": [
     {
@@ -37,6 +40,12 @@
       "m": null,
       "interval_after": 14,
       "note": "created; two research subagents (177 tool calls) plus the ai-toolkit source on disk"
+    },
+    {
+      "date": "2026-10-16",
+      "m": 0.0,
+      "interval_after": null,
+      "note": "use-time: claim 1 confirmed by T-20261016-3 (residual run on 16 GB); claims 2-4 not used"
     }
   ],
   "counts": {

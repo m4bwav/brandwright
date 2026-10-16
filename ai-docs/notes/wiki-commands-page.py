@@ -1,4 +1,5 @@
 """Build the wiki's Commands page from the CLI's own --help output (run against the repository checkout)."""
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -17,7 +18,10 @@ def helptext(*args):
     return r.stdout.replace(str(cli), "bw.py").strip()
 
 
-lines = ["# Commands", "", "Every command of `bw.py` 0.1.0 with its options, copied from `--help`. `BW` means "
+version = re.search(r'^VERSION = "([^"]+)"', cli.read_text(encoding="utf-8"), re.M).group(1)
+if "## Unreleased" in (repo / "CHANGELOG.md").read_text(encoding="utf-8"):
+    version += " and the unreleased changes on `main`"
+lines = ["# Commands", "", "Every command of `bw.py` %s with its options, copied from `--help`. `BW` means " % version +
          "`python skills/brandwright/scripts/bw.py`. Exit code 0 is success; a problem the CLI can explain exits with its message.", ""]
 for title, cmds in ORDER:
     lines.append("- %s: %s" % (title, ", ".join("[%s](#%s)" % (c, c) for c in cmds)))
