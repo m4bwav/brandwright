@@ -1,6 +1,6 @@
 # HANDOFF
 
-Updated 2026-10-16, around 18:40. Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
+Updated 2026-10-16, around 19:00. Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
 
 ## State
 
@@ -11,6 +11,8 @@ Updated 2026-10-16, around 18:40. Read with [log.md](log.md) and [next-session-p
 - GOV.UK test kit (path in the owner's notes):
   - tests 1 and 2 done (train T-20261016-1 and -3, mockup T-20261016-4);
   - **test 3 queued** (`run_test3.py`, log `run_test3.log`, started 18:33 and waiting for ComfyUI to be idle). It tests the trigger-as-wordmark problem; see the log entry for 2026-10-16, third session. Its two sibling kits are `govuk-trig-b1` and `govuk-trig-b2`. The owner approved its GPU time.
+  - At 18:45 a film render queue held ComfyUI, with 7 parts of about 1 to 1.7 h each left. Test 3 should start around 04:00 to 06:00 on 2026-10-17 and take about 2 h (two 250-step trainings plus 9 gens on the base graph).
+  - Checked while waiting, with no GPU use: b1 has `zqkvx` on all 90 captions; b2 also has the logo sentence on 25. A config-only `train` on a scratch copy of b1 matches test 1's model block, and `pick` with no `--step` takes the final file. Nothing to fix in the runner.
 - ComfyUI's loras folder holds `govuk-brand-s250`, `govuk-design-system` and `govuk-ds-r2-s100/200/300`; test 3 adds `govuktrigb1-brand` and `govuktrigb2-brand`.
 
 ## Open
@@ -20,7 +22,7 @@ Updated 2026-10-16, around 18:40. Read with [log.md](log.md) and [next-session-p
    - B1: does the non-word trigger `zqkvx` stop the wordmark?
    - B2: does quoting the logo text in captions fix it, and can the prompt then ask for the real logo?
    Then record train T-20261017-1 and update L-002. If B1 or B2 wins, propose to the owner the default change it implies: `make_trigger` without the brand's letters, and/or a `VLM_PROMPT` that quotes the header's site name instead of leaving logos out. Both change defaults, so ask first.
-2. Release 0.1.2 with PR #12 and whatever comes of item 1. Ask the owner first.
+2. Release 0.1.2 with PR #12 and whatever comes of item 1. On 2026-10-16 the owner chose to wait for test 3 and ship a single 0.1.2. Once item 1 is settled, ask for the go-ahead to tag.
 3. Run the 4 action cases in `evals/` on macOS or Linux (needs a sandboxed shell). action-2 needs a fixture kit with a dataset.
 4. Ideas not built:
    - an `export` command for musubi or OneTrainer configs;
