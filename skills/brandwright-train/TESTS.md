@@ -4,6 +4,13 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-3 · 2026-10-16 · real run · Windows 11, RTX 5060 Ti 16 GB, ai-toolkit (2026-10-09), Z-Image base · passed with findings
+- Brand LoRA re-picked at step 250. Site LoRA retrained in residual mode on top of it with the new defaults: 52 pictures, 400 steps, checkpoints every 100. 2 h 1 min in all: about 7-8.6 s a step, plus about 40 min for 5 sample sets of 4. Exit 0.
+- The earlier 800-step run was moved aside first (C-20261016-2), and `pick` survived ComfyUI holding the old file (C-20261016-3).
+- No collapse by step 400 for the site LoRA. Checkpoints 100, 200 and 300 drew similar modals; 300 and the final added the design system's underlined bold headings and outlined buttons.
+- The trainer's samples are drawn without the brand LoRA (log: `Unloading assistant lora`), so they understate the result.
+- led to: L-005
+
 ### T-20261016-2 · 2026-10-16 · claude plugin eval (1 run a case, with and without the plugin) · Windows 11, Claude Code · 2/2 run, action-2 not run
 - trigger-4 fired `brandwright-train` with the plugin and not without; decoy-5 (a face LoRA) did not fire it.
 - Action case action-2 was not run: on Windows the eval runner refuses any case granted a shell tool because it has no sandbox there ("sandbox required but unavailable"). Run it on macOS or Linux.

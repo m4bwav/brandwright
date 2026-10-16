@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261016-4 · 2026-10-16 · judge residual checkpoints on brand + site
+- because: T-20261016-3, L-005
+- files: SKILL.md (Step 5)
+- The skill says residual samples leave the brand LoRA out, and to pick site checkpoints with gen or sweep.
+
 ### C-20261016-3 · 2026-10-16 · pick survives a running ComfyUI
 - because: L-004
 - files: ../brandwright/scripts/bw.py (cmd_pick), ../../tests/test_bw.py
