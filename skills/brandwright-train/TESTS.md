@@ -4,4 +4,9 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
-(none yet)
+### T-20261016-1 · 2026-10-16 · real run · Windows 11, RTX 5060 Ti 16 GB, ai-toolkit (2026-10-09), Z-Image base · passed with findings
+- Brand LoRA: 90 pictures (two sites of an openly licensed government brand), 1,200 steps, rank 32, lr 1e-4, buckets 768/1024, qfloat8, low_vram: 2 h 29 min (about 7.4 s a step). Config written by `bw.py train`, run with `--run --wait`; exit 0.
+- Site LoRA, residual mode (brand LoRA as `assistant_lora_path`): 52 pictures, 800 steps: 1 h 49 min; exit 0. Residual mode works end to end.
+- Samples on the base model: step 250 crisp and clearly in the brand (blue top bar, underlined heading, flat square buttons); from step 500 on, text soft and pages sparse and near-empty: overtrained.
+- Generation on Z-Image Turbo in ComfyUI with the final LoRAs (base-trained): a weak but visible shift (square green button, flatter tag, heavier type), stronger with brand + site; the trigger word was drawn as the site's wordmark.
+- led to: L-001, L-002, C-20261016-1

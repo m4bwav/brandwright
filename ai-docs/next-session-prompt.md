@@ -8,13 +8,9 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-1. Find out whether the GOV.UK training test ran: `run_test.log` and `bw.py status <kit>`.
-   - If it has not started and the PC's ComfyUI queue is busy, do not free it or start training over a render. Re-check later, or leave it to the ready-job row `bw-govuk-1`.
-   - If it ran:
-     - look at the training samples, the `out/` comparisons (no LoRA / brand / brand + design-system, same seed) and `sweep.jpg`;
-     - judge whether the brand LoRA adds the brand, and whether the residual site LoRA adds the site's look on top;
-     - write T- entries in brandwright-train and brandwright-mockup TESTS.md, and LEARNINGS for anything surprising (weights that work on the Turbo graph, the step count that looked best).
-   - If it failed, fix the cause in `bw.py` (with a test) and re-queue it under a new ready-job id.
+1. The GOV.UK test ran on 2026-10-16. Its results and the next experiment are in HANDOFF (Open, item 1).
+   - Base-graph judging needs `z_image_bf16.safetensors` in ComfyUI (12.3 GB). Ask the owner before downloading it.
+   - Never free ComfyUI or train while another session renders.
 2. If the wiki is still not live (`git ls-remote https://github.com/m4bwav/brandwright.wiki.git` fails), ask the owner to click "Create the first page", then push `../brandwright.wiki` (HANDOFF has the commands).
 3. Run the eval cases in `evals/` once with `claude plugin eval` and record them in TESTS.md.
 

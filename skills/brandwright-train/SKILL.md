@@ -35,7 +35,7 @@ BW train KIT --lora brand            # writes train/<name>.json and prints steps
 BW train KIT --lora brand --run      # starts ai-toolkit detached; log in train/<name>.log
 ```
 
-Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 1024, steps 40 per picture between 1,200 and 3,000, a checkpoint and samples every 250 steps on held-out prompts (pricing table, settings page, modal, toast: kinds the capture rarely has, so samples show generalisation). The first run downloads the base model (Z-Image about 20 GB).
+Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 1024, about 5 passes over the pictures (5 steps a picture, 400 to 1,500), a checkpoint and samples every 100 steps on held-out prompts (pricing table, settings page, modal, toast: kinds the capture rarely has, so samples show generalisation). The first run downloads the base model (Z-Image about 20 GB).
 
 ## Step 4: then each site, on top of the brand
 
@@ -49,13 +49,13 @@ Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 102
 
 ## Step 5: watch, then pick
 
-`BW status KIT`: step, checkpoints, newest sample. Open the samples (`train/out/<name>/samples/`) at each 250 steps:
+`BW status KIT`: step, checkpoints, newest sample. Open the samples (`train/out/<name>/samples/`) at each saved step:
 
 - too weak: generic UI, wrong colours: keep going;
 - right: brand colours, type and spacing on held-out components, text still legible;
-- too far: copies real pages, the same layout whatever the prompt, text breaks: an earlier checkpoint wins (BFL's own style run peaked at 1,500 of 3,000).
+- too far: copies real pages, the same layout whatever the prompt, text goes soft, pages turn sparse and empty: an earlier checkpoint wins. On the first real run (90 pictures, Z-Image) step 250 was best and everything from 500 on had collapsed into blurred, near-empty layouts (L-001).
 
-Pick by eye, then: `BW pick KIT --lora brand --step 1500 --to <ComfyUI>/models/loras` (or set `BRANDWRIGHT_COMFY_LORAS`). Without `--step`, the final file. Then brandwright-mockup, starting with `BW sweep` to confirm the weight.
+Pick by eye, then: `BW pick KIT --lora brand --step 300 --to <ComfyUI>/models/loras` (or set `BRANDWRIGHT_COMFY_LORAS`). Without `--step`, the final file. Then brandwright-mockup, starting with `BW sweep` to confirm the weight.
 
 ## Rules
 

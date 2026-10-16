@@ -14,20 +14,15 @@ Updated 2026-10-15 late evening. Read with [log.md](log.md) and [next-session-pr
   - captions: Gemma 4 26B on the Mac;
   - code-route mock-up: exact, with a palette score of 0.9;
   - reference route on FLUX.2 klein: style carried over, short quoted labels right.
-- Training: the end-to-end test (brand LoRA 1,200 steps, then a residual site LoRA 800 steps on Z-Image, then gen comparisons and a sweep) waits for the PC's GPU. Another session's video render held it all evening. There are two ways in, guarded by a lock file so it runs once:
-  - a background waiter in this session (it starts after 15 idle minutes);
-  - row `bw-govuk-1` in the server backlog's `ready-jobs.md` (the idle watcher checks every 4 h).
-
-  The runner and its log are `run_test.py` and `run_test.log` in that kit's folder (path in the owner's private notes, not here).
+- Training ran overnight (2026-10-15 23:28 to 2026-10-16 03:51):
+  - Brand LoRA: 1,200 steps in 2 h 29 min. The residual site LoRA: 800 steps in 1 h 49 min. Comparisons and a sweep followed. Everything exited 0, so residual mode works.
+  - Findings: step 250 was the best brand checkpoint; from step 500 on, it had collapsed into soft, near-empty layouts. Defaults were lowered in PR #4.
+  - The final LoRAs show only a weak effect on the Turbo graph, and the trigger word is drawn as the wordmark (train and mockup LEARNINGS).
+  - The runner and the comparison images are in the kit folder (path in the owner's notes).
 
 ## Open
 
-1. Check the training results:
-   - `run_test.log` and `bw.py status`;
-   - samples under `train/out/*/samples`;
-   - the `out/` comparisons (no LoRA vs brand vs brand + site, same seed), then `sweep.jpg`.
-
-   Record a T- entry in brandwright-train and brandwright-mockup TESTS.md. If residual mode or a config field failed, fix `MODELS` or `train_config`, with a test.
+1. Re-pick the brand LoRA at step 250 (`bw.py pick KIT --lora brand --step 250 --to <ComfyUI loras>`). Retrain the site LoRA in residual mode on top of it with the new defaults (about 260 steps) and judge again on the base graph.
 2. Base-model inference in ComfyUI needs `z_image_bf16.safetensors` (12.3 GB, Comfy-Org/z_image). It was not downloaded without the owner's yes. Until then the runs use the Turbo graph with base-trained LoRAs.
 3. Run the `evals/` cases with `claude plugin eval` (none run yet). action-2 needs a fixture kit with a dataset.
 4. Release 0.1.0 (tag and GitHub Release) after the owner's go-ahead; then refresh the wiki's version lines.
