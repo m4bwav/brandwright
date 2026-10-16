@@ -861,6 +861,21 @@ def train_config(kit, lora, args):
     return name, cfg, steps, mode, n
 
 
+def set_aside_old_run(out):
+    """ai-toolkit resumes from any checkpoint already in its run folder, so a retrain under the same name would
+    continue the old run (brandwright-train L-003). Move an earlier run's folder aside; returns the new path or None."""
+    if not out.is_dir() or not any(out.glob("*.safetensors")):
+        return None
+    stamp = time.strftime("%Y%m%d-%H%M%S", time.localtime(max(p.stat().st_mtime for p in out.glob("*.safetensors"))))
+    dest = out.with_name("%s-run-%s" % (out.name, stamp))
+    n = 2
+    while dest.exists():
+        dest = out.with_name("%s-run-%s-%d" % (out.name, stamp, n))
+        n += 1
+    out.rename(dest)
+    return dest
+
+
 def cmd_train(args):
     kit = Kit(args.kit)
     name, cfg, steps, mode, n = train_config(kit, args.lora, args)
@@ -878,6 +893,10 @@ def cmd_train(args):
     tk = find_toolkit(args, kit)
     if not tk:
         sys.exit("ai-toolkit not found: pass --toolkit PATH or set BRANDWRIGHT_AI_TOOLKIT")
+    if not args.resume:
+        old = set_aside_old_run(tdir / "out" / name)
+        if old:
+            print("  an earlier run's checkpoints were moved to %s (pass --resume to continue that run instead)" % old)
     log = tdir / ("%s.log" % name)
     py = toolkit_python(tk)
     kw = {"cwd": str(tk), "stdout": log.open("w", encoding="utf-8"), "stderr": subprocess.STDOUT, "stdin": subprocess.DEVNULL}
@@ -1126,6 +1145,8 @@ def main(argv=None):
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
     p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
     p.add_argument("--wait", action="store_true", help="with --run: block until training ends (for job queues)")
+    p.add_argument("--resume", action="store_true",
+                   help="with --run: continue the run already in train/out/<name>; without it, that folder is moved aside")
 
     p = sub.add_parser("status", help="training progress, checkpoints and samples")
     p.add_argument("kit", help="kit folder (made by new)")

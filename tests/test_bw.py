@@ -231,6 +231,18 @@ class TestTrain(KitCase):
         self.assertEqual(len(cfgs), 1)
         self.assertEqual(json.loads(cfgs[0].read_text(encoding="utf-8"))["config"]["process"][0]["train"]["steps"], 400)
 
+    def test_retrain_sets_old_run_aside(self):
+        out = self.kit / "train" / "out" / "x-brand-zimage"
+        self.assertIsNone(bw.set_aside_old_run(out))
+        out.mkdir(parents=True)
+        (out / "samples").mkdir()
+        self.assertIsNone(bw.set_aside_old_run(out))  # samples only: nothing to resume from
+        (out / "x-brand-zimage_000000250.safetensors").write_bytes(b"0")
+        moved = bw.set_aside_old_run(out)
+        self.assertFalse(out.exists())
+        self.assertTrue((moved / "x-brand-zimage_000000250.safetensors").is_file())
+        self.assertTrue(moved.name.startswith("x-brand-zimage-run-"))
+
 
 class TestComfyGraphs(KitCase):
     def test_ksampler_graph_with_loras(self):

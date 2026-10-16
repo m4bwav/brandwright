@@ -57,6 +57,8 @@ Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 102
 
 Pick by eye, then: `BW pick KIT --lora brand --step 300 --to <ComfyUI>/models/loras` (or set `BRANDWRIGHT_COMFY_LORAS`). Without `--step`, the final file. Then brandwright-mockup, starting with `BW sweep` to confirm the weight.
 
+Retraining a LoRA with `--run` moves the earlier run's folder to `train/out/<name>-run-<date>`, because ai-toolkit would otherwise resume from its last checkpoint (L-003). Pass `--resume` to continue that run on purpose.
+
 ## Rules
 
 - Training reads only the kit and the base model; nothing leaves the machine unless the user chooses a hosted trainer, and then only after they confirm their company allows it.
