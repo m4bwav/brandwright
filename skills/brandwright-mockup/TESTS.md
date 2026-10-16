@@ -4,6 +4,10 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-5 · 2026-10-16 · real run, owner's report · a work computer, code route (capture, tokens, render), checkout of 2026-10-16 · passed
+- The owner ran the code route on their employer's sites from a work computer. Their verdict: it "worked better than expected". Nothing failed and they reported nothing to fix.
+- The company, its sites and the screenshots stay in the owner's private notes, never here.
+
 ### T-20261016-4 · 2026-10-16 · real run · RTX 5060 Ti 16 GB, ComfyUI, Z-Image base graph (30 steps, cfg 4) and Turbo · passed with findings
 - Three prompts (modal, start page, status card), 2 pictures each, with no LoRA, brand 1.0 (step 250), brand 1.0 + residual site 1.0 on the base graph, and brand 1.0 on Turbo. Then site checkpoints 100, 200 and 300 on the modal, and a brand 0.6/1.0/1.4 x site 0/0.7/1.0 sweep on the start page.
 - Base graph: about 78 s a picture (155 s for 2); Turbo 13 s. The base graph carried the brand: blue masthead, white header with a crest, bold heading, green "Start now". At brand 1.4 + site 1.0 the button even had the real start button's arrow. Square corners on modals and cards, where Turbo drew rounded, generic iOS-style cards.

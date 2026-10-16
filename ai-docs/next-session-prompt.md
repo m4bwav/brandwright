@@ -8,9 +8,9 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-1. Ask the owner first: did the code route work on the work computer? Turn anything that went wrong into a test, a fix and a lesson (capture or mockup LEARNINGS). Their company's name, sites and screenshots never go in the repository.
-2. Ask whether to release 0.1.1 with the Unreleased changes (HANDOFF, Open, item 1). Do not tag without a yes.
-3. Then HANDOFF Open items 2 and 3 (sample cost for residual site LoRAs; trigger words drawn as wordmarks). Item 2 changes a default: propose it with the numbers from test 2 before changing it.
+1. Test 3 (trigger words drawn as wordmarks, HANDOFF Open item 1). If `run_test3.log` does not end in `ALL DONE`, say where it stopped and why (still waiting for ComfyUI, or a failure) and do not restart it while another session renders. When it is done, look at the pictures yourself (header text against test 2's controls), record the run in brandwright-train TESTS and update L-002.
+2. If a fix wins, propose the default change it implies (trigger shape in `make_trigger`, or caption prompt `VLM_PROMPT`) to the owner with the evidence. Change a default only on their yes; then a test, the skill CHANGELOG and the wiki.
+3. Ask the owner whether to release 0.1.2 with PR #12 (residual site LoRAs sample less) and anything from step 2. Do not tag without a yes.
    - Never free ComfyUI or train while another session renders.
 4. Keep the wiki in step with any CLI or default change (HANDOFF has how).
 
