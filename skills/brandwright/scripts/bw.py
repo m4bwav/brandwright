@@ -972,8 +972,15 @@ def cmd_pick(args):
     print("picked %s -> %s" % (src.name, dest))
     comfy_dir = args.to or os.environ.get("BRANDWRIGHT_COMFY_LORAS")
     if comfy_dir:
-        target = Path(comfy_dir) / ("%s-%s.safetensors" % (re.sub(r"[^a-z0-9]+", "", kit.cfg["brand"]["name"].lower()), args.lora))
-        shutil.copy2(src, target)
+        stem = "%s-%s" % (re.sub(r"[^a-z0-9]+", "", kit.cfg["brand"]["name"].lower()), args.lora)
+        target = Path(comfy_dir) / (stem + ".safetensors")
+        try:
+            shutil.copy2(src, target)
+        except OSError as e:  # Windows: a running ComfyUI keeps a loaded LoRA memory-mapped, so it cannot be overwritten
+            m = re.search(r"_(\d{9})$", src.stem)
+            target = Path(comfy_dir) / ("%s-%s.safetensors" % (stem, "s%d" % int(m.group(1)) if m else time.strftime("%Y%m%d%H%M%S")))
+            print("could not replace %s.safetensors (%s); using %s" % (stem, e.strerror or e, target.name))
+            shutil.copy2(src, target)
         print("copied for ComfyUI -> %s" % target)
         kit.cfg.setdefault("comfy_loras", {})[args.lora] = target.name
     kit.cfg.setdefault("picked", {})[args.lora] = {"file": str(dest), "from": src.name, "model": model,

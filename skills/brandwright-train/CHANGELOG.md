@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261016-3 · 2026-10-16 · pick survives a running ComfyUI
+- because: L-004
+- files: ../brandwright/scripts/bw.py (cmd_pick), ../../tests/test_bw.py
+- When the ComfyUI copy cannot be replaced, `pick` writes `<brand>-<lora>-s<step>.safetensors` instead and points `comfy_loras` at it.
+
 ### C-20261016-2 · 2026-10-16 · retrains start fresh
 - because: L-003
 - files: ../brandwright/scripts/bw.py (set_aside_old_run, train --resume), SKILL.md (Step 5), ../../tests/test_bw.py

@@ -4,6 +4,8 @@ Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELO
 
 ## Unreleased
 
+- `pick --to` no longer crashes on Windows when ComfyUI has the old LoRA loaded: it writes a step-named copy (`<brand>-<lora>-s250.safetensors`) and `gen` uses it.
+
 ## 0.1.0 · 2026-10-16
 
 First release: brand and sub-site LoRAs for on-brand UI mock-ups, with a training-free reference route and a code route. Tested end to end on GOV.UK, an openly licensed site: capture, tokens, dataset, captions, both mock-up routes, and an overnight brand plus residual site LoRA training run.

@@ -10,6 +10,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -230,6 +231,25 @@ class TestTrain(KitCase):
         cfgs = list((self.kit / "train").glob("*.json"))
         self.assertEqual(len(cfgs), 1)
         self.assertEqual(json.loads(cfgs[0].read_text(encoding="utf-8"))["config"]["process"][0]["train"]["steps"], 400)
+
+    def test_pick_falls_back_when_comfy_holds_the_file(self):
+        out = self.kit / "train" / "out" / "northwind-brand-zimage"
+        out.mkdir(parents=True)
+        (out / "northwind-brand-zimage_000000250.safetensors").write_bytes(b"0")
+        comfy = self.tmp / "loras"
+        comfy.mkdir()
+        real = shutil.copy2
+
+        def copy2(src, dst):
+            if Path(dst).name == "northwind-brand.safetensors":
+                raise OSError(22, "user-mapped section open")
+            return real(src, dst)
+
+        with unittest.mock.patch.object(bw.shutil, "copy2", copy2):
+            code, outp = run("pick", str(self.kit), "--lora", "brand", "--step", "250", "--to", str(comfy))
+        self.assertEqual(code, 0)
+        self.assertTrue((comfy / "northwind-brand-s250.safetensors").is_file())
+        self.assertEqual(self.cfg()["comfy_loras"]["brand"], "northwind-brand-s250.safetensors")
 
     def test_retrain_sets_old_run_aside(self):
         out = self.kit / "train" / "out" / "x-brand-zimage"

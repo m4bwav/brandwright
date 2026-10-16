@@ -4,6 +4,14 @@ Procedural lessons for [SKILL.md](SKILL.md). Research lives in [RESEARCH.md](RES
 
 ## Active
 
+### L-004 · 2026-10-16 · `comfy-maps-loaded-loras`: a running ComfyUI locks the LoRA files it has loaded
+- Trigger: `pick --to <ComfyUI loras>` crashed with WinError 1224 ("a file with a user-mapped section open") while re-picking the brand LoRA at step 250; ComfyUI had the old file loaded.
+- Hypothesis: ComfyUI memory-maps safetensors, and Windows refuses to overwrite a mapped file until the model is unloaded.
+- Rule: never free another session's ComfyUI just to replace a file; `pick` falls back to `<brand>-<lora>-s<step>.safetensors` and records that name in `brand.json`, so `gen --lora brand` uses the new copy.
+- Evidence: run_test2 on the GOV.UK kit, C-20261016-3
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-10-16
+
 ### L-003 · 2026-10-16 · `toolkit-resumes-same-name`: a retrain under the same name continues the old run
 - Trigger: before retraining the GOV.UK site LoRA, `train/out/<name>/` still held the 800-step run's checkpoints; ai-toolkit's `get_latest_save_path` loads the newest one from that folder and carries on from its step.
 - Hypothesis: a 400-step retrain would have loaded step 750 and stopped at once, or trained on top of the collapsed LoRA, with no error.
