@@ -1,6 +1,6 @@
 # Research: brandwright-mockup
 
-Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); test runs in [TESTS.md](TESTS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
 ## Current understanding
 
@@ -15,10 +15,25 @@ Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](
 
 ## Search plan
 
-- Subject: text rendering in open image models; UI generation benchmarks
-- Tooling: ComfyUI reference/edit nodes; screenshot-to-code tools
-- Practice: brand-consistent mockup workflows with AI <year>
-- Testing: OCR word accuracy (STRICT), CSD style similarity, delta-E palette checks
+Four tracks; every refresh runs at least one query on each, scoped to the period since the last refresh. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+
+Subject (the goal and the latest thinking on reaching it):
+
+- `text rendering in open image models`
+- `UI generation benchmarks`
+
+Tooling (skills, plugins, MCP servers, scripts built for this subject):
+
+- `ComfyUI reference/edit nodes`
+- `screenshot-to-code tools`
+
+Practice (how others use agents on this goal):
+
+- `brand-consistent mockup workflows with AI <year>`
+
+Testing (how work on this subject is verified, and how skills for it are tuned):
+
+- `OCR word accuracy (STRICT), CSD style similarity, delta-E palette checks`
 
 ## Findings
 

@@ -1,6 +1,6 @@
 # Research: brandwright-capture
 
-Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](CHANGELOG.md); lessons from use in [LEARNINGS.md](LEARNINGS.md); test runs in [TESTS.md](TESTS.md); state in `evergreen.json`. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
 ## Current understanding
 
@@ -16,10 +16,27 @@ Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](
 
 ## Search plan
 
-- Subject: Playwright screenshot mask options; DTCG spec updates; design token extraction from live sites
-- Tooling: dembrandt, Project Wallace, style-dictionary releases; captioning models for UI (Qwen-VL, Gemma, JoyCaption)
-- Practice: captioning "style LoRA" UI OR screenshot <year>
-- Testing: dataset quality checks for LoRAs; PII detection in screenshots (Presidio image redactor)
+Four tracks; every refresh runs at least one query on each, scoped to the period since the last refresh. Protocol: [MAINTENANCE.md](MAINTENANCE.md).
+
+Subject (the goal and the latest thinking on reaching it):
+
+- `Playwright screenshot mask options`
+- `DTCG spec updates`
+- `design token extraction from live sites`
+
+Tooling (skills, plugins, MCP servers, scripts built for this subject):
+
+- `dembrandt, Project Wallace, style-dictionary releases`
+- `captioning models for UI (Qwen-VL, Gemma, JoyCaption)`
+
+Practice (how others use agents on this goal):
+
+- `captioning "style LoRA" UI OR screenshot <year>`
+
+Testing (how work on this subject is verified, and how skills for it are tuned):
+
+- `dataset quality checks for LoRAs`
+- `PII detection in screenshots (Presidio image redactor)`
 
 ## Findings
 

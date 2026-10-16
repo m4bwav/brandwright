@@ -10,6 +10,28 @@
         "the brandwright-mockup skill is invoked"
       ],
       "runs": 3
+    },
+    {
+      "id": "decoy-6",
+      "kind": "trigger",
+      "prompt": "generate a picture of a sunset over mountains with ComfyUI",
+      "expectations": [
+        "the brandwright-mockup skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
+      "id": "action-4",
+      "kind": "action",
+      "prompt": "Render ./kits/northwind/out/card.html to a PNG at 1440x900 so I can show the team.",
+      "expectations": [
+        "the brandwright-mockup skill is invoked",
+        "a Bash call runs bw.py"
+      ],
+      "runs": 1,
+      "evidence": "tool_used Bash matching bw\\.py[\\s\\S]*render",
+      "baseline": "without the skill the agent describes LoRA training in general and writes no kit or config"
     }
   ]
 }
