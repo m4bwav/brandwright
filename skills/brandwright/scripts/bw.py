@@ -737,8 +737,8 @@ def ollama_caption(host, model, path, timeout=180):
     return re.sub(r"\s+", " ", text)
 
 
-STYLE_WORDS = re.compile(r"\b(colou?rs?|colou?red|blue|red|green|yellow|orange|purple|pink|teal|navy|black|white|grey|gray|"
-                         r"font|typeface|serif|sans-serif|rounded|shadow|gradient|minimalist|modern|clean|sleek|brand(ed)?|logo)\b", re.I)
+STYLE_WORDS = re.compile(r"\b(?:colou?rs?|colou?red|blue|red|green|yellow|orange|purple|pink|teal|navy|black|white|grey|gray|"
+                         r"font|typeface|serif|sans-serif|rounded|shadow|gradient|minimalist|modern|clean|sleek|brand(?:ed)?|logo)\b", re.I)
 
 
 def cmd_caption(args):
@@ -781,6 +781,7 @@ def cmd_caption(args):
             if flagged:
                 m["style_words"] = sorted({w.lower() for w in flagged})
             print("  %s %s%s" % (m["file"], desc[:100], ("  [style words: %s]" % ", ".join(m["style_words"])) if flagged else ""))
+            man_path.write_text("".join(json.dumps(x) + "\n" for x in man), encoding="utf-8")  # progress survives a crash
         man_path.write_text("".join(json.dumps(m) + "\n" for m in man), encoding="utf-8")
         print("%s: %d caption(s) written by %s" % (lora, done, args.model if args.vlm != "none" else "nothing (templates kept)"))
     return 0
@@ -1039,26 +1040,26 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("doctor", help="what is installed: Pillow, Playwright, GPU, ai-toolkit, ComfyUI, Ollama")
-    p.add_argument("--comfy", action="append")
-    p.add_argument("--toolkit")
+    p.add_argument("--comfy", action="append", help="ComfyUI URL to check (repeat; default BRANDWRIGHT_COMFY or :8188)")
+    p.add_argument("--toolkit", help="ostris ai-toolkit folder (or set BRANDWRIGHT_AI_TOOLKIT)")
 
     p = sub.add_parser("new", help="create a kit, or add sites to one")
-    p.add_argument("kit")
-    p.add_argument("--brand")
+    p.add_argument("kit", help="kit folder to create or extend (keep it outside any repository)")
+    p.add_argument("--brand", help="brand name (needed for a new kit)")
     p.add_argument("--trigger", help="brand trigger word (default: brand name + 'ui')")
     p.add_argument("--site", action="append", help="NAME or NAME=URL; repeat for more sites")
-    p.add_argument("--model", default=DEFAULT_MODEL, choices=sorted(MODELS))
+    p.add_argument("--model", default=DEFAULT_MODEL, choices=sorted(MODELS), help="base model to train on (default zimage)")
 
     p = sub.add_parser("login", help="open a browser window to sign in yourself; the session is kept in the kit")
-    p.add_argument("kit")
-    p.add_argument("--site", required=True)
-    p.add_argument("url")
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--site", required=True, help="site name in brand.json")
+    p.add_argument("url", help="page to open for signing in")
     p.add_argument("--channel", help="msedge or chrome: use the installed browser")
 
     p = sub.add_parser("capture", help="screenshot pages (with masks), component boxes and design tokens")
-    p.add_argument("kit")
-    p.add_argument("--site", required=True)
-    p.add_argument("urls", nargs="*")
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--site", required=True, help="site name in brand.json")
+    p.add_argument("urls", nargs="*", help="pages to capture (default: the site's urls in brand.json)")
     p.add_argument("--crawl", type=int, default=0, help="also visit up to N same-site links found on the pages")
     p.add_argument("--crawl-all", action="store_true", help="also crawl cookie, privacy, terms and sitemap pages")
     p.add_argument("--viewports", default="desktop,mobile")
@@ -1073,66 +1074,66 @@ def main(argv=None):
     p.add_argument("--max-per-kind", type=int, default=8)
 
     p = sub.add_parser("import", help="add your own screenshots (full screens or single components)")
-    p.add_argument("kit")
-    p.add_argument("--site", required=True)
-    p.add_argument("paths", nargs="+")
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--site", required=True, help="site name in brand.json")
+    p.add_argument("paths", nargs="+", help="image files or folders (png, jpg, webp)")
     p.add_argument("--kind", default="screen", choices=["screen", "component"])
     p.add_argument("--viewport", default="desktop", choices=["desktop", "laptop", "tablet", "mobile", "import"])
 
     p = sub.add_parser("tokens", help="merge captured styles into tokens.json (DTCG), brand.css and tokens.md")
-    p.add_argument("kit")
+    p.add_argument("kit", help="kit folder (made by new)")
 
     p = sub.add_parser("prep", help="build dataset/<lora>: tiles, component specimens, dedupe, caps, template captions")
-    p.add_argument("kit")
+    p.add_argument("kit", help="kit folder (made by new)")
     p.add_argument("--tiles", type=int, default=3, help="viewport tiles per page, from the top")
     p.add_argument("--dedupe", type=int, default=4, help="max hash distance treated as a duplicate (0-64)")
     p.add_argument("--max-per-site", type=int, default=60)
     p.add_argument("--brand-max", type=int, default=90, help="brand dataset size, shared equally across sites")
 
     p = sub.add_parser("caption", help="rewrite captions with a local vision model through Ollama")
-    p.add_argument("kit")
-    p.add_argument("--lora")
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--lora", help="one dataset only (default: all)")
     p.add_argument("--vlm", default="ollama", choices=["ollama", "none"])
     p.add_argument("--model", default=os.environ.get("BRANDWRIGHT_VLM", "qwen3-vl:8b"))
-    p.add_argument("--host")
-    p.add_argument("--force", action="store_true")
+    p.add_argument("--host", help="Ollama URL (default BRANDWRIGHT_OLLAMA or http://127.0.0.1:11434)")
+    p.add_argument("--force", action="store_true", help="re-caption pictures that already have a model caption")
 
     p = sub.add_parser("review", help="write review.html: every training picture with its caption")
-    p.add_argument("kit")
+    p.add_argument("kit", help="kit folder (made by new)")
 
     p = sub.add_parser("train", help="write an ai-toolkit config for one LoRA (brand or a site); --run starts it")
-    p.add_argument("kit")
-    p.add_argument("--lora", default="brand")
-    p.add_argument("--model", choices=sorted(MODELS))
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--lora", default="brand", help="brand, or a site name")
+    p.add_argument("--model", choices=sorted(MODELS), help="base model (default: the kit's)")
     p.add_argument("--mode", choices=["residual", "continue", "stack"],
                    help="site LoRAs: residual = learn only the difference from the brand LoRA (Z-Image); continue = start "
                         "from the brand LoRA, use alone; stack = independent")
-    p.add_argument("--brand-lora")
-    p.add_argument("--steps", type=int)
+    p.add_argument("--brand-lora", help="brand LoRA file for residual or continue (default: loras/brand-<model>.safetensors)")
+    p.add_argument("--steps", type=int, help="default: 40 per picture, 1,200 to 3,000")
     p.add_argument("--rank", type=int, default=32)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--res", type=int, nargs="+", default=[768, 1024])
     p.add_argument("--save-every", type=int, default=250)
     p.add_argument("--samples", type=int, default=4)
-    p.add_argument("--toolkit")
-    p.add_argument("--run", action="store_true")
+    p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
+    p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
 
     p = sub.add_parser("status", help="training progress, checkpoints and samples")
-    p.add_argument("kit")
+    p.add_argument("kit", help="kit folder (made by new)")
 
     p = sub.add_parser("pick", help="copy a checkpoint to loras/ (and to ComfyUI's loras folder with --to)")
-    p.add_argument("kit")
-    p.add_argument("--lora", default="brand")
-    p.add_argument("--step", type=int)
-    p.add_argument("--model", choices=sorted(MODELS))
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("--lora", default="brand", help="brand, or a site name")
+    p.add_argument("--step", type=int, help="checkpoint step (default: the final file)")
+    p.add_argument("--model", choices=sorted(MODELS), help="base model (default: the kit's)")
     p.add_argument("--to", help="ComfyUI models/loras folder (or set BRANDWRIGHT_COMFY_LORAS)")
 
     import bw_comfy  # noqa: E402
     bw_comfy.add_parsers(sub)
 
     p = sub.add_parser("render", help="screenshot an HTML mock-up built on brand.css (the code route)")
-    p.add_argument("html")
-    p.add_argument("--out")
+    p.add_argument("html", help="the mock-up page (link brand.css from it)")
+    p.add_argument("--out", help="PNG path (default: next to the HTML)")
     p.add_argument("--width", type=int, default=1440)
     p.add_argument("--height", type=int, default=900)
     p.add_argument("--scale", type=float, default=1)
@@ -1142,12 +1143,12 @@ def main(argv=None):
     p.add_argument("--channel")
 
     p = sub.add_parser("score", help="palette match of images to the brand tokens (delta-E, off-palette share)")
-    p.add_argument("kit")
-    p.add_argument("images", nargs="+")
-    p.add_argument("--json")
+    p.add_argument("kit", help="kit folder (made by new)")
+    p.add_argument("images", nargs="+", help="images or folders")
+    p.add_argument("--json", help="also write the scores to this file")
 
     p = sub.add_parser("sheet", help="contact sheet of images or folders")
-    p.add_argument("images", nargs="+")
+    p.add_argument("images", nargs="+", help="images or folders")
     p.add_argument("--out", default="sheet.jpg")
     p.add_argument("--cols", type=int, default=4)
 

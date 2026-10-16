@@ -175,6 +175,12 @@ class TestPrep(KitCase):
         self.assertIn("dataset/shop/0001.png", (self.kit / "review.html").read_text(encoding="utf-8"))
 
 
+class TestStyleWords(unittest.TestCase):
+    def test_findall_returns_words(self):
+        found = bw.STYLE_WORDS.findall("A branded blue header with rounded buttons and a logo")
+        self.assertEqual([w.lower() for w in found], ["branded", "blue", "rounded", "logo"])
+
+
 class TestTrain(KitCase):
     def dataset(self, lora, n=5):
         d = self.kit / "dataset" / lora
