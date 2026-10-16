@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261016-2 · 2026-10-16 · retrains start fresh
+- because: L-003
+- files: ../brandwright/scripts/bw.py (set_aside_old_run, train --resume), SKILL.md (Step 5), ../../tests/test_bw.py
+- `train --run` moves an earlier run's checkpoints to `train/out/<name>-run-<date>` so ai-toolkit starts at step 0; `--resume` keeps the old behaviour.
+
 ### C-20261016-1 · 2026-10-16 · fewer steps, checkpoints every 100
 - because: T-20261016-1, L-001
 - files: ../brandwright/scripts/bw.py (train_config, --steps, --save-every), SKILL.md (Step 3, Step 5), ../../tests/test_bw.py
