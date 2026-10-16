@@ -1,0 +1,59 @@
+{
+  "evergreen": "1.0",
+  "name": "brandwright-mockup",
+  "kind": "skill",
+  "main": "SKILL.md",
+  "files": {
+    "research": "RESEARCH.md",
+    "changelog": "CHANGELOG.md",
+    "learnings": "LEARNINGS.md",
+    "tests": "TESTS.md"
+  },
+  "protocol": "MAINTENANCE.md",
+  "source": null,
+  "topic": "Generating UI mock-ups: prompting image models for interfaces and quoted text, LoRA weight tuning, reference-image conditioning (FLUX.2 klein, Qwen-Image-Edit), code-based mock-ups from design tokens, evaluation of brand consistency and text accuracy",
+  "tier": "moderate",
+  "interval_days": 30.0,
+  "last_checked": "2026-10-15",
+  "next_due": "2026-11-14",
+  "verify_at_use": false,
+  "volatile_claims": [
+    "Qwen-Image-2512 renders 1-3 large words right about 70% of the time, sentences under 40% (secondary, 2026)",
+    "FLUX.2 klein 4B reference edit: about 15 s a view warm on an RTX 5060 Ti"
+  ],
+  "contradiction": null,
+  "events": [],
+  "streak": {
+    "quiet": 0,
+    "pinned_min": 0,
+    "pinned_max": 0,
+    "vau_quiet": 0
+  },
+  "history": [
+    {
+      "date": "2026-10-15",
+      "m": null,
+      "interval_after": 30,
+      "note": "created; two research subagents (177 tool calls) plus the ai-toolkit source on disk"
+    }
+  ],
+  "counts": {
+    "learnings": 0,
+    "changes": 1,
+    "research": 1,
+    "tests": 0
+  },
+  "consolidate_every": 25,
+  "tests": {
+    "last_run": null,
+    "harness": null,
+    "env": null,
+    "cases": 0,
+    "passed": 0,
+    "failed": 0,
+    "failing": [],
+    "last_failure": null,
+    "research_after_days": null
+  },
+  "version": "0.1.0"
+}

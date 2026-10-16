@@ -1,0 +1,61 @@
+{
+  "evergreen": "1.0",
+  "name": "brandwright-train",
+  "kind": "skill",
+  "main": "SKILL.md",
+  "files": {
+    "research": "RESEARCH.md",
+    "changelog": "CHANGELOG.md",
+    "learnings": "LEARNINGS.md",
+    "tests": "TESTS.md"
+  },
+  "protocol": "MAINTENANCE.md",
+  "source": null,
+  "topic": "Training LoRAs for UI and brand style: ostris ai-toolkit configs and model support, Z-Image / Qwen-Image / FLUX.2 klein training memory and settings, Blackwell requirements, other trainers, private hosted training, licences of base models",
+  "tier": "fast",
+  "interval_days": 14.0,
+  "last_checked": "2026-10-15",
+  "next_due": "2026-10-29",
+  "verify_at_use": true,
+  "volatile_claims": [
+    "ai-toolkit trains Z-Image on 16 GB with qfloat8 + low_vram; assistant_lora_path merges a LoRA during training only (z_image.py, 2026-10-15)",
+    "Qwen-Image-2512 on 24 GB needs ostris/accuracy_recovery_adapters/qwen_image_2512_torchao_uint3 (2026-10-15)",
+    "Blackwell needs PyTorch 2.7+ with CUDA 12.8+; ai-toolkit pins cu130 (driver 580+) (2026-10-15)",
+    "Z-Image, Qwen-Image-2512 and FLUX.2 klein base 4B are Apache-2.0; Qwen-Image-2.1 is research-only (2026-10-15)"
+  ],
+  "contradiction": null,
+  "events": [],
+  "streak": {
+    "quiet": 0,
+    "pinned_min": 0,
+    "pinned_max": 0,
+    "vau_quiet": 0
+  },
+  "history": [
+    {
+      "date": "2026-10-15",
+      "m": null,
+      "interval_after": 14,
+      "note": "created; two research subagents (177 tool calls) plus the ai-toolkit source on disk"
+    }
+  ],
+  "counts": {
+    "learnings": 0,
+    "changes": 1,
+    "research": 1,
+    "tests": 0
+  },
+  "consolidate_every": 25,
+  "tests": {
+    "last_run": null,
+    "harness": null,
+    "env": null,
+    "cases": 0,
+    "passed": 0,
+    "failed": 0,
+    "failing": [],
+    "last_failure": null,
+    "research_after_days": null
+  },
+  "version": "0.1.0"
+}

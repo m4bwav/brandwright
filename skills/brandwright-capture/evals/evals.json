@@ -1,0 +1,15 @@
+{
+  "skill": "brandwright-capture",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy); runnable copies are the case folders in the repository's root evals/ (claude plugin eval format)",
+  "evals": [
+    {
+      "id": "trigger-3",
+      "kind": "trigger",
+      "prompt": "crawl https://careers.example.com and turn it into a captioned training set for a style LoRA, and pull out its colours and fonts",
+      "expectations": [
+        "the brandwright-capture skill is invoked"
+      ],
+      "runs": 3
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+# Offline suite on the three operating systems the CLI promises, oldest and newest supported Python, with Pillow.
+# The browser smoke test runs on Linux with Playwright's Chromium. No GPU, ComfyUI or trainer in CI: those paths are
+# covered by graph and config tests, and by real runs recorded in each skill's TESTS.md.
+name: tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  suite:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: offline tests without Pillow (the dataset tests skip)
+        run: python tests/test_bw.py
+      - name: install Pillow
+        run: python -m pip install pillow
+      - name: offline tests with Pillow
+        run: python tests/test_bw.py
+      - name: the CLI answers from a clean checkout
+        run: python skills/brandwright/scripts/bw.py --help
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: install Playwright, Chromium and Pillow
+        run: |
+          python -m pip install playwright pillow
+          python -m playwright install --with-deps chromium
+      - name: browser smoke test (capture, masks, tokens, render, prep)
+        run: python tests/smoke_browser.py
+  guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: size budget (fails at red)
+        run: python scripts/budget.py
+      - name: public repository check
+        run: python scripts/check_public.py

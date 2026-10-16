@@ -1,0 +1,66 @@
+{
+  "skill": "brandwright",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy); runnable copies are the case folders in the repository's root evals/ (claude plugin eval format)",
+  "evals": [
+    {
+      "id": "trigger-1",
+      "kind": "trigger",
+      "prompt": "I work at a big restaurant chain. Can I train a LoRA on our ordering site so I can mock up new UI components that look like ours?",
+      "expectations": [
+        "the brandwright skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "trigger-2",
+      "kind": "trigger",
+      "prompt": "we have a main brand site and a careers sub-site with its own look. how do I make one LoRA for the brand and one for the careers site and use them together for mockups?",
+      "expectations": [
+        "the brandwright skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "decoy-1",
+      "kind": "trigger",
+      "prompt": "train a LoRA of my dog from these 20 photos so I can put him in fantasy scenes",
+      "expectations": [
+        "the brandwright skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
+      "id": "decoy-2",
+      "kind": "trigger",
+      "prompt": "design a logo for my bakery",
+      "expectations": [
+        "the brandwright skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
+      "id": "decoy-3",
+      "kind": "trigger",
+      "prompt": "write a Playwright test that checks the login page renders",
+      "expectations": [
+        "the brandwright skill is not invoked"
+      ],
+      "runs": 3,
+      "decoy": true
+    },
+    {
+      "id": "action-1",
+      "kind": "action",
+      "prompt": "Set up a brand kit for a company called Northwind with a careers site at https://careers.northwind.example/ in ./kits/northwind, ready to capture.",
+      "expectations": [
+        "the brandwright skill is invoked",
+        "a Bash call runs bw.py"
+      ],
+      "runs": 1,
+      "evidence": "tool_used Bash matching bw\\.py[\\s\\S]*\\bnew\\b",
+      "baseline": "without the skill the agent describes LoRA training in general and writes no kit or config"
+    }
+  ]
+}

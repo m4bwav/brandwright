@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northwind Outfitters</title>
+<style>
+  :root { --nw-brand: #0b6e4f; --nw-accent: #f2a541; --nw-ink: #1d2a30; --nw-paper: #fbf8f2; --nw-radius: 10px; }
+  body { margin: 0; font-family: Georgia, serif; background: var(--nw-paper); color: var(--nw-ink); }
+  header { background: var(--nw-brand); color: #fff; padding: 16px 48px; display: flex; justify-content: space-between; align-items: center; }
+  nav a { color: #fff; margin-left: 24px; text-decoration: none; font-family: Verdana, sans-serif; }
+  .hero { padding: 72px 48px; background: #e7f0ea; }
+  .hero h1 { font-size: 44px; margin: 0 0 16px; }
+  .btn { display: inline-block; background: var(--nw-accent); color: #1d2a30; padding: 12px 22px; border-radius: var(--nw-radius); border: 0; font: 700 16px Verdana, sans-serif; }
+  .btn-quiet { background: transparent; border: 2px solid var(--nw-ink); color: var(--nw-ink); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 48px; }
+  .card { background: #fff; border-radius: var(--nw-radius); box-shadow: 0 2px 8px rgba(0,0,0,.12); padding: 20px; }
+  .card h3 { margin: 0 0 8px; }
+  form { margin: 0 48px 48px; padding: 24px; background: #fff; border: 1px solid #d8d2c4; border-radius: var(--nw-radius); max-width: 420px; }
+  input { display: block; width: 100%; padding: 10px; margin: 6px 0 16px; border: 2px solid var(--nw-ink); border-radius: 6px; font-size: 16px; }
+  footer { background: var(--nw-ink); color: #cfd8dc; padding: 32px 48px; }
+  #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; background: #000; color: #fff; padding: 20px; }
+</style>
+</head>
+<body>
+  <header><strong>Northwind Outfitters</strong><nav><a href="#">Shop</a><a href="#">Trips</a><a href="#">Help</a></nav></header>
+  <section class="hero"><h1>Gear for the long way round</h1><p>Packs, tents and boots, tested on real trails.</p><a class="btn" href="#">Shop the sale</a></section>
+  <section class="cards">
+    <article class="card"><h3>Ridge 45 pack</h3><p>Light, tough and ready for a week out.</p><button class="btn">Add to basket</button></article>
+    <article class="card"><h3>Fjord tent</h3><p>Two people, one minute to pitch.</p><button class="btn">Add to basket</button></article>
+    <article class="card"><h3>Scree boots</h3><p>Grip that holds on loose ground.</p><button class="btn btn-quiet">See sizes</button></article>
+  </section>
+  <form><label>Email address<input type="email" value="jamie.doe@example.org"></label><label>Phone<input type="tel" value="+1 555 867 5309"></label><button class="btn" type="button">Join the club</button></form>
+  <footer>Questions? Write to help.desk@northwind.example or call 0800 123 4567. &copy; Northwind Outfitters</footer>
+  <div id="cookie-banner">We use cookies. <button>Accept all</button></div>
+</body>
+</html>

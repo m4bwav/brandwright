@@ -1,0 +1,27 @@
+{
+  "name": "brandwright",
+  "icon": "./.claude-plugin/icon.png",
+  "version": "0.1.0",
+  "description": "On-brand UI mock-ups from a brand's own websites: capture the sites (crawl with your own login, or feed screenshots), read design tokens and component styles into brand.css, train a brand LoRA plus sub-site LoRAs that learn only what each site adds (ostris ai-toolkit; Z-Image, Qwen-Image-2512, FLUX.2 klein), and generate mock-ups in ComfyUI, with a training-free reference route and a code route for pixel-exact components. Evergreen.",
+  "author": {
+    "name": "Mark Rogers"
+  },
+  "license": "MIT",
+  "keywords": [
+    "lora",
+    "design-system",
+    "brand",
+    "ui-mockup",
+    "comfyui",
+    "ai-toolkit",
+    "design-tokens",
+    "agent-skills",
+    "evergreen"
+  ],
+  "skills": "./skills",
+  "repository": "https://github.com/m4bwav/brandwright",
+  "homepage": "https://github.com/m4bwav/brandwright",
+  "documentationUrl": "https://github.com/m4bwav/brandwright/wiki",
+  "supportUrl": "https://github.com/m4bwav/brandwright/issues",
+  "privacyPolicyUrl": "https://github.com/m4bwav/brandwright#your-data"
+}

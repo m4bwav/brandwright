@@ -1,0 +1,27 @@
+{
+  "skill": "brandwright-train",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy); runnable copies are the case folders in the repository's root evals/ (claude plugin eval format)",
+  "evals": [
+    {
+      "id": "trigger-4",
+      "kind": "trigger",
+      "prompt": "which base model can I legally use at work to train a UI style LoRA on a 16 GB RTX card, and how long will it take?",
+      "expectations": [
+        "the brandwright-train skill is invoked"
+      ],
+      "runs": 3
+    },
+    {
+      "id": "action-2",
+      "kind": "action",
+      "prompt": "Write (do not start) the training config for the brand LoRA of the kit in ./fixture-kit.",
+      "expectations": [
+        "the brandwright-train skill is invoked",
+        "a Bash call runs bw.py"
+      ],
+      "runs": 1,
+      "evidence": "tool_used Bash matching bw\\.py[\\s\\S]*\\btrain\\b",
+      "baseline": "without the skill the agent describes LoRA training in general and writes no kit or config"
+    }
+  ]
+}

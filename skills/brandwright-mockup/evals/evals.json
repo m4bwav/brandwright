@@ -1,0 +1,15 @@
+{
+  "skill": "brandwright-mockup",
+  "_format": "skill-creator evals.json plus evergreen fields (kind, decoy); runnable copies are the case folders in the repository's root evals/ (claude plugin eval format)",
+  "evals": [
+    {
+      "id": "trigger-5",
+      "kind": "trigger",
+      "prompt": "mock up a new order-tracking card in our brand style from the kit at D:/kits/acme, something I can hand to the developers",
+      "expectations": [
+        "the brandwright-mockup skill is invoked"
+      ],
+      "runs": 3
+    }
+  ]
+}
