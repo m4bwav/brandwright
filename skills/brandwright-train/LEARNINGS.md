@@ -4,6 +4,14 @@ Procedural lessons for [SKILL.md](SKILL.md). Research lives in [RESEARCH.md](RES
 
 ## Active
 
+### L-005 · 2026-10-16 · `residual-samples-skip-brand`: residual samples show the site LoRA alone
+- Trigger: in the second GOV.UK run the training log shows `Unloading assistant lora` before every sample set: ai-toolkit draws samples without the merged brand LoRA. The samples looked weak, while `gen --lora brand=1 --lora site=1` showed the design-system look clearly.
+- Hypothesis: the samples show what the site LoRA learned on top of the brand, not what it will be used as.
+- Rule: pick residual site checkpoints with `gen` or `sweep` on brand + site (copy the checkpoints into ComfyUI under their own names), not from the trainer's samples. For residual runs, fewer samples (`--samples 2`) save time: 5 sample sets of 4 took about 40 of the run's 121 minutes.
+- Evidence: T-20261016-3
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-10-16
+
 ### L-004 · 2026-10-16 · `comfy-maps-loaded-loras`: a running ComfyUI locks the LoRA files it has loaded
 - Trigger: `pick --to <ComfyUI loras>` crashed with WinError 1224 ("a file with a user-mapped section open") while re-picking the brand LoRA at step 250; ComfyUI had the old file loaded.
 - Hypothesis: ComfyUI memory-maps safetensors, and Windows refuses to overwrite a mapped file until the model is unloaded.

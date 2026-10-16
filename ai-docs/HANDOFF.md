@@ -1,40 +1,39 @@
 # HANDOFF
 
-Updated 2026-10-15 late evening. Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
+Updated 2026-10-16, around 10:45. Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
 
 ## State
 
-- Public repo `m4bwav/brandwright`, main green on Windows, macOS and Linux, Python 3.10 and 3.14, with the browser smoke test and guards. PRs #1 and #2 are merged. Version 0.1.0 is in the files, but there is no tag or GitHub Release yet: that needs the owner's go-ahead.
-- Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace). The four skills are registered in the evergreen catalog, and lint passes.
-- Wiki: live at https://github.com/m4bwav/brandwright/wiki since 2026-10-16. It has 13 pages, a sidebar and a footer, and its working copy is `../brandwright.wiki`. Update it with `git pull`, edit, then `git push`. Rebuild the Commands page with `ai-docs/notes/wiki-commands-page.py`.
-- Real runs (GOV.UK, which is openly licensed, as the test brand; the kit is outside the repo):
-  - capture of 22 pages × 2 viewports through Edge;
-  - tokens: the real brand variables and the real green primary button;
-  - prep: 105 pictures kept;
-  - captions: Gemma 4 26B on the Mac;
-  - code-route mock-up: exact, with a palette score of 0.9;
-  - reference route on FLUX.2 klein: style carried over, short quoted labels right.
-- Training ran overnight (2026-10-15 23:28 to 2026-10-16 03:51):
-  - Brand LoRA: 1,200 steps in 2 h 29 min. The residual site LoRA: 800 steps in 1 h 49 min. Comparisons and a sweep followed. Everything exited 0, so residual mode works.
-  - Findings: step 250 was the best brand checkpoint; from step 500 on, it had collapsed into soft, near-empty layouts. Defaults were lowered in PR #4.
-  - The final LoRAs show only a weak effect on the Turbo graph, and the trigger word is drawn as the wordmark (train and mockup LEARNINGS).
-  - The runner and the comparison images are in the kit folder (path in the owner's notes).
+- Public repo `m4bwav/brandwright`. **0.1.0 is released** (tag `v0.1.0`, GitHub Release, 2026-10-16). `main` is ahead of it with PRs #7 and #9 (see CHANGELOG "Unreleased"). CI is green on Windows, macOS and Linux, Python 3.10 and 3.14.
+- Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace, so it follows the checkout).
+- Wiki: live at https://github.com/m4bwav/brandwright/wiki. Working copy `../brandwright.wiki` (upstream set; `git pull`, edit, `git push`). Commands page: `python ai-docs/notes/wiki-commands-page.py . ../brandwright.wiki/Commands.md`. It covers 0.1.0 and the PR #9 code-route notes.
+- ComfyUI on the PC now has `z_image_bf16.safetensors` (Z-Image base, 12.3 GB, SHA-256 checked), so the `zimage` graph runs.
+- GOV.UK test kit (path in the owner's notes):
+  - test 1 ran overnight;
+  - test 2 (`run_test2.py`, log `run_test2.log`) ran 07:25-10:13 on 2026-10-16. Results are in brandwright-train T-20261016-3 and brandwright-mockup T-20261016-4.
+  - On the base graph, brand (step 250) + residual site LoRA give recognisably on-brand pages, at about 78 s a picture against 13 s on Turbo.
+  - ComfyUI's loras folder now holds `govuk-brand-s250.safetensors`, `govuk-design-system.safetensors` and `govuk-ds-r2-s100/200/300.safetensors`. `brand.json` points `brand` at the s250 copy.
+- Evals: the first `claude plugin eval` run passed all trigger (5/5) and decoy (6/6) cases. The 4 action cases cannot run on Windows (the runner refuses a shell grant without a sandbox) and the Mac has no SSH.
+- The owner is about to try the code route on a work computer. PR #9 (from a fresh-install dry run) fixed the browser-default primary button, added font-load warnings to `render`, and listed the real `--bw-*` names. README has the work-machine notes.
 
 ## Open
 
-1. Re-pick the brand LoRA at step 250 (`bw.py pick KIT --lora brand --step 250 --to <ComfyUI loras>`). Retrain the site LoRA in residual mode on top of it with the new defaults (about 260 steps) and judge again on the base graph.
-2. Base-model inference in ComfyUI needs `z_image_bf16.safetensors` (12.3 GB, Comfy-Org/z_image). It was not downloaded without the owner's yes. Until then the runs use the Turbo graph with base-trained LoRAs.
-2b. (done) Wiki live.
-3. Run the `evals/` cases with `claude plugin eval` (none run yet). action-2 needs a fixture kit with a dataset.
-4. Release 0.1.0 (tag and GitHub Release) after the owner's go-ahead; then refresh the wiki's version lines.
+1. Ask the owner whether to release 0.1.1 with PRs #7 and #9 (the code-route fixes matter for work use). Releases need the owner's yes.
+2. Sampling cost: 5 sample sets of 4 took about 40 of 121 minutes in test 2, and residual samples leave out the brand LoRA anyway (train L-005). Consider defaulting `--samples 2` for site LoRAs, or sampling every 200 steps. This changes a default, so check with the owner.
+3. Trigger words are drawn as wordmarks (train L-002). Try triggers that do not read as words, or prompts that name the header text.
+4. Run the 4 action cases in `evals/` on macOS or Linux (needs a sandboxed shell). action-2 needs a fixture kit with a dataset.
 5. Ideas not built:
    - an `export` command for musubi or OneTrainer configs;
    - OCR text-accuracy scoring;
    - DTCG import from dembrandt;
-   - a Figma-friendly SVG export of code-route mock-ups.
+   - a Figma-friendly SVG export of code-route mock-ups;
+   - optional `render --auth` to reuse the login session for fonts behind SSO (only if a work run shows font warnings).
 
 ## Gotchas
 
-- Bash heredocs collapse `\\` to `\`: write Python patches with the Write tool, or build backslashes with `chr(92)`. This bit four times in this session.
-- `bw.py caption` against the Mac's Ollama took 15-60 s a picture, and much longer while the Mac was shared.
-- ComfyUI on the PC is shared with film sessions. Never `/free` it or start training while a render runs.
+- Bash heredocs collapse `\\` to `\`: write Python patches with the Write tool, or build backslashes with `chr(92)`.
+- ComfyUI on the PC is shared with film sessions. Never `/free` it or start training while a render runs; `run_test2.py` waits for three idle checks a minute apart first.
+- ComfyUI memory-maps loaded LoRAs, so a loaded file cannot be overwritten on Windows; `pick` now writes a step-named copy.
+- ai-toolkit resumes from any checkpoint in `train/out/<name>`; `train --run` moves an old run aside (`--resume` to continue it).
+- `gh pr checks --watch` right after `gh pr create` can return "no checks reported" at once; wait about 20 s first.
+- `claude plugin eval` takes one `--case` glob (a second replaces the first).

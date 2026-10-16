@@ -34,6 +34,7 @@ BW render KIT/out/pricing.html --out KIT/out/pricing.png --width 1440 --height 9
 BW gen KIT "PROMPT" --lora brand=1.0 --lora SITE=1.0 --size 1344x768 --n 4 [--seed N] [--graph zimage_turbo]
 ```
 
+- Graph: Z-Image LoRAs run on the base `zimage` graph by default, about 80 s a picture on a 16 GB card. `--graph zimage_turbo` is six times faster but shows the brand only weakly (L-002). Use Turbo for layout drafts and the base graph for anything meant to look on brand.
 - Triggers are added for the LoRAs loaded. Weights: residual site LoRA, start brand 1.0 + site 1.0; continue mode, the site LoRA alone at 1.0; stack mode, find them with a sweep.
 - `BW sweep KIT "PROMPT" --a brand --b SITE --wa 0.6,0.8,1.0 --wb 0.6,0.8,1.0`: same seed, a contact sheet `sweep.jpg`. Run one before any batch with new LoRAs.
 - Sizes (multiples of 16): desktop page 1344x768 or 1536x864, mobile screen 768x1344 (or 720x1560), single component 1024x1024 or 1024x768.

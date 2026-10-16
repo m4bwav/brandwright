@@ -4,6 +4,13 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-4 · 2026-10-16 · real run · RTX 5060 Ti 16 GB, ComfyUI, Z-Image base graph (30 steps, cfg 4) and Turbo · passed with findings
+- Three prompts (modal, start page, status card), 2 pictures each, with no LoRA, brand 1.0 (step 250), brand 1.0 + residual site 1.0 on the base graph, and brand 1.0 on Turbo. Then site checkpoints 100, 200 and 300 on the modal, and a brand 0.6/1.0/1.4 x site 0/0.7/1.0 sweep on the start page.
+- Base graph: about 78 s a picture (155 s for 2); Turbo 13 s. The base graph carried the brand: blue masthead, white header with a crest, bold heading, green "Start now". At brand 1.4 + site 1.0 the button even had the real start button's arrow. Square corners on modals and cards, where Turbo drew rounded, generic iOS-style cards.
+- Short quoted strings mostly right ("Renew a fishing licence", "Start now", "Application received", "Delete this file?"), but sometimes in US spelling ("license"). Unquoted body text garbled. The trigger was drawn as a wordmark again ("GovUKDesignSyYi"). 2 of about 30 pictures had a line of Chinese characters in the header.
+- Best weights: brand 1.0 + site 1.0 (cleanest), brand 1.4 + site 1.0 (most detail). Site 0 at brand 1.4 gave busy collage pages.
+- led to: L-002 confirmed, C-20261016-2
+
 ### T-20261016-3 · 2026-10-16 · work-machine dry run, code route · Windows 11, venv with Playwright only, Edge · passed with findings
 - A status card (heading, tag, paragraph, primary button) on the dry-run kit's brand.css, rendered with `render --channel msedge` in 2.4 s: the site's typeface loaded from its own URLs, the real green button, exact text.
 - Findings: a guessed variable name with a fallback value went unnoticed (L-003); `render` had no way to report a font that failed to load, now it warns (L-004; the smoke test covers it with a missing font file).

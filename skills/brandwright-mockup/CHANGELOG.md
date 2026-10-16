@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261016-2 · 2026-10-16 · base graph for on-brand pictures
+- because: T-20261016-4, L-002
+- files: SKILL.md (Step 3), LEARNINGS.md (L-002 confirmed)
+- Step 3 says when to use the base graph and when Turbo, with the time each takes.
+
 ### C-20261016-1 · 2026-10-16 · code route: real variable names, font warnings
 - because: T-20261016-3, L-003, L-004
 - files: ../brandwright/scripts/bw_browser.py (cmd_render), references/code-route.md (Skeleton, Rules, Render and check), ../../tests/smoke_browser.py

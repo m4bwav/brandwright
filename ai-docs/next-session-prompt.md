@@ -4,15 +4,15 @@ You are continuing brandwright, a public agent plugin (`m4bwav/brandwright`) for
 
 Read first, in order: `AGENTS.md`, `ai-docs/HANDOFF.md` (state, open items, gotchas), then only the research or decision notes the step needs (`ai-docs/INDEX.md`). The owner's private notes (vault) give the test kit's location.
 
-Before you rely on it, check that this prompt is not older than `HANDOFF.md` and the newest `run_test.log`. If it is, trust those.
+Before you rely on it, check that this prompt is not older than `HANDOFF.md` and the newest `run_test*.log` in the kit. If it is, trust those.
 
 ## This step
 
-1. The GOV.UK test ran on 2026-10-16. Its results and the next experiment are in HANDOFF (Open, item 1).
-   - Base-graph judging needs `z_image_bf16.safetensors` in ComfyUI (12.3 GB). Ask the owner before downloading it.
+1. Ask the owner first: did the code route work on the work computer? Turn anything that went wrong into a test, a fix and a lesson (capture or mockup LEARNINGS). Their company's name, sites and screenshots never go in the repository.
+2. Ask whether to release 0.1.1 with the Unreleased changes (HANDOFF, Open, item 1). Do not tag without a yes.
+3. Then HANDOFF Open items 2 and 3 (sample cost for residual site LoRAs; trigger words drawn as wordmarks). Item 2 changes a default: propose it with the numbers from test 2 before changing it.
    - Never free ComfyUI or train while another session renders.
-2. The wiki is live; keep it in step with any CLI or default change (HANDOFF has how).
-3. Run the eval cases in `evals/` once with `claude plugin eval` and record them in TESTS.md.
+4. Keep the wiki in step with any CLI or default change (HANDOFF has how).
 
 ## Rules
 
