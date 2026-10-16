@@ -4,6 +4,11 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-3 · 2026-10-16 · work-machine dry run, code route · Windows 11, venv with Playwright only, Edge · passed with findings
+- A status card (heading, tag, paragraph, primary button) on the dry-run kit's brand.css, rendered with `render --channel msedge` in 2.4 s: the site's typeface loaded from its own URLs, the real green button, exact text.
+- Findings: a guessed variable name with a fallback value went unnoticed (L-003); `render` had no way to report a font that failed to load, now it warns (L-004; the smoke test covers it with a missing font file).
+- led to: L-003, L-004, C-20261016-1
+
 ### T-20261016-2 · 2026-10-16 · claude plugin eval (1 run a case, with and without the plugin) · Windows 11, Claude Code · 2/2 run, action-4 not run
 - trigger-5 fired `brandwright-mockup` with the plugin and not without; decoy-6 (a ComfyUI sunset) did not fire it.
 - Action case action-4 was not run: on Windows the eval runner refuses any case granted a shell tool because it has no sandbox there ("sandbox required but unavailable"). Run it on macOS or Linux.

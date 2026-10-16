@@ -23,11 +23,17 @@ python -m pip install playwright pillow
 python bw.py doctor
 python bw.py new D:\kits\acme --brand "Acme" --site "portal=https://portal.acme.example/"
 python bw.py login D:\kits\acme --site portal https://portal.acme.example/ --channel msedge   # you sign in, then close the window
-python bw.py capture D:\kits\acme --site portal --crawl 15 --channel msedge
+python bw.py capture D:\kits\acme --site portal https://portal.acme.example/ https://portal.acme.example/apply --crawl 15 --channel msedge
 python bw.py tokens D:\kits\acme             # tokens.json, brand.css, tokens.md
 ```
 
 That is enough for the code route: ask your agent for "a new order-tracking card in our style" and it builds HTML on `brand.css`, then runs `bw.py render`. `--channel msedge` uses the Edge already on the machine, so Playwright needs no browser download. If the site cannot be reached or automated, save screenshots to a folder and run `python bw.py import D:\kits\acme --site portal <folder>`.
+
+Tested this way on a fresh install with Playwright alone: about 8 seconds a page and 2 to 3 seconds a render. Pillow is only for `palette.png`, `score`, `prep` and `sheet`. Three things to check before the first mock-up:
+
+- List a page that has the main button (a form, a start or sign-up page), as `.../apply` above. Crawls follow menus and can miss it; `tokens` says when no primary button was found.
+- Read `tokens.md`, and the `.bw-button-primary` line in `brand.css`.
+- If `render` prints `font ... did not load`, the site's fonts need a login or refuse pages opened from disk. Get the font files and point `@font-face` at local copies, or the mock-up shows a fallback font.
 
 For pictures and LoRAs, add a GPU machine with ComfyUI and ai-toolkit:
 

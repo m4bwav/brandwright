@@ -63,6 +63,12 @@ def main():
         html.write_text('<!doctype html><link rel=stylesheet href="../brand.css"><button class="bw-button-primary">Go</button>', encoding="utf-8")
         code, out = run("render", str(html), "--width", "400", "--height", "200", *extra)
         assert (kit / "out" / "m.png").stat().st_size > 500
+        assert "did not load" not in out, out
+        broken = kit / "out" / "f.html"
+        broken.write_text('<!doctype html><style>@font-face { font-family: "Gone Sans"; src: url("missing.woff2"); }'
+                          'p { font-family: "Gone Sans", serif; }</style><p>Hi</p>', encoding="utf-8")
+        code, out = run("render", str(broken), "--width", "200", "--height", "100", *extra)
+        assert "font Gone Sans did not load" in out, out
         try:
             from PIL import Image  # noqa: F401
             code, out = run("prep", str(kit))

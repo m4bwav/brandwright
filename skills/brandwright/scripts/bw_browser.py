@@ -352,6 +352,14 @@ def cmd_render(args):
         page = ctx.new_page()
         page.goto(src.as_uri())
         page.wait_for_load_state("networkidle")
+        # A font that fails (behind a login, or served without CORS headers to a file:// page) falls back silently.
+        failed = page.evaluate("Promise.all([...document.fonts].map(f => f.load().catch(() => null)))"
+                               ".then(() => [...new Set([...document.fonts].filter(f => f.status === 'error')"
+                               ".map(f => f.family.replace(/[\"']/g, '')))])")
+        for fam in failed:
+            print("warning: font %s did not load, so the render uses a fallback font. Its URL in brand.css may need a "
+                  "login or refuse pages opened from disk; ask for the font files and point @font-face at local copies"
+                  % fam)
         if args.selector:
             page.locator(args.selector).first.screenshot(path=str(out))
         else:

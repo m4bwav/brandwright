@@ -4,6 +4,22 @@ Procedural lessons for [SKILL.md](SKILL.md). Research lives in [RESEARCH.md](RES
 
 ## Active
 
+### L-004 · 2026-10-16 · `fonts-fail-quietly`: a render can fall back to another font without a word
+- Trigger: `render` opens the mock-up from disk in a fresh browser with no login session. `@font-face` URLs that need a login, or that refuse pages opened from disk (no CORS header), fail, and the browser draws the next font in the stack. On a public site the fonts loaded; on a company intranet that is the likely failure.
+- Hypothesis: nothing in the PNG says the font is wrong unless someone compares it with a captured page.
+- Rule: `render` now prints `warning: font X did not load`. When it does, ask for the font files and point `@font-face` at local copies in the kit, then render again; never hand over a fallback-font render as on brand.
+- Evidence: T-20261016-3, C-20261016-1
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-10-16
+
+### L-003 · 2026-10-16 · `fallbacks-hide-wrong-variable-names`: check variable names against brand.css
+- Trigger: a dry-run mock-up used `var(--bw-color-primary, #1a65a6)`; brand.css calls it `--bw-primary`. The fallback value drew the right colour, so the mistake was invisible, and the mock-up would not follow a re-captured brand.css.
+- Hypothesis: agents guess token names from habit (`color-primary`, `spacing-md`) instead of reading the file.
+- Rule: list the names first (`grep -o -- "--[a-z0-9-]*" brand.css | sort -u`) and use only those. Write `var(--name)` without a fallback, so a wrong name shows up as a missing style instead of a hard-coded colour.
+- Evidence: T-20261016-3
+- Scope: skill
+- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-10-16
+
 ### L-002 · 2026-10-16 · `base-loras-weak-on-turbo`: judge base-trained LoRAs on the base graph
 - Trigger: LoRAs trained on Z-Image base and generated on the Turbo graph changed the output only a little, while ai-toolkit's samples on the base model showed the brand strongly.
 - Hypothesis: the distilled Turbo weights drift from the base the LoRA was trained against.
