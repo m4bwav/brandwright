@@ -4,6 +4,11 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-2 · 2026-10-16 · claude plugin eval (1 run a case, with and without the plugin) · Windows 11, Claude Code · 2/2 run, action-4 not run
+- trigger-5 fired `brandwright-mockup` with the plugin and not without; decoy-6 (a ComfyUI sunset) did not fire it.
+- Action case action-4 was not run: on Windows the eval runner refuses any case granted a shell tool because it has no sandbox there ("sandbox required but unavailable"). Run it on macOS or Linux.
+- Cost about $1.90 for all 11 trigger and decoy cases, both arms.
+
 ### T-20261016-1 · 2026-10-16 · real run · RTX 5060 Ti, ComfyUI, Z-Image Turbo graph · passed with findings
 - `gen` with no LoRA, brand 1.0, and brand 1.0 + residual site 1.0, same seed, three prompts (modal, start page, status card): all ran (about 26 s for 2 pictures); the LoRAs, trained on the base model, shift Turbo output only a little.
 - `sweep` brand 0.6/1.0/1.4 x site 0/0.7/1.0: 9 cells and a sheet in 2 min 8 s.
