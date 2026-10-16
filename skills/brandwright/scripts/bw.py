@@ -413,8 +413,10 @@ def recipe_set(recipes, fams):
     fill (the call to action, which is rarely the most common button). A recipe font that is not one of the site's
     main families (an inherited default) is dropped."""
     out = {k: common_recipe(v) for k, v in recipes.items() if v}
+    # 13.3333px is Chromium's own size for an unstyled form control: such a button is a browser default, not the brand's
     coloured = [r for r in recipes.get("button", [])
-                if parse_color(r.get("backgroundColor")) and chroma(parse_color(r["backgroundColor"])) > 0.3]
+                if parse_color(r.get("backgroundColor")) and chroma(parse_color(r["backgroundColor"])) > 0.3
+                and r.get("fontSize") != "13.3333px"]
     if coloured:
         out["button primary"] = common_recipe(coloured)
     for r in out.values():
@@ -527,6 +529,9 @@ def cmd_tokens(args):
     print("wrote tokens.json, brand.css, tokens.md%s for %d page view(s); primary %s, fonts %s" % (
         ", palette.png" if (kit.root / "palette.png").exists() else "", len(all_files), brand["color"]["primary"]["$value"],
         ", ".join(v["$value"] for k, v in brand["font"]["family"].items() if not k.startswith("$")) or "none"))
+    if "button primary" not in brand["$extensions"]["brandwright"]["recipes"]:
+        print("  no coloured call-to-action button was captured, so brand.css has no .bw-button-primary: capture a page "
+              "that has one (a form, a start or sign-up page), or style it from the site's own variables")
     return 0
 
 

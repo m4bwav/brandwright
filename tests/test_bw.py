@@ -114,6 +114,14 @@ class TestTokens(KitCase):
         self.assertIn('[data-site="careers"]', css)
         self.assertNotIn("Times New Roman", css)  # a recipe font that is not a main family is dropped
 
+    def test_browser_default_button_is_not_the_primary(self):
+        plain = {"backgroundColor": "rgba(0, 0, 0, 0)", "color": "#0b0c0c", "fontSize": "16px"}
+        unstyled = {"backgroundColor": "#d2e2f1", "color": "#1d70b8", "fontFamily": "Arial", "fontSize": "13.3333px"}
+        self.assertNotIn("button primary", bw.recipe_set({"button": [plain, plain, unstyled]}, ["Georgia"]))
+        cta = {"backgroundColor": "#00703c", "color": "#ffffff", "fontSize": "19px"}
+        self.assertEqual(bw.recipe_set({"button": [plain, unstyled, cta]}, ["Georgia"])["button primary"]["backgroundColor"],
+                         "#00703c")
+
     def test_tokens_without_captures_exits(self):
         with self.assertRaises(SystemExit):
             run("tokens", str(self.kit))

@@ -4,6 +4,11 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261016-2 · 2026-10-16 · work-machine dry run · Windows 11, fresh clone of v0.1.0, new venv with only `pip install playwright` (125 MB), Edge · passed with a finding
+- `doctor` named what each optional piece unlocks (Pillow for prep, score and sheet). `new`, then `capture --site www <home> --crawl 3 --channel msedge`: 4 pages, 8 views in 32 s with no browser download. `tokens` without Pillow: tokens.json, brand.css and tokens.md in 0.2 s (palette.png skipped).
+- Finding: the home and browse pages had no call-to-action, so `.bw-button-primary` came from an unstyled browser-default button. After the fix, `tokens` said so; one more capture of a start page gave the real green button (L-002).
+- led to: L-002, C-20261016-1
+
 ### T-20261016-1 · 2026-10-16 · claude plugin eval (1 run a case, with and without the plugin) · Windows 11, Claude Code · 2/2 run, action-3 not run
 - trigger-3 fired `brandwright-capture` with the plugin and not without; decoy-4 (a bug-report screenshot) did not fire it.
 - Action case action-3 was not run: on Windows the eval runner refuses any case granted a shell tool because it has no sandbox there ("sandbox required but unavailable"). Run it on macOS or Linux.

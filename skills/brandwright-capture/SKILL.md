@@ -27,6 +27,7 @@ Ask the user, per site; never assume a login or a crawl is allowed.
 - `--channel msedge` (or `chrome`) uses the installed browser, so nothing is downloaded: right for locked-down work machines. Without it, Playwright needs `python -m playwright install chromium` once.
 - Never type, request or store a password. The `auth/` folder is a live session: private, never shared.
 - Crawling visits same-site links by GET only and skips sign-out, delete, cancel, mailto and file links. Nothing is clicked except what `--click` names. Keep `--crawl` modest (10-30): the aim is variety of page types, not volume.
+- Name at least one page with the main call-to-action button (a form, a start or sign-up page) among the URLs. Crawls follow navigation, and index pages rarely carry it (L-002).
 - Default viewports: `desktop` (1440x900) and `mobile` (390x844 at 2x). `--viewports desktop,tablet,mobile,laptop`.
 
 ## Step 2: masks
@@ -39,7 +40,7 @@ By default, before each screenshot: e-mail addresses become `name@example.com`, 
 
 ## Step 3: tokens (the code route's input)
 
-`BW tokens KIT` merges every capture into `tokens.json` (DTCG 2025.10 shape: brand base plus per-site overrides), `brand.css` (custom properties, the site's own `:root` variables, `@font-face` rules, and `.bw-button`, `.bw-input`, `.bw-card`, `.bw-header`, `.bw-nav`, `.bw-footer`, `.bw-alert`, `.bw-hero` recipes from the most common real element of each kind), `tokens.md` and `palette.png`. Show the user `tokens.md`. For deeper token work, dembrandt (MIT, `npx dembrandt URL --dtcg`) is a well-kept alternative.
+`BW tokens KIT` merges every capture into `tokens.json` (DTCG 2025.10 shape: brand base plus per-site overrides), `brand.css` (custom properties, the site's own `:root` variables, `@font-face` rules, and `.bw-button`, `.bw-input`, `.bw-card`, `.bw-header`, `.bw-nav`, `.bw-footer`, `.bw-alert`, `.bw-hero` recipes from the most common real element of each kind), `tokens.md` and `palette.png` (with Pillow). Show the user `tokens.md`. If `tokens` says no primary button was captured, capture a page that has one and run it again. For deeper token work, dembrandt (MIT, `npx dembrandt URL --dtcg`) is a well-kept alternative.
 
 ## Step 4: the dataset
 

@@ -16,8 +16,8 @@ Put the file in the kit (so `brand.css` and the fonts resolve) and keep it self-
 <link rel="stylesheet" href="../brand.css">
 <style>
   /* layout only; every colour, font and size comes from brand.css variables or recipe classes */
-  main { max-width: 960px; margin: 48px auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--bw-space-x3, 24px); }
-  .plan h2 { font-size: var(--bw-size-s5, 24px); margin: 0 0 8px; }
+  main { max-width: 960px; margin: 48px auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--bw-space-x3); }
+  .plan h2 { font-size: var(--bw-size-s5); margin: 0 0 8px; }
 </style>
 </head>
 <body data-site="careers">
@@ -36,9 +36,11 @@ Put the file in the kit (so `brand.css` and the fonts resolve) and keep it self-
 ## Rules
 
 - Use the site's own variables first (`var(--brand-colour)` and the like, copied into `:root` in `brand.css`), then `--bw-*`, then the recipe classes. Hard-code a value only when brand.css has nothing, and say so.
+- Read the names before writing: `grep -o -- "--[a-z0-9-]*" brand.css | sort -u`. The `--bw-*` set is `--bw-background`, `--bw-text`, `--bw-primary`, `--bw-font`, `--bw-palette-c01`..., `--bw-size-s1`..., `--bw-space-x1`..., `--bw-shadow-s1`..., and `--bw-radius-r1`... and `--bw-font-mono` only when the site has rounded corners or a monospace font. No fallback values in `var()`: a fallback hides a wrong name (L-003).
+- Check `.bw-button-primary` in brand.css before using it. If `tokens` reported no primary button, the capture missed it; capture a page with one.
 - Real words: the copy the user gave, or plausible copy for the context. Never real customer data.
 - Icons: simple inline SVG strokes or Unicode arrows; never copy the brand's logo file into a mock-up meant to leave the company.
-- Fonts load from the site's own URLs in `@font-face`. Behind a login or offline, the browser falls back (the fallback stack is in `--bw-font`): say so if the render shows a fallback font.
+- Fonts load from the site's own URLs in `@font-face`. `render` uses a fresh browser with no login, so fonts behind a login, offline, or served without CORS headers fail and the browser falls back (the stack is in `--bw-font`). `render` prints `warning: font X did not load` when that happens: ask for the font files, put them in the kit, point `@font-face` at them and render again (L-004).
 - One file per mock-up; states (hover, error, empty) as extra sections or extra files.
 
 ## Render and check
