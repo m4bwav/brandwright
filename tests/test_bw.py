@@ -189,7 +189,7 @@ class TestTrain(KitCase):
             (d / ("%04d.png" % i)).write_bytes(b"x")
 
     def args(self, **kw):
-        base = dict(model=None, mode=None, brand_lora=None, steps=None, rank=32, lr=1e-4, res=[768, 1024], save_every=250, samples=4)
+        base = dict(model=None, mode=None, brand_lora=None, steps=None, rank=32, lr=1e-4, res=[768, 1024], save_every=100, samples=4)
         base.update(kw)
         return type("A", (), base)()
 
@@ -199,7 +199,7 @@ class TestTrain(KitCase):
         p = cfg["config"]["process"][0]
         self.assertEqual(p["model"]["arch"], "zimage")
         self.assertEqual(p["network"]["linear"], p["network"]["linear_alpha"])
-        self.assertEqual(steps, 1200)
+        self.assertEqual(steps, 400)
         self.assertEqual(mode, "single")
         self.assertTrue(all(pr.startswith("northwindui, ") for pr in p["sample"]["prompts"]))
 
@@ -229,7 +229,7 @@ class TestTrain(KitCase):
         self.assertIn("not started", out)
         cfgs = list((self.kit / "train").glob("*.json"))
         self.assertEqual(len(cfgs), 1)
-        self.assertEqual(json.loads(cfgs[0].read_text(encoding="utf-8"))["config"]["process"][0]["train"]["steps"], 2400)
+        self.assertEqual(json.loads(cfgs[0].read_text(encoding="utf-8"))["config"]["process"][0]["train"]["steps"], 400)
 
 
 class TestComfyGraphs(KitCase):

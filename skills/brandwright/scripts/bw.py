@@ -822,7 +822,7 @@ def train_config(kit, lora, args):
     n = len(list(d.glob("*.png")))
     if n == 0:
         sys.exit("dataset/%s is empty: run prep" % lora)
-    steps = args.steps or min(3000, max(1200, 40 * n))
+    steps = args.steps or min(1500, max(400, 5 * n))  # about 5 passes; the first real run peaked at 3 (L-001)
     name = "%s-%s-%s" % (re.sub(r"[^a-z0-9]+", "", kit.cfg["brand"]["name"].lower())[:16] or "brand", lora, model)
     mdl = json.loads(json.dumps(spec["model"]))
     net = {"type": "lora", "linear": args.rank, "linear_alpha": args.rank}
@@ -844,7 +844,7 @@ def train_config(kit, lora, args):
     proc = {
         "type": "sd_trainer", "training_folder": str(kit.root / "train" / "out"), "device": "cuda:0",
         "trigger_word": trig.split()[-1], "network": net,
-        "save": {"dtype": "float16", "save_every": args.save_every, "max_step_saves_to_keep": 12},
+        "save": {"dtype": "float16", "save_every": args.save_every, "max_step_saves_to_keep": 20},
         "datasets": [{"folder_path": str(d), "caption_ext": "txt", "caption_dropout_rate": 0.05, "shuffle_tokens": False,
                       "cache_latents_to_disk": True, "resolution": args.res}],
         "train": {"batch_size": 1, "steps": steps, "gradient_accumulation": 1, "train_unet": True, "train_text_encoder": False,
@@ -1117,11 +1117,11 @@ def main(argv=None):
                    help="site LoRAs: residual = learn only the difference from the brand LoRA (Z-Image); continue = start "
                         "from the brand LoRA, use alone; stack = independent")
     p.add_argument("--brand-lora", help="brand LoRA file for residual or continue (default: loras/brand-<model>.safetensors)")
-    p.add_argument("--steps", type=int, help="default: 40 per picture, 1,200 to 3,000")
+    p.add_argument("--steps", type=int, help="default: 5 per picture, 400 to 1,500 (style LoRAs peak early)")
     p.add_argument("--rank", type=int, default=32)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--res", type=int, nargs="+", default=[768, 1024])
-    p.add_argument("--save-every", type=int, default=250)
+    p.add_argument("--save-every", type=int, default=100, help="checkpoint and samples every N steps")
     p.add_argument("--samples", type=int, default=4)
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
     p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
