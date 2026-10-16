@@ -32,3 +32,4 @@ Append-only, newest last.
 - The overnight test ran to completion. Brand LoRA (Z-Image base, 90 pictures): 2 h 29 min for 1,200 steps. Residual site LoRA: 1 h 49 min for 800 steps. Then gen and sweep on the Turbo graph.
 - Step 250 was the best brand checkpoint; later steps collapsed. Default steps were cut to 5 a picture (400-1,500), with saves every 100 steps and 20 kept (PR #4).
 - Base-trained LoRAs are weak on Turbo, and the trigger word gets drawn as the wordmark. Both are recorded as LEARNINGS.
+- The owner created the wiki's first page. The watcher merged it and pushed all 13 pages at 06:59 on 2026-10-16. The wiki is live.

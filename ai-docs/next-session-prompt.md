@@ -11,7 +11,7 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 1. The GOV.UK test ran on 2026-10-16. Its results and the next experiment are in HANDOFF (Open, item 1).
    - Base-graph judging needs `z_image_bf16.safetensors` in ComfyUI (12.3 GB). Ask the owner before downloading it.
    - Never free ComfyUI or train while another session renders.
-2. If the wiki is still not live (`git ls-remote https://github.com/m4bwav/brandwright.wiki.git` fails), ask the owner to click "Create the first page", then push `../brandwright.wiki` (HANDOFF has the commands).
+2. The wiki is live; keep it in step with any CLI or default change (HANDOFF has how).
 3. Run the eval cases in `evals/` once with `claude plugin eval` and record them in TESTS.md.
 
 ## Rules
