@@ -30,11 +30,11 @@ Procedural lessons for [SKILL.md](SKILL.md). Research lives in [RESEARCH.md](RES
 
 ### L-002 · 2026-10-16 · `trigger-drawn-as-wordmark`: LLM-encoder models write the trigger word into the header
 - Trigger: the first trained LoRAs drew "GovkUI", "govirkUI" and "govikui" as the site name in headers, from the trigger `govukui`.
-- Hypothesis: the training headers show the real wordmark, so the model ties the trigger to the logo text and renders it.
-- Rule: when a header or logo shows, name its text in the prompt in quotes (`a header with the name "Acme"`); consider triggers that do not read as words.
-- Evidence: T-20261016-1
+- Hypothesis: the training headers show the real wordmark, so the model ties the trigger to the logo text and renders it. Z-Image's language-model text encoder reads the trigger as text to draw.
+- Rule: when a header or logo shows, name its text in the prompt in quotes (`the header shows the name "Acme"`). Keep the default trigger (brand letters + `ui`): a non-word trigger such as `zqkvx` was printed in the page more often and carried less of the brand, and quoting the logo text in captions did not make plain prompts draw it (T-20261017-1).
+- Evidence: T-20261016-1, T-20261017-1
 - Scope: skill
-- Status: active · helpful 0 · harmful 0 · last_confirmed 2026-10-16
+- Status: active · helpful 1 · harmful 0 · last_confirmed 2026-10-17
 
 ### L-001 · 2026-10-16 · `ui-style-loras-peak-early`: pick from the first few hundred steps
 - Trigger: 90 pictures, rank 32, lr 1e-4 on Z-Image: step 250 was the best sample set; 500, 750, 1,000 and 1,200 had collapsed into soft, near-empty layouts.

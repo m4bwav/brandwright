@@ -4,6 +4,14 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · real run · Windows 11, RTX 5060 Ti 16 GB, ai-toolkit (2026-10-09), Z-Image base graph in ComfyUI · passed with findings
+- Test 3: why the trigger is drawn as the wordmark (L-002). Seed 11, 2 pictures a prompt, 1344x768, base graph. Controls: test 2's brand-only start page and status card (headers read "Otlety" and "Porvic How ode").
+- A, the old LoRA (`govukui`, step 250) with the header text named in the prompt: `the header shows the "GOV.UK" logo` gave "GOV.UK" in 2 of 2, `the header shows the name "Fishing Service"` gave that name in 2 of 2 (one also wrote a small "gouk Govui" above it), brand + design system 1 of 2 ("GOV.UIK"). The rest of the page stayed as on brand as the control. The logo marks next to the text are invented.
+- B1, brand LoRA retrained to 250 steps with the non-word trigger `zqkvx` (90 pictures, about 25 min): headers still invented names ("Nisumsperents", "Sinener"), and `zqkvx` itself was printed in the page or card in 4 of 6 pictures. Status cards drifted off brand (dark panels, red tags). With "GOV.UK" in the prompt the name was right in 2 of 2, on red and magenta badges.
+- B2, as B1 plus `The header shows the "GOV.UK" logo.` on the 25 masthead captions: plain prompts still invented the site name, so the quoted captions did not teach it; with "GOV.UK" in the prompt 2 of 2 right, on pink and orange badges, often inside drawn browser chrome. `zqkvx` printed in both status cards.
+- Verdict: naming the header text in the prompt fixes it with the existing LoRA. A non-word trigger is worse, not better: the model prints the unknown string, and a trigger that spells the brand seems to carry some of the brand's look. No default changes (`make_trigger`, `VLM_PROMPT` stay).
+- led to: L-002 (updated), ../brandwright-mockup C-20261017-1
+
 ### T-20261016-3 · 2026-10-16 · real run · Windows 11, RTX 5060 Ti 16 GB, ai-toolkit (2026-10-09), Z-Image base · passed with findings
 - Brand LoRA re-picked at step 250. Site LoRA retrained in residual mode on top of it with the new defaults: 52 pictures, 400 steps, checkpoints every 100. 2 h 1 min in all: about 7-8.6 s a step, plus about 40 min for 5 sample sets of 4. Exit 0.
 - The earlier 800-step run was moved aside first (C-20261016-2), and `pick` survived ComfyUI holding the old file (C-20261016-3).

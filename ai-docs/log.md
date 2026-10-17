@@ -53,3 +53,9 @@ Append-only, newest last.
 - Fourth session (19:00): test 3 was still waiting at 18:45, with ComfyUI busy on a film render queue (7 parts of about 1 to 1.7 h each left), so it should start around 04:00 to 06:00 on 2026-10-17. Not restarted.
   - Checked the runner with no GPU use. Sibling kit captions are right: `zqkvx` on all 90, and the logo sentence on 25 in b2. A config-only `train` on a scratch copy of b1 matches test 1's model block. `pick` with no `--step` takes the final file.
   - The owner chose to wait for test 3 and ship one 0.1.2 (PR #12 plus any default test 3 justifies).
+
+## 2026-10-17
+
+- Fifth session (from 22:12 on 2026-10-16): waited for test 3 with background until-loops (re-armed every 1 h 55 min). The film queue ended at 03:35; test 3 started at 03:37 and printed `ALL DONE` at 04:50 (each 250-step brand retraining took about 25 min, faster than the 2 h guessed).
+- Results (train T-20261017-1): naming the header text in the prompt fixes the drawn wordmark with the old LoRA ("GOV.UK" and "Fishing Service" right in 4 of 4 brand-only pictures). The non-word trigger `zqkvx` was printed in the page in 4 of 6 pictures and the cards drifted off brand; quoting the logo text in captions did not make plain prompts draw it. So no default change: `make_trigger` and `VLM_PROMPT` stay. The rule went into the mockup prompt guide (mockup C-20261017-1), L-002 was updated, and the root CHANGELOG's Unreleased section has it.
+- Idea from it: test generation without the trigger in the prompt (the trigger itself is what gets printed; on a language-model encoder a LoRA may not need it). Not run.

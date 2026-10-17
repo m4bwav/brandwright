@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261017-1 · 2026-10-17 · trigger shape kept after test 3
+- because: T-20261017-1, L-002
+- files: TESTS.md, LEARNINGS.md (L-002)
+- Test 3 found that naming the header text in the prompt fixes the drawn wordmark, and that a non-word trigger or logo-quoting captions do not. `make_trigger` and `VLM_PROMPT` stay as they are; the prompt rule went to the mockup skill.
+
 ### C-20261016-5 · 2026-10-16 · fewer samples for residual site LoRAs
 - because: T-20261016-3, L-005; the owner chose this default on 2026-10-16
 - files: ../brandwright/scripts/bw.py (train_config, cmd_train, --samples, --sample-every), SKILL.md (Step 3 defaults), ../../tests/test_bw.py
