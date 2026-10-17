@@ -4,6 +4,7 @@ Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELO
 
 ## Unreleased
 
+- Prompt guide: with the brand LoRA alone on Z-Image the trigger word is optional (`gen --raw`); the look held without it in the fourth training test. Keep the triggers when a site LoRA is loaded too: there one picture in two fell back to the base model's photographs. Naming the header text is still what stops invented site names.
 - The capture, train and mockup skills say `python3` on macOS and Linux, as the hub does. In the Linux eval run, 2 of 4 agents first typed `python` and got `command not found`.
 
 ## 0.1.2 · 2026-10-17

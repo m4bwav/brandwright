@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261017-3 · 2026-10-17 · L-002 extended with test 4
+- because: ../brandwright-mockup T-20261017-2
+- files: LEARNINGS.md (L-002)
+- Leaving the trigger out does not stop invented header names, and the brand LoRA carries the look without it. `make_trigger` stays.
+
 ### C-20261017-2 · 2026-10-17 · `python3` on macOS and Linux
 - because: ../brandwright T-20261017-1, the Linux eval run (2 of 4 agents typed `python`, got `command not found` and retried with `python3`)
 - files: SKILL.md (BW line), references/setup.md (venv on Linux and macOS)

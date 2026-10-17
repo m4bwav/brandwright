@@ -4,11 +4,16 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
-### T-20261017-2 · 2026-10-17 · real run, partial · RTX 5060 Ti 16 GB, ComfyUI, Z-Image base graph, `gen --raw` · 2 of 6 runs done, the rest wait behind a film render
+### T-20261017-2 · 2026-10-17 · real run · RTX 5060 Ti 16 GB, ComfyUI, Z-Image base graph, `gen --raw` · 6 of 6 runs, trigger optional for the brand LoRA alone
 - Test 4: generate without the trigger in the prompt (`--raw`), because test 3 found the trigger itself is what gets printed in the header. Same kit, LoRAs (brand step 250, design system), seed 11, 2 pictures a prompt, 1344x768 as tests 2 and 3. Runner `run_test4.py` in the kit, log `run_test4.log`.
 - No LoRA, start page with `the header shows the name "Fishing Service"`: ocean photographs behind the card, a generic site; the name is right in the header. Base-model control, as test 2's no-LoRA start page.
 - Brand 1.0 without the trigger, plain start page: the brand look holds (navy page, white card with a blue heading, green "Start now", flat layout), close to test 2's triggered picture and unlike the no-LoRA photos. No trigger text in the page, but the header still invents a name ("NEPE", "MNEG CHRIBUЧ Pencerovetice Pakc"), as with the trigger.
-- So far: on Z-Image's language-model encoder the LoRA carries the brand without its trigger, and dropping the trigger alone does not fix the header. Naming the header text (test 3) is still the fix. Still to run: brand without the trigger with the header named, the status card, brand at 1.4, brand + design system.
+- The last 4 runs waited 5 h 25 min behind another session's film render and ran from 14:07 to 14:18 (about 3 min each).
+- Brand 1.0 without the trigger, header named "Fishing Service" (control: test 3 A, same prompt with `govukui`): "Fishing Service" right in the header in 2 of 2, as the control. Same look: blue page, white card, green "Start now". The title said "licence" in both raw pictures and "license" in both controls; too few pictures to call that more than chance.
+- Status card, brand 1.0 without the trigger (control: test 2's triggered card): close to the control in both pictures, one white card with a blue tag, one dark card (the control's second picture is dark too).
+- Brand 1.4 without the trigger, header named: flatter and closer to the design system than 1.0, with the header name clean in 2 of 2. Stronger weight works as it does with the trigger.
+- Brand 1.0 + design system 1.0 without either trigger, header named: one picture on brand with the name right; the other put a photograph of anglers inside the card and garbled the name ("Fishinn Servings"), like the no-LoRA baseline. Test 2's triggered brand + design system pair (plain start page, so not an exact control) stayed flat in both pictures. A weak sign (one picture) that the site LoRA wants its trigger.
+- Verdict: on Z-Image the brand LoRA alone keeps the look without its trigger, and naming the header text fixes the header with or without it. Dropping the trigger alone does not fix invented names. Defaults stay: `gen` still adds the triggers, and `--raw` is safe with the brand LoRA alone. Recorded in the prompt guide (C-20261017-3) and train L-002.
 
 ### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1, outcome blocked
 - action-4 (render `kits/northwind/out/card.html` to a 1440x900 PNG): loaded `brandwright-mockup`, ran `bw.py render ... --width 1440 --height 900`; stopped at "Playwright is not installed" for the same reason as action-3.

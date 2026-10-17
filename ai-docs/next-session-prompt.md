@@ -8,12 +8,14 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-1. Finish test 4 (HANDOFF Open item 1). Read the kit's `run_test4.log`.
-   - If it ends with `ALL DONE`, look at the 4 later runs next to their controls, then record the verdict: mockup T-20261017-2, train L-002, and the prompt guide plus the root CHANGELOG's Unreleased if the trigger turns out to be optional.
-   - If the runner stopped without `ALL DONE`, run only the missing gens. The owner already said yes to this GPU time on 2026-10-17, but only on an idle ComfyUI.
-   - Never free ComfyUI or train while another session renders.
-2. Optional small fix (HANDOFF Open item 2): say `python3` on macOS and Linux in the capture, train and mockup skills, as the hub does. Log it in each skill's CHANGELOG.
-3. Do not start the WSL Playwright install (Open item 3) without the owner's yes.
+The GOV.UK tests are finished (1 to 4) and nothing is running. There is no queued work, so start by asking the owner which of these they want, in one short message:
+
+1. The WSL Playwright install (HANDOFF Open item 1, about 150 MB) and a rerun of eval action-3 and action-4 on Linux.
+2. One idea from HANDOFF Open item 2. The `export` command for musubi or OneTrainer configs needs no new dependency, so suggest it first.
+3. Deleting the test-3 leftovers (two trig LoRAs in ComfyUI and kits `govuk-trig-b1`/`-b2`).
+4. A 0.1.3 release of the Unreleased doc changes (or wait for a code change).
+
+If the owner is not there to answer, do the brandwright evergreen work that is due (`evergreen.py audit` or each skill's `evergreen.json`; brandwright-train is due on 2026-10-29), and nothing that downloads, deletes or uses the GPU.
 
 ## Rules
 
