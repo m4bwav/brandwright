@@ -4,6 +4,11 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1
+- action-1 (set up a Northwind kit with a careers site): loaded `brandwright`, ran `bw.py new ./kits/northwind --brand Northwind --site careers=...`, checked the kit's `*` `.gitignore` with `git check-ignore` and ran `doctor`. Kit, trigger `northwindui` and site trigger `northwindcareersui` were right.
+- On Linux the agents first typed `python` (missing there) and retried with `python3` in 2 of 4 runs.
+- All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).
+
 ### T-20261016-1 · 2026-10-16 · claude plugin eval (1 run a case, with and without the plugin) · Windows 11, Claude Code · 5/5 run, action-1 not run
 - trigger-1, trigger-2 fired `brandwright` with the plugin and nothing fired without it; decoy-1 (a dog LoRA), decoy-2 (a bakery logo) and decoy-3 (a Playwright test) did not fire it.
 - Action case action-1 was not run: on Windows the eval runner refuses any case granted a shell tool because it has no sandbox there ("sandbox required but unavailable"). Run it on macOS or Linux.

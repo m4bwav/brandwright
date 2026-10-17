@@ -4,6 +4,10 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1, outcome blocked
+- action-4 (render `kits/northwind/out/card.html` to a 1440x900 PNG): loaded `brandwright-mockup`, ran `bw.py render ... --width 1440 --height 900`; stopped at "Playwright is not installed" for the same reason as action-3.
+- All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).
+
 ### T-20261016-5 · 2026-10-16 · real run, owner's report · a work computer, code route (capture, tokens, render), checkout of 2026-10-16 · passed
 - The owner ran the code route on their employer's sites from a work computer. Their verdict: it "worked better than expected". Nothing failed and they reported nothing to fix.
 - The company, its sites and the screenshots stay in the owner's private notes, never here.
