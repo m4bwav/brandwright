@@ -27,7 +27,7 @@ Updated 2026-10-17, around 05:15. Read with [log.md](log.md) and [next-session-p
 ## Gotchas
 
 - Bash heredocs collapse `\\` to `\`: write Python patches with the Write tool, or build backslashes with `chr(92)`.
-- ComfyUI on the PC is shared with film sessions. Never `/free` it or start training while a render runs; the test runners wait for three idle checks a minute apart first. Film queues log to `D:/ComfyUI/output/video/<film>_run.log` and print `QUEUE EMPTY` at the end.
+- ComfyUI on the PC is shared with film sessions. Never `/free` it or start training while a render runs; the test runners wait for three idle checks a minute apart first. Film queues log to `<film>_run.log` in ComfyUI's video output folder and print `QUEUE EMPTY` at the end.
 - Waiting on a long run: a background until-loop that matches the done line and failure words, with a deadline under 2 h, re-armed each time it ends.
 - A 250-step Z-Image brand retraining (90 pictures, no samples) took about 25 min, not the hour guessed.
 - ComfyUI memory-maps loaded LoRAs, so a loaded file cannot be overwritten on Windows; `pick` writes a step-named copy.
