@@ -2,6 +2,10 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
+## Unreleased
+
+- The capture, train and mockup skills say `python3` on macOS and Linux, as the hub does. In the Linux eval run, 2 of 4 agents first typed `python` and got `command not found`.
+
 ## 0.1.2 · 2026-10-17
 
 Faster residual site training and a prompt rule from the third training test. No default changed for captions or triggers.

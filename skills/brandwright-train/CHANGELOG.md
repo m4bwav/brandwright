@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261017-2 · 2026-10-17 · `python3` on macOS and Linux
+- because: ../brandwright T-20261017-1, the Linux eval run (2 of 4 agents typed `python`, got `command not found` and retried with `python3`)
+- files: SKILL.md (BW line), references/setup.md (venv on Linux and macOS)
+- The `BW` line says `python3` on macOS and Linux, as the hub does, and the setup reference makes the venv with `python3 -m venv venv` there.
+
 ### C-20261017-1 · 2026-10-17 · trigger shape kept after test 3
 - because: T-20261017-1, L-002
 - files: TESTS.md, LEARNINGS.md (L-002)

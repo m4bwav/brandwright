@@ -7,7 +7,7 @@ metadata:
 
 # brandwright-capture
 
-From sites (or screenshots) to `capture/`, `tokens.json` + `brand.css`, and `dataset/<lora>/` with captions. `BW` is `python "<brandwright skill folder>/scripts/bw.py"`; the kit exists already (`BW new`, see the brandwright skill).
+From sites (or screenshots) to `capture/`, `tokens.json` + `brand.css`, and `dataset/<lora>/` with captions. `BW` is `python "<brandwright skill folder>/scripts/bw.py"` (`python3` on macOS and Linux); the kit exists already (`BW new`, see the brandwright skill).
 
 ## Step 0: freshness
 
@@ -24,7 +24,7 @@ Ask the user, per site; never assume a login or a crawl is allowed.
 | Already open and signed in in their browser | they start Edge or Chrome with `--remote-debugging-port=9222`; `BW capture ... --cdp http://127.0.0.1:9222` |
 | Not reachable from here, or automation not allowed | they save screenshots to a folder: `BW import KIT --site NAME FOLDER` (`--kind component` for single components, `--viewport mobile` for phone shots) |
 
-- `--channel msedge` (or `chrome`) uses the installed browser, so nothing is downloaded: right for locked-down work machines. Without it, Playwright needs `python -m playwright install chromium` once.
+- `--channel msedge` (or `chrome`) uses the installed browser, so nothing is downloaded: right for locked-down work machines. Without it, Playwright needs `python -m playwright install chromium` once (`python3` on macOS and Linux).
 - Never type, request or store a password. The `auth/` folder is a live session: private, never shared.
 - Crawling visits same-site links by GET only and skips sign-out, delete, cancel, mailto and file links. Nothing is clicked except what `--click` names. Keep `--crawl` modest (10-30): the aim is variety of page types, not volume.
 - Name at least one page with the main call-to-action button (a form, a start or sign-up page) among the URLs. Crawls follow navigation, and index pages rarely carry it (L-002).

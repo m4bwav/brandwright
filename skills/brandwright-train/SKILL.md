@@ -7,7 +7,7 @@ metadata:
 
 # brandwright-train
 
-From `dataset/<lora>/` (made by brandwright-capture) to `loras/<lora>-<model>.safetensors` and a copy in ComfyUI. `BW` is `python "<brandwright skill folder>/scripts/bw.py"`.
+From `dataset/<lora>/` (made by brandwright-capture) to `loras/<lora>-<model>.safetensors` and a copy in ComfyUI. `BW` is `python "<brandwright skill folder>/scripts/bw.py"` (`python3` on macOS and Linux).
 
 ## Step 0: freshness
 

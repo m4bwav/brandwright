@@ -13,7 +13,7 @@ pip install --no-cache-dir torch==2.13.0 torchvision==0.28.0 torchaudio==2.11.0 
 pip install -r requirements.txt
 ```
 
-Linux and macOS: the same with `source venv/bin/activate`. Then `set BRANDWRIGHT_AI_TOOLKIT=<folder>` (or `"ai_toolkit"` in brand.json). `bw.py train --run` uses the folder's `venv` Python and runs `run.py <config>.json` detached; the config is plain ai-toolkit JSON, so it also runs by hand: `python run.py path\to\config.json`.
+Linux and macOS: the same with `python3 -m venv venv` and `source venv/bin/activate`. Then `set BRANDWRIGHT_AI_TOOLKIT=<folder>` (or `"ai_toolkit"` in brand.json). `bw.py train --run` uses the folder's `venv` Python and runs `run.py <config>.json` detached; the config is plain ai-toolkit JSON, so it also runs by hand: `python run.py path\to\config.json`.
 
 - **Blackwell (RTX 50xx, sm_120)** needs PyTorch 2.7+ built for CUDA 12.8 or later; ai-toolkit's cu130 wheels need NVIDIA driver 580+. "no kernel image is available" means an older wheel.
 - Out of memory: lower `--res` to `768` (or `512 768`), keep rank 32 or lower, close ComfyUI or free its memory (`POST /free` with `{"unload_models": true, "free_memory": true}`) only if no one else is using it.
