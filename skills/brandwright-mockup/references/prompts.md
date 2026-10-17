@@ -1,6 +1,6 @@
 # Prompt patterns for UI mock-ups
 
-Shape: **view, what it is, parts in order, exact strings in double quotes**. No colours, fonts, "modern", "clean" or the brand name: the LoRA supplies the look, and style words fight it. Triggers are added by `bw.py gen`.
+Shape: **view, what it is, parts in order, exact strings in double quotes**. No colours, fonts, "modern", "clean" or the brand name: the LoRA supplies the look, and style words fight it. Triggers are added by `bw.py gen`. With the brand LoRA alone on Z-Image the trigger is optional: `--raw` leaves it out and the look holds (T-20261017-2). Keep the triggers when a site LoRA is loaded too.
 
 ## Views
 

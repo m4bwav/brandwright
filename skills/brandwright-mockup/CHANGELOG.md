@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261017-3 · 2026-10-17 · the trigger is optional with the brand LoRA alone
+- because: T-20261017-2, ../brandwright-train L-002
+- files: references/prompts.md (Shape), TESTS.md (T-20261017-2)
+- Test 4: without its trigger the brand LoRA kept the look and the named header came out right in 2 of 2; with a site LoRA loaded too, one picture in two fell back to photographs. `gen` still adds the triggers by default.
+
 ### C-20261017-2 · 2026-10-17 · `python3` on macOS and Linux
 - because: ../brandwright T-20261017-1, the Linux eval run (2 of 4 agents typed `python`, got `command not found` and retried with `python3`)
 - files: SKILL.md (BW line)
