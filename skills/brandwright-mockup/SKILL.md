@@ -7,7 +7,7 @@ metadata:
 
 # brandwright-mockup
 
-Three ways to a mock-up, from exact to exploratory. `BW` is `python "<brandwright skill folder>/scripts/bw.py"`; the kit has `tokens.json`/`brand.css` (brandwright-capture) and, for LoRAs, picked LoRAs in ComfyUI (brandwright-train).
+Three ways to a mock-up, from exact to exploratory. `BW` is `python "<brandwright skill folder>/scripts/bw.py"` (`python3` on macOS and Linux); the kit has `tokens.json`/`brand.css` (brandwright-capture) and, for LoRAs, picked LoRAs in ComfyUI (brandwright-train).
 
 ## Step 0: freshness
 
