@@ -4,6 +4,12 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-2 · 2026-10-17 · real run, partial · RTX 5060 Ti 16 GB, ComfyUI, Z-Image base graph, `gen --raw` · 2 of 6 runs done, the rest wait behind a film render
+- Test 4: generate without the trigger in the prompt (`--raw`), because test 3 found the trigger itself is what gets printed in the header. Same kit, LoRAs (brand step 250, design system), seed 11, 2 pictures a prompt, 1344x768 as tests 2 and 3. Runner `run_test4.py` in the kit, log `run_test4.log`.
+- No LoRA, start page with `the header shows the name "Fishing Service"`: ocean photographs behind the card, a generic site; the name is right in the header. Base-model control, as test 2's no-LoRA start page.
+- Brand 1.0 without the trigger, plain start page: the brand look holds (navy page, white card with a blue heading, green "Start now", flat layout), close to test 2's triggered picture and unlike the no-LoRA photos. No trigger text in the page, but the header still invents a name ("NEPE", "MNEG CHRIBUЧ Pencerovetice Pakc"), as with the trigger.
+- So far: on Z-Image's language-model encoder the LoRA carries the brand without its trigger, and dropping the trigger alone does not fix the header. Naming the header text (test 3) is still the fix. Still to run: brand without the trigger with the header named, the status card, brand at 1.4, brand + design system.
+
 ### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1, outcome blocked
 - action-4 (render `kits/northwind/out/card.html` to a 1440x900 PNG): loaded `brandwright-mockup`, ran `bw.py render ... --width 1440 --height 900`; stopped at "Playwright is not installed" for the same reason as action-3.
 - All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).
