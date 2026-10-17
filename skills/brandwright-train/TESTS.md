@@ -4,6 +4,10 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-2 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1
+- action-2 (write, do not start, the brand LoRA config for `./fixture-kit`): loaded `brandwright-train`, ran `doctor` and `bw.py train . --lora brand` without `--run`, then read the written `train/northwind-brand-zimage.json`. Fixture: 8 synthetic 1-pixel pictures with captions, made by the case's `fixture.sh`.
+- All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).
+
 ### T-20261017-1 · 2026-10-17 · real run · Windows 11, RTX 5060 Ti 16 GB, ai-toolkit (2026-10-09), Z-Image base graph in ComfyUI · passed with findings
 - Test 3: why the trigger is drawn as the wordmark (L-002). Seed 11, 2 pictures a prompt, 1344x768, base graph. Controls: test 2's brand-only start page and status card (headers read "Otlety" and "Porvic How ode").
 - A, the old LoRA (`govukui`, step 250) with the header text named in the prompt: `the header shows the "GOV.UK" logo` gave "GOV.UK" in 2 of 2, `the header shows the name "Fishing Service"` gave that name in 2 of 2 (one also wrote a small "gouk Govui" above it), brand + design system 1 of 2 ("GOV.UIK"). The rest of the page stayed as on brand as the control. The logo marks next to the text are invented.

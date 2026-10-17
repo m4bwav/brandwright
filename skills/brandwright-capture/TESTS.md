@@ -4,6 +4,10 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261017-1 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1, outcome blocked
+- action-3 (capture the fixture page into a new kit as site shop): loaded `brandwright-capture`, made the kit with `--site shop`, ran `bw.py capture ./kits/northwind --site shop file://.../tests/fixtures/site/index.html`. Capture stopped at the expected "Playwright is not installed" message, because the WSL Python has no Playwright; the agent then looked for a browser and reported it. The grader passes on the call, so the capture itself is still unproven on Linux (CI's `browser` job covers it).
+- All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).
+
 ### T-20261016-2 · 2026-10-16 · work-machine dry run · Windows 11, fresh clone of v0.1.0, new venv with only `pip install playwright` (125 MB), Edge · passed with a finding
 - `doctor` named what each optional piece unlocks (Pillow for prep, score and sheet). `new`, then `capture --site www <home> --crawl 3 --channel msedge`: 4 pages, 8 views in 32 s with no browser download. `tokens` without Pillow: tokens.json, brand.css and tokens.md in 0.2 s (palette.png skipped).
 - Finding: the home and browse pages had no call-to-action, so `.bw-button-primary` came from an unstyled browser-default button. After the fix, `tokens` said so; one more capture of a start page gave the real green button (L-002).
