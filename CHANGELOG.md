@@ -2,7 +2,9 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
-## Unreleased
+## 0.1.2 · 2026-10-17
+
+Faster residual site training and a prompt rule from the third training test. No default changed for captions or triggers.
 
 - `train`: residual site LoRAs draw 2 sample prompts every 200 steps and skip the step-0 sample, which cut about 30 minutes from a 400-step run in the second training test. Brand LoRAs keep 4 at every checkpoint. New `--sample-every`; `--samples 0` turns sampling off.
 - Prompt guide: name the header text in quotes (`the header shows the name "Fishing Service"`). In the third training test this stopped the model inventing a site name or drawing the trigger word in the header. A trigger that is not a word, or captions quoting the logo, made it worse, so the defaults stay.
