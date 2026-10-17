@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261017-1 · 2026-10-17 · name the header text in prompts
+- because: ../brandwright-train T-20261017-1, ../brandwright-train L-002
+- files: references/prompts.md (Text, When results are off)
+- Test 3: with the header text named in quotes, the start page drew "GOV.UK" or "Fishing Service" correctly in 4 of 4 pictures, where the control drew made-up names.
+
 ### C-20261016-2 · 2026-10-16 · base graph for on-brand pictures
 - because: T-20261016-4, L-002
 - files: SKILL.md (Step 3), LEARNINGS.md (L-002 confirmed)

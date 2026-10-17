@@ -36,6 +36,7 @@ desktop web page screenshot, top of the page, a search results page for "part-ti
 
 - Keep strings short: one to three words per label is reliable, sentences are not.
 - Put every string you care about in double quotes; unquoted text gets invented.
+- Pages with a header: name what it says, `the header shows the name "Fishing Service"` or `the header shows the "Acme" logo`. Left out, the model invents a site name or writes the trigger word there (train L-002). The text usually comes out right (5 of 6 in the test); the logo mark beside it is invented, so a mock-up meant to leave the company should name the service, not the brand's logo.
 - Long copy (paragraphs, legal text): describe it as "a short paragraph of body text" and accept placeholder text, or use the code route.
 
 ## When results are off
@@ -46,4 +47,5 @@ desktop web page screenshot, top of the page, a search results page for "part-ti
 | Copies a real page instead of the request | lower the weights, an earlier checkpoint, more specific parts in the prompt |
 | Site look missing | raise the site weight; check its trigger is in the prompt |
 | Text garbled | shorter strings, larger component size, the base graph instead of turbo, or the code route |
+| Header shows a made-up name or the trigger word | name the header text in quotes (see Text) |
 | Same layout every seed | vary the parts list; turbo graphs vary less than base |
