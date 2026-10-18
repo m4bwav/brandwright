@@ -5,7 +5,7 @@ Updated 2026-10-18. Read with [log.md](log.md) and [next-session-prompt.md](next
 ## State
 
 - Public repo `m4bwav/brandwright`. **0.1.3 is the latest release** (tag `v0.1.3`, 2026-10-18): `train --for musubi|onetrainer`, the trigger-optional prompt rule, `python3` in the sub-skills. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. CHANGELOG Unreleased is empty.
-- **Size budget is yellow**: CLI lines 2,072 against green up to 2,000 (yellow up to 2,600). Everything else is green; the installed skills folder is at 249 of 250 KB. Before adding CLI code, look for lines to cut, or ask the owner whether to raise the green line.
+- The size budget is **yellow**: CLI lines 2,072 against green up to 2,000 (yellow up to 2,600). Everything else is green; the installed skills folder is at 249 of 250 KB. Before adding CLI code, look for lines to cut, or ask the owner whether to raise the green line.
 - Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace, so it follows the checkout).
 - Wiki: live at https://github.com/m4bwav/brandwright/wiki, Home, Commands and Training at 0.1.3. Working copy `../brandwright.wiki` (`git pull`, edit, `git push`). Commands page: `python ai-docs/notes/wiki-commands-page.py . ../brandwright.wiki/Commands.md`.
 - `train --for musubi|onetrainer` writes jobs from formats read in source (research/2026-10-18-musubi-onetrainer.md). **Neither trainer has run them.**
