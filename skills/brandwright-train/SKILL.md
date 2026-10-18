@@ -33,6 +33,7 @@ Not for company work: Qwen-Image-2.1 (research licence), FLUX.2 dev and klein 9B
 ```
 BW train KIT --lora brand            # writes train/<name>.json and prints steps, VRAM, mode
 BW train KIT --lora brand --run      # starts ai-toolkit detached; log in train/<name>.log
+BW train KIT --lora brand --for musubi   # or --for onetrainer: the same job for another trainer (references/setup.md)
 ```
 
 Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 1024, about 5 passes over the pictures (5 steps a picture, 400 to 1,500), a checkpoint every 100 steps, and samples on held-out prompts (pricing table, settings page, modal, toast: kinds the capture rarely has, so samples show generalisation): 4 at every checkpoint for the brand LoRA, 2 every 200 steps and none at step 0 for a residual site LoRA, whose samples cost about 2 min a picture and leave the brand out (`--samples`, `--sample-every`; `--samples 0` turns them off). The first run downloads the base model (Z-Image about 20 GB).

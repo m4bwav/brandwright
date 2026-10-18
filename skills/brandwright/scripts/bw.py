@@ -71,6 +71,22 @@ MODELS = {
     },
 }
 DEFAULT_MODEL = "zimage"
+# Other trainers for `train --for`: kohya-ss/musubi-tuner v0.3.6 and Nerogar/OneTrainer b08db37, read 2026-10-18
+# (ai-docs/research/2026-10-18-musubi-onetrainer.md). musubi: script prefix, network module, extra cache/train flags
+# (fp8 text encoder, model version), timesteps. OneTrainer: model_type, LoRA layer filter and preset.
+MUSUBI = {
+    "zimage": ("zimage", "lora_zimage", "--fp8_llm", "--timestep_sampling shift --weighting_scheme none --discrete_flow_shift 2.0"),
+    "zimage_turbo": ("zimage", "lora_zimage", "--fp8_llm", "--timestep_sampling shift --weighting_scheme none --discrete_flow_shift 2.0"),
+    "klein4b": ("flux_2", "lora_flux_2", "--fp8_text_encoder --model_version klein-base-4b", "--timestep_sampling flux2_shift"),
+    "qwen_image": ("qwen_image", "lora_qwen_image", "--fp8_vl", "--timestep_sampling shift --discrete_flow_shift 2.2"),
+}
+ONETRAINER = {
+    "zimage": ("Z_IMAGE", "^(?=.*attention)(?!.*refiner).*,^(?=.*feed_forward)(?!.*refiner).*", "attn-mlp"),
+    "zimage_turbo": ("Z_IMAGE", "^(?=.*attention)(?!.*refiner).*,^(?=.*feed_forward)(?!.*refiner).*", "attn-mlp"),
+    "klein4b": ("FLUX_2", "transformer_block", "blocks"),
+    "qwen_image": ("QWEN", "attn,img_mlp,txt_mlp", "attn-mlp"),
+}
+DETURBO = "https://huggingface.co/ostris/Z-Image-De-Turbo/blob/main/z_image_de_turbo_v1_bf16.safetensors"
 
 # Held-out sample prompts: component kinds a capture rarely contains, so samples show what the LoRA generalises.
 HELD_OUT = [
@@ -871,6 +887,86 @@ def train_config(kit, lora, args):
     return name, cfg, steps, mode, n
 
 
+def export_config(kit, name, cfg, args):
+    """Write the same LoRA job for musubi-tuner (dataset TOML + train.sh) or OneTrainer (config + concepts JSON)."""
+    meta, proc = cfg["meta"]["brandwright"], cfg["config"]["process"][0]
+    model, mode, steps, data = meta["model"], meta["mode"], proc["train"]["steps"], Path(proc["datasets"][0]["folder_path"])
+    net = proc["network"]
+    brand = proc["model"].get("assistant_lora_path") or net.get("pretrained_lora_path")
+    out = kit.root / "train" / ("%s-%s" % (name, args.trainer))
+    out.mkdir(parents=True, exist_ok=True)
+    if args.trainer == "musubi":
+        pre, module, te_flags, ts = MUSUBI[model]
+        toml = ['[general]', 'caption_extension = ".txt"', 'batch_size = 1', 'enable_bucket = true', '']
+        for r in args.res:  # one dataset per resolution, each with its own cache folder (musubi dataset_config.md)
+            toml += ['[[datasets]]', 'resolution = [%d, %d]' % (r, r), 'image_directory = "%s"' % data.as_posix(),
+                     'cache_directory = "%s"' % (out / ("cache_%d" % r)).as_posix(), 'num_repeats = 1', '']
+        (out / "dataset.toml").write_text("\n".join(toml), encoding="utf-8")
+        ver = " --model_version klein-base-4b" if model == "klein4b" else ""
+        base = []
+        if model == "zimage_turbo":
+            base.append('"$TURBO_ADAPTER"')
+        if mode == "residual":
+            base.append('"%s"' % Path(brand).as_posix())
+        extra = (" --base_weights %s --base_weights_multiplier %s" % (" ".join(base), " ".join(["1.0"] * len(base)))) if base else ""
+        if mode == "continue":
+            extra += ' --network_weights "%s"' % Path(brand).as_posix()
+        s = "src/musubi_tuner/%s_" % pre
+        sh = ["#!/usr/bin/env bash", "# musubi-tuner job written by brandwright %s. Run from the musubi-tuner folder after "
+              "setting the model files below (see its docs/%s.md)." % (VERSION, "flux_2" if pre == "flux_2" else pre),
+              "set -euo pipefail", 'DIT="path/to/dit.safetensors"', 'VAE="path/to/vae.safetensors"',
+              'TEXT_ENCODER="path/to/text_encoder.safetensors"']
+        if model == "zimage_turbo":
+            sh.append('TURBO_ADAPTER="path/to/zimage_turbo_training_adapter_v2.safetensors"')
+        sh += ['TOML="%s"' % (out / "dataset.toml").as_posix(),
+               'python %scache_latents.py --dataset_config "$TOML" --vae "$VAE"%s' % (s, ver),
+               'python %scache_text_encoder_outputs.py --dataset_config "$TOML" --text_encoder "$TEXT_ENCODER" --batch_size 16 %s'
+               % (s, te_flags),
+               'accelerate launch --num_cpu_threads_per_process 1 --mixed_precision bf16 %strain_network.py --dit "$DIT" '
+               '--vae "$VAE" --text_encoder "$TEXT_ENCODER" --dataset_config "$TOML" --sdpa --mixed_precision bf16 %s '
+               '--optimizer_type adamw8bit --learning_rate %g --gradient_checkpointing --network_module networks.%s '
+               '--network_dim %d --network_alpha %d --fp8_base --fp8_scaled %s --max_data_loader_n_workers 2 '
+               '--persistent_data_loader_workers --max_train_steps %d --save_every_n_steps %d --seed 42 --output_dir "%s" '
+               '--output_name %s%s' % (s, ts, args.lr, module, net["linear"], net["linear_alpha"], te_flags, steps,
+                                       args.save_every, (out / "output").as_posix(), name, extra)]
+        if model == "zimage":
+            sh.append("# for ComfyUI: python src/musubi_tuner/convert_lora.py --input IN.safetensors --output OUT.safetensors --target other")
+        (out / "train.sh").write_text("\n".join(sh) + "\n", encoding="utf-8")
+        files = ["dataset.toml", "train.sh"]
+    else:
+        if mode == "residual":
+            sys.exit("OneTrainer cannot merge a LoRA during training; use --mode continue or stack with --for onetrainer")
+        mtype, layers, preset = ONETRAINER[model]
+        concepts = [{"name": name, "path": str(data), "enabled": True, "include_subdirectories": False, "balancing": 1.0,
+                     "balancing_strategy": "REPEATS", "text": {"prompt_source": "sample"}}]
+        (out / "concepts.json").write_text(json.dumps(concepts, indent=2), encoding="utf-8")
+        n = max(1, meta["images"])
+        oc = {"__version": 11,  # without it train.py migrates the file and migration 8 empties the transformer block
+              "model_type": mtype, "training_method": "LORA", "base_model_name": MODELS[model]["model"]["name_or_path"],
+              "output_model_destination": str(out / "output" / (name + ".safetensors")), "output_model_format": "DIFFUSERS_LORA",
+              "output_dtype": "BFLOAT_16", "train_dtype": "BFLOAT_16", "resolution": ",".join(str(r) for r in args.res),
+              "aspect_ratio_bucketing": True, "epochs": -(-steps // n), "batch_size": 1, "learning_rate": args.lr,
+              "optimizer": {"optimizer": "ADAMW_8BIT"}, "lora_rank": net["linear"], "lora_alpha": float(net["linear_alpha"]),
+              "transformer": {"train": True, "weight_dtype": "FLOAT_8", "gradient_checkpointing": True},
+              "text_encoder": {"train": False, "weight_dtype": "FLOAT_8"}, "vae": {"weight_dtype": "FLOAT_32"},
+              "layer_filter": layers, "layer_filter_preset": preset, "layer_filter_regex": layers.startswith("^"),
+              "timestep_distribution": "LOGIT_NORMAL", "save_every": args.save_every, "save_every_unit": "STEP",
+              "concept_file_name": str(out / "concepts.json"), "workspace_dir": str(out / "workspace"),
+              "cache_dir": str(out / "cache")}
+        if model == "zimage_turbo":
+            oc["transformer"]["model_name"] = DETURBO
+        if mode == "continue":
+            oc["lora_model_name"] = str(brand)
+        (out / "config.json").write_text(json.dumps(oc, indent=2), encoding="utf-8")
+        files = ["config.json", "concepts.json"]
+    print("%s job for the %s LoRA (%s, mode %s, %d steps) in %s: %s" % (args.trainer, meta["lora"], model, mode, steps, out,
+                                                                       ", ".join(files)))
+    print("  run: bash train.sh (set the model paths at its top first)" if args.trainer == "musubi" else
+          "  run: python scripts/train.py --config-path \"%s\"  (from the OneTrainer folder; it trains by epochs: %d)"
+          % (out / "config.json", -(-steps // max(1, meta["images"]))))
+    return 0
+
+
 def set_aside_old_run(out):
     """ai-toolkit resumes from any checkpoint already in its run folder, so a retrain under the same name would
     continue the old run (brandwright-train L-003). Move an earlier run's folder aside; returns the new path or None."""
@@ -889,6 +985,10 @@ def set_aside_old_run(out):
 def cmd_train(args):
     kit = Kit(args.kit)
     name, cfg, steps, mode, n = train_config(kit, args.lora, args)
+    if args.trainer != "ai-toolkit":
+        if args.run:
+            sys.exit("--run starts ai-toolkit only; run the %s job with its own command" % args.trainer)
+        return export_config(kit, name, cfg, args)
     tdir = kit.root / "train"
     tdir.mkdir(parents=True, exist_ok=True)
     path = tdir / ("%s.json" % name)
@@ -1167,8 +1267,10 @@ def main(argv=None):
     p.add_argument("--sample-every", type=int,
                    help="draw samples every N steps (default: --save-every, or 200 for residual site LoRAs, which also "
                         "skip the step-0 sample)")
+    p.add_argument("--for", dest="trainer", choices=["ai-toolkit", "musubi", "onetrainer"], default="ai-toolkit",
+                   help="write the same job for musubi-tuner (dataset.toml + train.sh) or OneTrainer (config + concepts)")
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or BRANDWRIGHT_AI_TOOLKIT)")
-    p.add_argument("--run", action="store_true", help="start training now, detached; log in train/<name>.log")
+    p.add_argument("--run",action="store_true", help="start training now, detached; log in train/<name>.log")
     p.add_argument("--wait", action="store_true", help="with --run: block until training ends (for job queues)")
     p.add_argument("--resume", action="store_true",
                    help="with --run: continue the run already in train/out/<name>; without it, that folder is moved aside")

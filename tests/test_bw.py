@@ -259,6 +259,38 @@ class TestTrain(KitCase):
         self.assertEqual(len(cfgs), 1)
         self.assertEqual(json.loads(cfgs[0].read_text(encoding="utf-8"))["config"]["process"][0]["train"]["steps"], 400)
 
+    def test_train_for_musubi_writes_toml_and_script(self):
+        self.dataset("brand", 60)
+        self.dataset("shop", 20)
+        (self.kit / "loras").mkdir()
+        (self.kit / "loras" / "brand-zimage.safetensors").write_bytes(b"0")
+        code, out = run("train", str(self.kit), "--lora", "shop", "--for", "musubi")
+        self.assertEqual(code, 0)
+        job = self.kit / "train" / "northwind-shop-zimage-musubi"
+        toml = (job / "dataset.toml").read_text(encoding="utf-8")
+        self.assertEqual(toml.count("[[datasets]]"), 2)  # one per resolution, own caches
+        self.assertIn("cache_768", toml)
+        sh = (job / "train.sh").read_text(encoding="utf-8")
+        for flag in ("zimage_train_network.py", "networks.lora_zimage", "--network_dim 32", "--network_alpha 32",
+                     "--max_train_steps 400", "--base_weights", "brand-zimage.safetensors", "--fp8_llm"):
+            self.assertIn(flag, sh)
+        self.assertNotIn(chr(92), sh)  # posix paths only
+        self.assertFalse(list((self.kit / "train").glob("*.json")))  # no ai-toolkit config
+
+    def test_train_for_onetrainer(self):
+        self.dataset("brand", 60)
+        code, out = run("train", str(self.kit), "--lora", "brand", "--for", "onetrainer", "--model", "zimage_turbo")
+        self.assertEqual(code, 0)
+        job = self.kit / "train" / "northwind-brand-zimage_turbo-onetrainer"
+        cfg = json.loads((job / "config.json").read_text(encoding="utf-8"))
+        self.assertEqual((cfg["__version"], cfg["model_type"], cfg["lora_rank"], cfg["epochs"]), (11, "Z_IMAGE", 32, 7))
+        self.assertEqual(cfg["transformer"]["model_name"], bw.DETURBO)
+        self.assertEqual(cfg["resolution"], "768,1024")
+        concepts = json.loads((job / "concepts.json").read_text(encoding="utf-8"))
+        self.assertEqual(concepts[0]["text"]["prompt_source"], "sample")
+        with self.assertRaises(SystemExit):
+            run("train", str(self.kit), "--lora", "brand", "--for", "onetrainer", "--run")
+
     def test_pick_falls_back_when_comfy_holds_the_file(self):
         out = self.kit / "train" / "out" / "northwind-brand-zimage"
         out.mkdir(parents=True)
