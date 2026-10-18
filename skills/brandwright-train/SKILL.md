@@ -2,7 +2,7 @@
 name: brandwright-train
 description: "Train a brand LoRA and sub-site LoRAs for UI mock-ups with ostris ai-toolkit: pick the base model by licence and GPU memory (Z-Image, Qwen-Image-2512, FLUX.2 klein 4B), write the config, choose how a site LoRA relates to the brand LoRA (residual: learns only the difference; continue: starts from it; stack), run it detached, watch steps and samples, and pick the checkpoint. Covers Blackwell and 16 GB cards, other trainers (musubi-tuner, OneTrainer, SimpleTuner) and private hosted training. Use when the user asks to train or fine-tune a LoRA on a brand, website or UI dataset, which base model or licence to use for company work, how much VRAM or time it needs, how to train a site LoRA on top of a brand LoRA, or 'is the training done'. Part of brandwright. Also for 'refresh brandwright-train'. Not for training on people's faces or general character LoRAs."
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # brandwright-train
