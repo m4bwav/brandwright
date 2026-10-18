@@ -38,6 +38,12 @@ Testing (how work on this subject is verified, and how skills for it are tuned):
 
 ## Findings
 
+### R-20261018-1 · 2026-10-18 · musubi-tuner and OneTrainer job formats
+- Track: tooling
+- Sources: [2026-10-18-musubi-onetrainer.md](../../ai-docs/research/2026-10-18-musubi-onetrainer.md) (musubi-tuner v0.3.6, OneTrainer b08db37, read from source)
+- Magnitude: minor (new export target; ai-toolkit defaults unchanged)
+- applied: C-20261018-1
+
 ### R-20261015-1 · 2026-10-15 · Models, trainers, VRAM, Blackwell, hosted training
 - Track: subject, tooling, practice, testing
 - Sources: [2026-10-15-models-trainers-licences.md](../../ai-docs/research/2026-10-15-models-trainers-licences.md) (every source and its date is listed there)

@@ -21,7 +21,9 @@ Linux and macOS: the same with `python3 -m venv venv` and `source venv/bin/activ
 - Log not moving: the first steps cache latents and text embeddings; the download of the base model can take a long time. `bw.py status` prints the last log line.
 - **Windows symlink warning** from Hugging Face: harmless; the cache uses more disk.
 
-## Other trainers (bw.py writes ai-toolkit configs only)
+## Other trainers
+
+`BW train KIT --lora LORA --for musubi` writes the same job (dataset, rank, alpha, steps, lr, checkpoints, residual or continue) as `train/<name>-musubi/dataset.toml` and `train.sh` (set the DiT, VAE and text-encoder paths at its top). `--for onetrainer` writes `config.json` and `concepts.json` for `python scripts/train.py --config-path`; OneTrainer trains by epochs and cannot merge a LoRA during training, so residual mode is refused there. Formats read from musubi-tuner v0.3.6 and OneTrainer b08db37 on 2026-10-18 ([research note](../../../ai-docs/research/2026-10-18-musubi-onetrainer.md)); neither trainer was run with them yet. `--run` starts ai-toolkit only.
 
 | Trainer | Notes |
 |---|---|

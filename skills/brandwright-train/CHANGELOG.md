@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261018-1 · 2026-10-18 · `train --for musubi|onetrainer`
+- because: R-20261018-1 (musubi-tuner v0.3.6 and OneTrainer b08db37 job formats); HANDOFF idea chosen by the owner
+- files: SKILL.md (command line), references/setup.md (Other trainers), ../brandwright/scripts/bw.py (`export_config`, `MUSUBI`, `ONETRAINER`)
+- People whose training machine runs musubi-tuner or OneTrainer get the same job without rewriting it by hand. Residual maps to musubi `--base_weights`; OneTrainer refuses it.
+
 ### C-20261017-3 · 2026-10-17 · L-002 extended with test 4
 - because: ../brandwright-mockup T-20261017-2
 - files: LEARNINGS.md (L-002)
