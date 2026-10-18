@@ -8,14 +8,14 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-The GOV.UK tests are finished (1 to 4) and nothing is running. There is no queued work, so start by asking the owner which of these they want, in one short message:
+0.1.3 is released (2026-10-18) and nothing is running. The CLI size budget is yellow (2,072 of 2,000 lines). There is no queued work, so start by asking the owner which of these they want, in one short message:
 
-1. The WSL Playwright install (HANDOFF Open item 1, about 150 MB) and a rerun of eval action-3 and action-4 on Linux.
-2. One idea from HANDOFF Open item 2. The `export` command for musubi or OneTrainer configs needs no new dependency, so suggest it first.
-3. Deleting the test-3 leftovers (two trig LoRAs in ComfyUI and kits `govuk-trig-b1`/`-b2`).
-4. A 0.1.3 release of the Unreleased doc changes (or wait for a code change).
+1. Prove `train --for musubi` (or `onetrainer`) on a real trainer with the GOV.UK brand LoRA (HANDOFF Open item 1). This needs a trainer install, model downloads and GPU time, so it needs their yes.
+2. Bring the CLI back under 2,000 lines without losing behaviour, or ask whether the green line should move.
+3. One idea from HANDOFF Open item 2.
+4. The brandwright-train evergreen work: 3 verify-at-use claims are due, and the refresh is due on 2026-10-29.
 
-If the owner is not there to answer, do the brandwright evergreen work that is due (`evergreen.py audit` or each skill's `evergreen.json`; brandwright-train is due on 2026-10-29), and nothing that downloads, deletes or uses the GPU.
+If the owner is not there to answer, do item 4, or item 2 if it can be done without changing behaviour (tests must pass unchanged). Do nothing that downloads, deletes or uses the GPU.
 
 ## Rules
 
