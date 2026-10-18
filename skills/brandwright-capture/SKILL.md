@@ -2,7 +2,7 @@
 name: brandwright-capture
 description: "Turn a brand's websites into a clean LoRA training set and a token file: crawl pages with a headless browser (or the user's own signed-in browser session, or screenshots they supply), mask personal data, hide cookie banners, read design tokens and component styles into brand.css, then tile pages, crop components, drop duplicates, cap repeated headers and write captions that describe content and quote visible text but never colours or fonts. Use when the user wants to capture or crawl a site for a brand LoRA, feed screenshots in, build or caption a dataset for a UI or style LoRA, extract design tokens or brand colours and fonts from a live site, or asks 'how many screenshots do I need', 'how should I caption UI screenshots'. Part of brandwright (start there for the whole job). Also for 'refresh brandwright-capture'. Not for screenshot testing of an app, or scraping content."
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # brandwright-capture

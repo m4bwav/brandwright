@@ -28,7 +28,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 

@@ -91,13 +91,13 @@ Other agents that read Agent Skills (`SKILL.md`): link or copy the four folders 
 
 brandwright should stay small enough that nobody thinks twice about installing it. `scripts/budget.py` measures each row, and CI fails at red.
 
-| measure | green up to | yellow up to | now (0.1.2) |
+| measure | green up to | yellow up to | now (0.1.3) |
 |---|---:|---:|---:|
 | longest skill description, characters | 1,000 | 1,300 | 935 |
 | all four descriptions, characters | 3,600 | 4,400 | 3,499 |
-| largest SKILL.md, tokens | 2,500 | 3,500 | 1,575 |
-| largest reference file, tokens | 2,000 | 3,000 | 931 |
-| CLI lines (three files) | 2,000 | 2,600 | 1,970 |
+| largest SKILL.md, tokens | 2,500 | 3,500 | 1,590 |
+| largest reference file, tokens | 2,000 | 3,000 | 973 |
+| CLI lines (three files) | 2,000 | 2,600 | 2,072 (yellow) |
 | installed skills folder, KB | 250 | 500 | 231 |
 
 ## Evergreen

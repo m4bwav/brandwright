@@ -4,6 +4,10 @@ Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELO
 
 ## Unreleased
 
+## 0.1.3 · 2026-10-18
+
+Jobs for other trainers, and two documentation changes from the fourth training test and the Linux eval run.
+
 - `train --for musubi` writes the same LoRA job for kohya-ss/musubi-tuner (a dataset TOML and a `train.sh`), and `--for onetrainer` writes a OneTrainer config and concepts file. Residual site LoRAs map to musubi's `--base_weights`; OneTrainer cannot merge a LoRA during training, so it refuses residual mode. Formats were read from musubi-tuner v0.3.6 and OneTrainer's 2026-10-11 source; neither trainer has run them yet.
 - Prompt guide: with the brand LoRA alone on Z-Image the trigger word is optional (`gen --raw`); the look held without it in the fourth training test. Keep the triggers when a site LoRA is loaded too: there one picture in two fell back to the base model's photographs. Naming the header text is still what stops invented site names.
 - The capture, train and mockup skills say `python3` on macOS and Linux, as the hub does. In the Linux eval run, 2 of 4 agents first typed `python` and got `command not found`.
