@@ -8,14 +8,14 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-0.1.3 is released (2026-10-18) and nothing is running. The CLI size budget is yellow (2,072 of 2,000 lines). There is no queued work, so start by asking the owner which of these they want, in one short message:
+0.1.3 is released (2026-10-18) and nothing is running. brandwright-train was refreshed on 2026-10-18 and all its claims hold. Its claims fall due again on 2026-10-30 (claim 1) and 2026-11-01 (claims 2 to 4). The size budget is yellow on two rows: CLI lines (2,072 of 2,000) and the installed skills folder (251 of 250 KB). No work is queued, so start by asking the owner which of these they want, in one short message:
 
-1. Prove `train --for musubi` (or `onetrainer`) on a real trainer with the GOV.UK brand LoRA (HANDOFF Open item 1). This needs a trainer install, model downloads and GPU time, so it needs their yes.
-2. Bring the CLI back under 2,000 lines without losing behaviour, or ask whether the green line should move.
-3. One idea from HANDOFF Open item 2.
-4. The brandwright-train evergreen work: 3 verify-at-use claims are due, and the refresh is due on 2026-10-29.
+1. Budget: raise the green lines (CLI 2,000 lines, skills folder 250 KB), or cut back under them without losing behaviour (HANDOFF Open item 4 lists candidates).
+2. Prove `train --for musubi` (or `onetrainer`) on a real trainer with the GOV.UK brand LoRA (HANDOFF Open item 1). This needs a trainer install, model downloads and GPU time, so it needs their yes.
+3. One idea from HANDOFF Open item 2, or a UI test of MOSS-Image or FLUX 3 klein (Open item 5, which needs downloads and GPU time).
+4. A 0.1.4 release of the refreshed references (docs only; it needs their go-ahead).
 
-If the owner is not there to answer, do item 4, or item 2 if it can be done without changing behaviour (tests must pass unchanged). Do nothing that downloads, deletes or uses the GPU.
+If the owner does not answer, cut the CLI under 2,000 lines without changing behaviour (the tests must pass unchanged). If a claim is due by then, re-check it first (`evergreen.py claims skills/brandwright-train --due`). Do nothing that downloads, deletes or uses the GPU.
 
 ## Rules
 

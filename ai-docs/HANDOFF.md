@@ -1,16 +1,17 @@
 # HANDOFF
 
-Updated 2026-10-18. Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
+Updated 2026-10-18 (ninth session). Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
 
 ## State
 
 - Public repo `m4bwav/brandwright`. **0.1.3 is the latest release** (tag `v0.1.3`, 2026-10-18): `train --for musubi|onetrainer`, the trigger-optional prompt rule, `python3` in the sub-skills. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. CHANGELOG Unreleased is empty.
-- The size budget is **yellow**: CLI lines 2,072 against green up to 2,000 (yellow up to 2,600). Everything else is green; the installed skills folder is at 249 of 250 KB. Before adding CLI code, look for lines to cut, or ask the owner whether to raise the green line.
+- The size budget is **yellow on two rows**: CLI lines 2,072 (green up to 2,000) and the installed skills folder 251 KB (green up to 250; it crossed with the 2026-10-18 brandwright-train refresh, after its detail moved to ai-docs). Every refresh adds a little to the companions, so this row will keep creeping. Before adding to either, look for cuts or ask the owner whether to raise the green lines.
 - Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace, so it follows the checkout).
 - Wiki: live at https://github.com/m4bwav/brandwright/wiki, Home, Commands and Training at 0.1.3. Working copy `../brandwright.wiki` (`git pull`, edit, `git push`). Commands page: `python ai-docs/notes/wiki-commands-page.py . ../brandwright.wiki/Commands.md`.
 - `train --for musubi|onetrainer` writes jobs from formats read in source (research/2026-10-18-musubi-onetrainer.md). **Neither trainer has run them.**
 - Linux: `tests/smoke_browser.py` passes in WSL 2 Ubuntu (venv `~/bw-venv`). The 4 eval action cases pass there, but capture and render cannot run inside `claude plugin eval` (sealed HOME, no env passthrough, network allowlist), so the smoke test is the proof.
 - GOV.UK test kit (path in the owner's notes): tests 1 to 4 done; test-3 leftovers deleted 2026-10-18 (their pictures are in the kit's `test3-outputs`). ComfyUI keeps `govuk-brand-s250`, `govuk-brand`, `govuk-design-system` and `govuk-ds-r2-s100/200/300`.
+- brandwright-train was refreshed 2026-10-18 (R-20261018-2, research/2026-10-18-train-refresh.md): all claims hold, defaults unchanged; MOSS-Image and FLUX 3 klein are now trainable in ai-toolkit (named in models.md, not in `MODELS`). It is verify-at-use, so it has no calendar date: claim 1 is due 2026-10-30, claims 2-4 on 2026-11-01 (`evergreen.py claims skills/brandwright-train --due`).
 - Nothing is running.
 
 ## Open
@@ -22,7 +23,8 @@ Updated 2026-10-18. Read with [log.md](log.md) and [next-session-prompt.md](next
    - a Figma-friendly SVG export of code-route mock-ups;
    - optional `render --auth` to reuse the login session for fonts behind SSO (only if a work run shows font warnings).
 3. Untested: whether the site LoRA alone (continue mode) needs its trigger.
-4. evergreen: brandwright-train is due 2026-10-29 and has 3 verify-at-use claims due (`evergreen.py claims brandwright-train --due`).
+4. Budget: ask the owner whether to raise the green lines (CLI 2,000 lines, skills folder 250 KB) or cut. Folder cut candidates: the four near-identical 9.6 KB MAINTENANCE.md files (evergreen template copies), old TESTS.md detail.
+5. Untested: MOSS-Image for UI (text quality, 16 GB training) and FLUX 3 klein on 16 GB. Only worth trying with the owner's yes (downloads, GPU).
 
 ## Gotchas
 

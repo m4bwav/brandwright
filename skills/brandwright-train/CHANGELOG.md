@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261018-2 · 2026-10-18 · refresh: new trainable models, setup notes
+- because: R-20261018-2
+- files: references/models.md (table, header), references/setup.md (ostris ai-toolkit, Other trainers), RESEARCH.md (Current understanding: step defaults brought in line with SKILL.md after L-001; Open questions; Search plan)
+- Two new trainable models and four setup notes; defaults unchanged.
+
 ### C-20261018-1 · 2026-10-18 · `train --for musubi|onetrainer`
 - because: R-20261018-1 (musubi-tuner v0.3.6 and OneTrainer b08db37 job formats); HANDOFF idea chosen by the owner
 - files: SKILL.md (command line), references/setup.md (Other trainers), ../brandwright/scripts/bw.py (`export_config`, `MUSUBI`, `ONETRAINER`)
