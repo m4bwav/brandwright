@@ -4,6 +4,9 @@ Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELO
 
 ## Unreleased
 
+- The CLI is 81 lines shorter (2,072 to 1,991, under the 2,000-line green line) with no change in behaviour: every `--help` page is unchanged, the tests pass as they were, and the old and new scripts give identical output on 50 commands (`ai-docs/notes/cli-diff-run.py`).
+- The installed skills folder is 28 KB smaller (251 to 223 KB): the capture, mockup and train skills' MAINTENANCE.md now point to the hub's copy of the evergreen protocol instead of repeating it. The size budget is green on every row again.
+
 ## 0.1.3 · 2026-10-18
 
 Jobs for other trainers, and two documentation changes from the fourth training test and the Linux eval run.

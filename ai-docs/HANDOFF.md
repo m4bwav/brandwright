@@ -1,29 +1,29 @@
 # HANDOFF
 
-Updated 2026-10-18 (ninth session). Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
+Updated 2026-10-21 (tenth session). Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
 
 ## State
 
-- Public repo `m4bwav/brandwright`. **0.1.3 is the latest release** (tag `v0.1.3`, 2026-10-18): `train --for musubi|onetrainer`, the trigger-optional prompt rule, `python3` in the sub-skills. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. CHANGELOG Unreleased is empty.
-- The size budget is **yellow on two rows**: CLI lines 2,072 (green up to 2,000) and the installed skills folder 251 KB (green up to 250; it crossed with the 2026-10-18 brandwright-train refresh, after its detail moved to ai-docs). Every refresh adds a little to the companions, so this row will keep creeping. Before adding to either, look for cuts or ask the owner whether to raise the green lines.
+- Public repo `m4bwav/brandwright`. **0.1.3 is the latest release** (tag `v0.1.3`, 2026-10-18): `train --for musubi|onetrainer`, the trigger-optional prompt rule, `python3` in the sub-skills. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. CHANGELOG Unreleased: the 2026-10-21 budget cut only.
+- The size budget is **green on every row** since 2026-10-21 (unreleased, on main): CLI 1,991 lines (green up to 2,000), installed skills folder 223 KB (green up to 250). Headroom is small on the CLI: about 9 lines. Before adding a feature, look for cuts first; prove any refactor with `ai-docs/notes/cli-diff-run.py` (old vs new transcripts must match). The three sub-skills' MAINTENANCE.md point to the hub's full copy; a future evergreen refresh must not paste the full protocol back into them.
 - Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace, so it follows the checkout).
 - Wiki: live at https://github.com/m4bwav/brandwright/wiki, Home, Commands and Training at 0.1.3. Working copy `../brandwright.wiki` (`git pull`, edit, `git push`). Commands page: `python ai-docs/notes/wiki-commands-page.py . ../brandwright.wiki/Commands.md`.
 - `train --for musubi|onetrainer` writes jobs from formats read in source (research/2026-10-18-musubi-onetrainer.md). **Neither trainer has run them.**
 - Linux: `tests/smoke_browser.py` passes in WSL 2 Ubuntu (venv `~/bw-venv`). The 4 eval action cases pass there, but capture and render cannot run inside `claude plugin eval` (sealed HOME, no env passthrough, network allowlist), so the smoke test is the proof.
 - GOV.UK test kit (path in the owner's notes): tests 1 to 4 done; test-3 leftovers deleted 2026-10-18 (their pictures are in the kit's `test3-outputs`). ComfyUI keeps `govuk-brand-s250`, `govuk-brand`, `govuk-design-system` and `govuk-ds-r2-s100/200/300`.
 - brandwright-train was refreshed 2026-10-18 (R-20261018-2, research/2026-10-18-train-refresh.md): all claims hold, defaults unchanged; MOSS-Image and FLUX 3 klein are now trainable in ai-toolkit (named in models.md, not in `MODELS`). It is verify-at-use, so it has no calendar date: claim 1 is due 2026-10-30, claims 2-4 on 2026-11-01 (`evergreen.py claims skills/brandwright-train --due`).
-- Nothing is running.
+- Nothing is running. brandwright-train claims: claim 1 due 2026-10-30, claims 2-4 on 2026-11-01. The hub skill's next_due is 2026-10-29.
 
 ## Open
 
 1. Prove `--for` on a real trainer: install musubi-tuner (or OneTrainer) and train the GOV.UK brand LoRA from the exported job, then compare with the ai-toolkit LoRA in `bw.py sheet`. Needs the owner's yes: a trainer install, model downloads and GPU time.
-2. Ideas not built (pick one only with the owner's interest; mind the yellow budget):
+2. Ideas not built (pick one only with the owner's interest; the CLI has about 9 lines of green headroom):
    - OCR text-accuracy scoring (would measure header text; needs an optional OCR dependency);
    - DTCG import from dembrandt;
    - a Figma-friendly SVG export of code-route mock-ups;
    - optional `render --auth` to reuse the login session for fonts behind SSO (only if a work run shows font warnings).
 3. Untested: whether the site LoRA alone (continue mode) needs its trigger.
-4. Budget: ask the owner whether to raise the green lines (CLI 2,000 lines, skills folder 250 KB) or cut. Folder cut candidates: the four near-identical 9.6 KB MAINTENANCE.md files (evergreen template copies), old TESTS.md detail.
+4. A 0.1.4 release (refreshed train references from 2026-10-18 plus the budget cut; docs and refactor only). Needs the owner's go-ahead.
 5. Untested: MOSS-Image for UI (text quality, 16 GB training) and FLUX 3 klein on 16 GB. Only worth trying with the owner's yes (downloads, GPU).
 
 ## Gotchas

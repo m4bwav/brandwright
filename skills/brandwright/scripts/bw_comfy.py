@@ -69,8 +69,7 @@ class Comfy:
         try:
             pid = self.post("/prompt", {"prompt": graph, "client_id": "brandwright"})["prompt_id"]
         except urllib.error.HTTPError as e:
-            detail = e.read().decode(errors="replace")[:1500]
-            sys.exit("ComfyUI refused the graph (%s): %s" % (e.code, detail))
+            sys.exit("ComfyUI refused the graph (%s): %s" % (e.code, e.read().decode(errors="replace")[:1500]))
         t0 = time.time()
         while time.time() - t0 < timeout:
             time.sleep(2)
@@ -95,9 +94,7 @@ class Comfy:
 # ---------------------------------------------------------------- graphs
 
 def preset(kit, name):
-    g = dict(GRAPHS[name])
-    g.update(kit.cfg.get("comfy_models", {}).get(name, {}))
-    return g
+    return {**GRAPHS[name], **kit.cfg.get("comfy_models", {}).get(name, {})}
 
 
 def loaders(g, spec, loras, prefix=""):
@@ -120,10 +117,8 @@ def branch(g, spec, model, clip, vae, prompt, width, height, seed, n, tag, refs=
     g["pos_" + tag] = {"class_type": "CLIPTextEncode", "inputs": {"clip": clip, "text": prompt}}
     if spec["kind"] == "ksampler":
         g["ms_" + tag] = {"class_type": "ModelSamplingAuraFlow", "inputs": {"model": model, "shift": spec["shift"]}}
-        if spec["cfg"] > 1.0:
-            g["neg_" + tag] = {"class_type": "CLIPTextEncode", "inputs": {"clip": clip, "text": NEGATIVE}}
-        else:
-            g["neg_" + tag] = {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["pos_" + tag, 0]}}
+        g["neg_" + tag] = ({"class_type": "CLIPTextEncode", "inputs": {"clip": clip, "text": NEGATIVE}} if spec["cfg"] > 1.0
+                           else {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["pos_" + tag, 0]}})
         g["lat_" + tag] = {"class_type": spec["latent"], "inputs": {"width": width, "height": height, "batch_size": n}}
         g["ks_" + tag] = {"class_type": "KSampler", "inputs": {
             "model": ["ms_" + tag, 0], "positive": ["pos_" + tag, 0], "negative": ["neg_" + tag, 0], "latent_image": ["lat_" + tag, 0],
@@ -156,8 +151,7 @@ def parse_size(s):
     m = re.fullmatch(r"(\d+)x(\d+)", s)
     if not m:
         sys.exit("size must look like 1344x768")
-    w, h = int(m.group(1)) // 16 * 16, int(m.group(2)) // 16 * 16
-    return w, h
+    return int(m.group(1)) // 16 * 16, int(m.group(2)) // 16 * 16
 
 
 def lora_specs(kit, items):
@@ -178,12 +172,8 @@ def lora_specs(kit, items):
 
 
 def with_triggers(kit, prompt, named):
-    trig = []
-    if any(n == "brand" for n in named) or any(n and n != "brand" for n in named):
-        trig.append(kit.cfg["brand"]["trigger"])
-    for n in named:
-        if n and n != "brand":
-            trig.append(kit.site(n)["trigger"])
+    trig = [kit.cfg["brand"]["trigger"]] if any(named) else []
+    trig += [kit.site(n)["trigger"] for n in named if n and n != "brand"]
     pre = ", ".join(t for t in trig if t not in prompt)
     return ("%s, %s" % (pre, prompt)) if pre else prompt
 
@@ -207,10 +197,17 @@ def save_outputs(client, outputs, d, meta):
 
 
 def graph_name(kit, args):
-    if args.graph:
-        return args.graph
-    trained = kit.cfg.get("model", "zimage")
-    return TRAINED_ON.get(trained, "zimage_turbo")
+    return args.graph or TRAINED_ON.get(kit.cfg.get("model", "zimage"), "zimage_turbo")
+
+
+def finish(client, g, d, timeout, meta):
+    """Run the graph, save its pictures and mockup.json into d, and list them."""
+    t0 = time.time()
+    files = save_outputs(client, client.run(g, timeout), d, meta)
+    print("%d mock-up(s) in %.0f s -> %s" % (len(files), time.time() - t0, d))
+    for f in files:
+        print("  %s" % f)
+    return 0
 
 
 # ---------------------------------------------------------------- commands
@@ -230,15 +227,9 @@ def cmd_gen(args, kit):
     g = {}
     model, clip, vae = loaders(g, spec, [(f, wt) for f, wt, _ in loras])
     branch(g, spec, model, clip, vae, prompt, w, h, seed, args.n, "mock")
-    d = out_dir(kit, args.prompt)
-    t0 = time.time()
-    outputs = client.run(g, args.timeout)
-    files = save_outputs(client, outputs, d, {"prompt": prompt, "graph": name, "loras": [[f, wt] for f, wt, _ in loras],
-                                              "size": [w, h], "seed": seed, "steps": spec["steps"], "cfg": spec["cfg"]})
-    print("%d mock-up(s) in %.0f s -> %s" % (len(files), time.time() - t0, d))
-    for f in files:
-        print("  %s" % f)
-    return 0
+    return finish(client, g, out_dir(kit, args.prompt), args.timeout, {
+        "prompt": prompt, "graph": name, "loras": [[f, wt] for f, wt, _ in loras], "size": [w, h], "seed": seed,
+        "steps": spec["steps"], "cfg": spec["cfg"]})
 
 
 def frange(text):
@@ -312,24 +303,20 @@ def cmd_ref(args, kit):
                                                                            "megapixels": 1.0, "resolution_steps": 16}}
         g["en%d" % i] = {"class_type": "VAEEncode", "inputs": {"pixels": ["sc%d" % i, 0], "vae": vae}}
         lats.append(["en%d" % i, 0])
-    prompt = args.prompt
-    if not args.raw:
-        prompt = ("%s. Use the exact visual style of the reference screenshots: the same colours, typeface, corner radius, "
-                  "spacing, iconography and button style. Do not copy their content or layout. Crisp, legible interface text."
-                  % args.prompt)
+    prompt = args.prompt if args.raw else (
+        "%s. Use the exact visual style of the reference screenshots: the same colours, typeface, corner radius, "
+        "spacing, iconography and button style. Do not copy their content or layout. Crisp, legible interface text." % args.prompt)
     branch(g, spec, model, clip, vae, prompt, w, h, seed, args.n, "ref", refs=lats)
-    d = out_dir(kit, "ref-" + args.prompt)
-    t0 = time.time()
-    outputs = client.run(g, args.timeout)
-    files = save_outputs(client, outputs, d, {"prompt": prompt, "graph": name, "refs": [str(r) for r in refs], "size": [w, h],
-                                              "seed": seed})
-    print("%d mock-up(s) in %.0f s -> %s" % (len(files), time.time() - t0, d))
-    for f in files:
-        print("  %s" % f)
-    return 0
+    return finish(client, g, out_dir(kit, "ref-" + args.prompt), args.timeout,
+                  {"prompt": prompt, "graph": name, "refs": [str(r) for r in refs], "size": [w, h], "seed": seed})
 
 
-def add_parsers(sub):
+def add_parsers(sub, kit_cmd):
+    def prompt_cmd(name, help):
+        p = kit_cmd(name, help)
+        p.add_argument("prompt", help="what to draw: view, what it is, parts in order, strings in double quotes")
+        return p
+
     def common(p):
         p.add_argument("--comfy", help="ComfyUI URL (default: brand.json comfy, or BRANDWRIGHT_COMFY)")
         p.add_argument("--graph", choices=sorted(GRAPHS), help="model graph (default: the kit's training model)")
@@ -337,9 +324,7 @@ def add_parsers(sub):
         p.add_argument("--seed", type=int)
         p.add_argument("--timeout", type=int, default=900)
 
-    p = sub.add_parser("gen", help="mock-ups with the kit's LoRAs through ComfyUI")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("prompt", help="what to draw: view, what it is, parts in order, strings in double quotes")
+    p = prompt_cmd("gen", "mock-ups with the kit's LoRAs through ComfyUI")
     p.add_argument("--lora", action="append", help="NAME=WEIGHT (brand=0.8, a site name, or file.safetensors=0.6); repeat")
     p.add_argument("--n", type=int, default=4, help="pictures per run")
     p.add_argument("--steps", type=int)
@@ -347,18 +332,14 @@ def add_parsers(sub):
     p.add_argument("--raw", action="store_true", help="do not add trigger words")
     common(p)
 
-    p = sub.add_parser("sweep", help="grid of LoRA weights on one prompt and seed, with a contact sheet")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("prompt", help="what to draw: view, what it is, parts in order, strings in double quotes")
+    p = prompt_cmd("sweep", "grid of LoRA weights on one prompt and seed, with a contact sheet")
     p.add_argument("--a", required=True, help="first LoRA name (e.g. brand)")
     p.add_argument("--b", help="second LoRA name (e.g. a site)")
     p.add_argument("--wa", default="0.4,0.7,1.0")
     p.add_argument("--wb", default="0.4,0.7,1.0")
     common(p)
 
-    p = sub.add_parser("ref", help="training-free: FLUX.2 klein with up to 4 reference screenshots")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("prompt", help="what to draw: view, what it is, parts in order, strings in double quotes")
+    p = prompt_cmd("ref", "training-free: FLUX.2 klein with up to 4 reference screenshots")
     p.add_argument("--refs", nargs="+", required=True, help="up to 4 reference screenshots")
     p.add_argument("--lora", action="append")
     p.add_argument("--n", type=int, default=2)
