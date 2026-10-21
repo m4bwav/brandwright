@@ -29,7 +29,7 @@ import urllib.request
 from collections import Counter
 from pathlib import Path
 
-VERSION = "0.1.3"
+VERSION = "0.1.4"
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 

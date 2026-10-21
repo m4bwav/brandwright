@@ -2,8 +2,11 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
-## Unreleased
+## 0.1.4 · 2026-10-21
 
+Refreshed training references and a smaller install. No change in behaviour.
+
+- Training references re-checked on 2026-10-18: MOSS-Image (5B, Apache-2.0) and FLUX 3 klein (gated, ai-toolkit `flux3`) are listed as trainable; setup notes for musubi-tuner's CUDA 13 extras (`pip install -e .[cu130]`), an ai-toolkit fix that frees the text encoder after caching, and which models are gated. Defaults unchanged.
 - The CLI is 81 lines shorter (2,072 to 1,991, under the 2,000-line green line) with no change in behaviour: every `--help` page is unchanged, the tests pass as they were, and the old and new scripts give identical output on 50 commands (`ai-docs/notes/cli-diff-run.py`).
 - The installed skills folder is 28 KB smaller (251 to 223 KB): the capture, mockup and train skills' MAINTENANCE.md now point to the hub's copy of the evergreen protocol instead of repeating it. The size budget is green on every row again.
 
