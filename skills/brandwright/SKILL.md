@@ -2,7 +2,7 @@
 name: brandwright
 description: "On-brand UI mock-ups of new components and pages, from a brand's own websites: capture the sites (crawl with the user's own login, or their screenshots), extract design tokens to brand.css, train a brand LoRA plus a sub-site LoRA that learns only what that site adds, and generate mock-ups through ComfyUI, with a training-free reference route and a code route for pixel-exact components. Use whenever the user wants mock-ups or concepts 'in our brand' or 'in the style of this site', asks to train a LoRA on a website, design system or app screenshots, asks how to stack a brand LoRA with a site LoRA, or says 'brand LoRA', 'mock up a new card for our portal', 'make it look like our site'. Starts here and hands over to brandwright-capture, -train and -mockup. Also for 'refresh brandwright' and 'is brandwright stale'. Not for logos or marketing photos, cloning someone else's site, or plain front-end coding with no brand to match."
 metadata:
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # brandwright
