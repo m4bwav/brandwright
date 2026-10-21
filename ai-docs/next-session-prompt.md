@@ -8,14 +8,13 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-0.1.3 is released (2026-10-18) and nothing is running. brandwright-train was refreshed on 2026-10-18 and all its claims hold. Its claims fall due again on 2026-10-30 (claim 1) and 2026-11-01 (claims 2 to 4). The size budget is yellow on two rows: CLI lines (2,072 of 2,000) and the installed skills folder (251 of 250 KB). No work is queued, so start by asking the owner which of these they want, in one short message:
+The size budget is green on every row again (2026-10-21: CLI 1,991 of 2,000 lines, skills folder 223 of 250 KB), with no behaviour change; it is merged to main but not released. 0.1.3 is the latest release. Nothing is running. Due dates: the hub skill on 2026-10-29, brandwright-train claim 1 on 2026-10-30 and claims 2 to 4 on 2026-11-01. No work is queued, so start by asking the owner which of these they want, in one short message:
 
-1. Budget: raise the green lines (CLI 2,000 lines, skills folder 250 KB), or cut back under them without losing behaviour (HANDOFF Open item 4 lists candidates).
+1. A 0.1.4 release: the refreshed train references and the budget cut (it needs their go-ahead).
 2. Prove `train --for musubi` (or `onetrainer`) on a real trainer with the GOV.UK brand LoRA (HANDOFF Open item 1). This needs a trainer install, model downloads and GPU time, so it needs their yes.
-3. One idea from HANDOFF Open item 2, or a UI test of MOSS-Image or FLUX 3 klein (Open item 5, which needs downloads and GPU time).
-4. A 0.1.4 release of the refreshed references (docs only; it needs their go-ahead).
+3. One idea from HANDOFF Open item 2, or a UI test of MOSS-Image or FLUX 3 klein (Open item 5, which needs downloads and GPU time). The CLI has about 9 lines of green headroom, so a feature needs cuts or the owner's agreement to raise the line.
 
-If the owner does not answer, cut the CLI under 2,000 lines without changing behaviour (the tests must pass unchanged). If a claim is due by then, re-check it first (`evergreen.py claims skills/brandwright-train --due`). Do nothing that downloads, deletes or uses the GPU.
+If the owner does not answer: on or after 2026-10-29, refresh the hub skill (evergreen-refresh); on or after 2026-10-30, re-check the due brandwright-train claims (`evergreen.py claims skills/brandwright-train --due`). Before either date, record that nothing was due and stop. Do nothing that downloads, deletes or uses the GPU.
 
 ## Rules
 

@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261021-1 · 2026-10-21 · MAINTENANCE.md points to the hub's copy
+- because: owner's choice on 2026-10-21 to cut the installed skills folder back under 250 KB; the four MAINTENANCE.md files were the same 9.6 KB protocol copy
+- files: MAINTENANCE.md
+- The full protocol now lives once in [../brandwright/MAINTENANCE.md](../brandwright/MAINTENANCE.md), which always ships in the same plugin; this file keeps Step 0 in short and the link.
+
 ### C-20261017-3 · 2026-10-17 · the trigger is optional with the brand LoRA alone
 - because: T-20261017-2, ../brandwright-train L-002
 - files: references/prompts.md (Shape), TESTS.md (T-20261017-2)

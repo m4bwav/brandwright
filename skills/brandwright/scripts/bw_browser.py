@@ -9,6 +9,7 @@ import json
 import re
 import sys
 import time
+from contextlib import suppress
 from pathlib import Path
 from urllib.parse import urljoin, urldefrag, urlparse
 
@@ -196,9 +197,7 @@ def open_browser(pw, args, profile_dir=None, headless=True):
         browser = pw.chromium.connect_over_cdp(args.cdp)
         ctx = browser.contexts[0] if browser.contexts else browser.new_context()
         return ctx, lambda: None  # never close the user's own browser
-    kw = {"headless": headless}
-    if getattr(args, "channel", None):
-        kw["channel"] = args.channel
+    kw = launch_kw(args, headless)
     if profile_dir and Path(profile_dir).exists():
         ctx = pw.chromium.launch_persistent_context(str(profile_dir), **kw)
         return ctx, ctx.close
@@ -218,12 +217,14 @@ def new_page(holder, vp):
     return page, page.close
 
 
+def launch_kw(args, headless):
+    return {"headless": headless, **({"channel": args.channel} if getattr(args, "channel", None) else {})}
+
+
 def settle(page, wait_ms):
     """Scroll to the bottom and back so lazy images load, then wait."""
-    try:
+    with suppress(Exception):
         page.wait_for_load_state("networkidle", timeout=15000)
-    except Exception:
-        pass
     h = page.evaluate("document.documentElement.scrollHeight")
     y = 0
     while y < min(h, 20000):
@@ -241,20 +242,13 @@ def cmd_login(args, kit):
     print("A browser window opens. Sign in yourself, then close the window; the session is kept in\n  %s\n"
           "(private: it can open the site as you, so never share or commit it)." % prof)
     with sync_playwright() as pw:
-        kw = {"headless": False}
-        if args.channel:
-            kw["channel"] = args.channel
-        ctx = pw.chromium.launch_persistent_context(str(prof), **kw)
+        ctx = pw.chromium.launch_persistent_context(str(prof), **launch_kw(args, False))
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         page.goto(args.url)
-        try:
+        with suppress(Exception):
             page.wait_for_event("close", timeout=0)
-        except Exception:
-            pass
-        try:
+        with suppress(Exception):
             ctx.close()
-        except Exception:
-            pass
     print("saved login profile for site '%s'" % args.site)
     return 0
 
@@ -311,9 +305,7 @@ def cmd_capture(args, kit):
                         rec = {"file": "pages/%s.png" % name, "site": args.site, "url": page.url, "title": data["title"],
                                "viewport": vp, "dsf": dsf, "bg": data["bg"], "masked": masked,
                                "components": data["components"], "captured": time.strftime("%Y-%m-%dT%H:%M:%S")}
-                        tok = {k: data[k] for k in ("tally", "vars", "fonts", "bg", "url", "title")}
-                        tok["viewport"] = vp
-                        tok["recipes"] = {}
+                        tok = {**{k: data[k] for k in ("tally", "vars", "fonts", "bg", "url", "title")}, "viewport": vp, "recipes": {}}
                         for c in data["components"]:
                             tok["recipes"].setdefault(c["kind"], []).append(c["recipe"])
                         (out / "tokens" / (name + ".json")).write_text(json.dumps(tok), encoding="utf-8")
@@ -343,10 +335,7 @@ def cmd_render(args):
     src = Path(args.html).resolve()
     out = Path(args.out) if args.out else src.with_suffix(".png")
     with sync_playwright() as pw:
-        kw = {"headless": True}
-        if args.channel:
-            kw["channel"] = args.channel
-        browser = pw.chromium.launch(**kw)
+        browser = pw.chromium.launch(**launch_kw(args, True))
         ctx = browser.new_context(viewport={"width": args.width, "height": args.height}, device_scale_factor=args.scale,
                                   color_scheme="dark" if args.dark else "light")
         page = ctx.new_page()

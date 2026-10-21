@@ -26,6 +26,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from collections import Counter
 from pathlib import Path
 
 VERSION = "0.1.3"
@@ -133,16 +134,12 @@ class Kit:
 
     def loras(self):
         """The LoRAs this kit trains: 'brand' plus every site with its own LoRA."""
-        out = [("brand", self.cfg["brand"]["trigger"], None)]
-        for s in self.cfg.get("sites", []):
-            if s.get("lora", True):
-                out.append((s["name"], s["trigger"], s["name"]))
-        return out
+        return [("brand", self.cfg["brand"]["trigger"], None)] + [
+            (s["name"], s["trigger"], s["name"]) for s in self.cfg.get("sites", []) if s.get("lora", True)]
 
     def triggers(self, lora):
-        if lora == "brand":
-            return self.cfg["brand"]["trigger"]
-        return "%s %s" % (self.cfg["brand"]["trigger"], self.site(lora)["trigger"])
+        brand = self.cfg["brand"]["trigger"]
+        return brand if lora == "brand" else "%s %s" % (brand, self.site(lora)["trigger"])
 
     @property
     def model(self):
@@ -206,8 +203,8 @@ def find_toolkit(args, kit=None):
 
 
 def toolkit_python(tk):
-    for p in (tk / "venv" / "Scripts" / "python.exe", tk / "venv" / "bin" / "python", tk / ".venv" / "Scripts" / "python.exe",
-              tk / ".venv" / "bin" / "python"):
+    for p in (tk / v / "Scripts" / "python.exe" if win else tk / v / "bin" / "python"
+              for v in ("venv", ".venv") for win in (True, False)):
         if p.is_file():
             return str(p)
     return sys.executable
@@ -267,10 +264,8 @@ def cmd_import(args):
     dest = kit.root / "capture" / args.site / "imports"
     dest.mkdir(parents=True, exist_ok=True)
     log = kit.root / "capture" / args.site / "capture.jsonl"
-    files = []
-    for p in args.paths:
-        p = Path(p)
-        files += sorted(q for q in p.rglob("*") if q.suffix.lower() in IMG_EXT) if p.is_dir() else [p]
+    files = [q for p in map(Path, args.paths)
+             for q in (sorted(x for x in p.rglob("*") if x.suffix.lower() in IMG_EXT) if p.is_dir() else [p])]
     n = 0
     with log.open("a", encoding="utf-8") as f:
         for src in files:
@@ -384,10 +379,7 @@ def common_recipe(lst):
     """The most frequent style signature among a kind's elements."""
     if not lst:
         return None
-    counts = {}
-    for r in lst:
-        key = json.dumps(r, sort_keys=True)
-        counts[key] = counts.get(key, 0) + 1
+    counts = Counter(json.dumps(r, sort_keys=True) for r in lst)
     return json.loads(max(counts.items(), key=lambda kv: kv[1])[0])
 
 
@@ -404,7 +396,7 @@ def build_tokens(tally, vars_, fonts, recipes):
     sizes = sorted({int(round(float(s[:-2]))) for s in top(tally.get("size", {}), 8) if s.endswith("px")})
     radii = [r for r in top(tally.get("radius", {}), 4)]
     spaces = sorted({int(round(float(s[:-2]))) for s in top(tally.get("space", {}), 10) if s.endswith("px") and float(s[:-2]) > 0})
-    tok = {
+    return {
         "color": {"$type": "color",
                   "background": {"$value": to_hex(bg or (255, 255, 255))}, "text": {"$value": to_hex(text or (17, 17, 17))},
                   "primary": {"$value": to_hex(primary or (0, 0, 0))}},
@@ -421,7 +413,6 @@ def build_tokens(tally, vars_, fonts, recipes):
             "font_faces": fonts[:20],
             "recipes": recipe_set(recipes, fams)}},
     }
-    return tok
 
 
 def recipe_set(recipes, fams):
@@ -453,30 +444,19 @@ def css_for(tok, scope=":root"):
     lines = []
     ext = tok["$extensions"]["brandwright"]
     if scope == ":root":
-        for fo in ext["font_faces"]:
-            lines.append("@font-face { font-family: \"%s\"; font-weight: %s; font-style: %s; src: %s; }"
-                         % (fo["family"], fo["weight"], fo["style"], fo["src"]))
+        lines += ["@font-face { font-family: \"%s\"; font-weight: %s; font-style: %s; src: %s; }"
+                  % (fo["family"], fo["weight"], fo["style"], fo["src"]) for fo in ext["font_faces"]]
     lines.append("%s {" % scope)
-    for name, val in ext["site_custom_properties"].items():
-        if val:
-            lines.append("  %s: %s;" % (name, val))
-    for k in ("background", "text", "primary"):
-        lines.append("  --bw-%s: %s;" % (k, tok["color"][k]["$value"]))
-    for k, v in tok["palette"].items():
-        if not k.startswith("$"):
-            lines.append("  --bw-palette-%s: %s;" % (k, v["$value"]))
+    lines += ["  %s: %s;" % (name, val) for name, val in ext["site_custom_properties"].items() if val]
+    lines += ["  --bw-%s: %s;" % (k, tok["color"][k]["$value"]) for k in ("background", "text", "primary")]
+    lines += ["  --bw-palette-%s: %s;" % (k, v["$value"]) for k, v in tok["palette"].items() if not k.startswith("$")]
     fams = [v["$value"] for k, v in tok["font"]["family"].items() if not k.startswith("$") and k != "mono"]
     if fams:
         lines.append("  --bw-font: %s, system-ui, sans-serif;" % ", ".join('"%s"' % f for f in fams))
     if "mono" in tok["font"]["family"]:
         lines.append('  --bw-font-mono: "%s", ui-monospace, monospace;' % tok["font"]["family"]["mono"]["$value"])
-    for group, prefix in (("radius", "radius"), ("space", "space"), ("shadow", "shadow")):
-        for k, v in tok[group].items():
-            if not k.startswith("$"):
-                lines.append("  --bw-%s-%s: %s;" % (prefix, k, v["$value"]))
-    for k, v in tok["font"]["size"].items():
-        if not k.startswith("$"):
-            lines.append("  --bw-size-%s: %s;" % (k, v["$value"]))
+    for prefix, group in (("radius", tok["radius"]), ("space", tok["space"]), ("shadow", tok["shadow"]), ("size", tok["font"]["size"])):
+        lines += ["  --bw-%s-%s: %s;" % (prefix, k, v["$value"]) for k, v in group.items() if not k.startswith("$")]
     lines.append("}")
     pre = "" if scope == ":root" else scope + " "
     if scope == ":root":
@@ -519,18 +499,12 @@ def cmd_tokens(args):
     (kit.root / "tokens.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
     (kit.root / "brand.css").write_text("\n".join(css), encoding="utf-8")
     md = ["# %s tokens" % kit.cfg["brand"]["name"], "", "Read from %d captured page views on %s. Use `brand.css` in mock-ups: "
-          "`<link rel=stylesheet href=brand.css>` and `<body data-site=\"SITE\">` for a site's overrides." % (len(all_files), time.strftime("%Y-%m-%d")), ""]
-    md += ["| token | value |", "|---|---|"]
-    for k in ("background", "text", "primary"):
-        md.append("| color.%s | %s |" % (k, brand["color"][k]["$value"]))
-    for k, v in brand["palette"].items():
-        if not k.startswith("$"):
-            md.append("| palette.%s | %s (%s) |" % (k, v["$value"], v["$description"]))
-    for k, v in brand["font"]["family"].items():
-        if not k.startswith("$"):
-            md.append("| font.%s | %s |" % (k, v["$value"]))
-    md.append("")
-    md.append("Component recipes found: %s." % (", ".join(sorted(brand["$extensions"]["brandwright"]["recipes"])) or "none"))
+          "`<link rel=stylesheet href=brand.css>` and `<body data-site=\"SITE\">` for a site's overrides." % (len(all_files), time.strftime("%Y-%m-%d")), "",
+          "| token | value |", "|---|---|"]
+    md += ["| color.%s | %s |" % (k, brand["color"][k]["$value"]) for k in ("background", "text", "primary")]
+    md += ["| palette.%s | %s (%s) |" % (k, v["$value"], v["$description"]) for k, v in brand["palette"].items() if not k.startswith("$")]
+    md += ["| font.%s | %s |" % (k, v["$value"]) for k, v in brand["font"]["family"].items() if not k.startswith("$")]
+    md += ["", "Component recipes found: %s." % (", ".join(sorted(brand["$extensions"]["brandwright"]["recipes"])) or "none")]
     (kit.root / "tokens.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     try:
         from PIL import Image, ImageDraw
@@ -707,8 +681,7 @@ def cmd_prep(args):
                 if key in texts:  # the same component with the same words, e.g. "Menu" on every page
                     continue
                 texts.add(key)
-            cap = KIND_CAP.get(c["kind"], KIND_CAP_DEFAULT)
-            if per_kind.get(c["kind"], 0) >= cap:
+            if per_kind.get(c["kind"], 0) >= KIND_CAP.get(c["kind"], KIND_CAP_DEFAULT):
                 continue
             per_kind[c["kind"]] = per_kind.get(c["kind"], 0) + 1
             hashes.append(h)
@@ -903,11 +876,7 @@ def export_config(kit, name, cfg, args):
                      'cache_directory = "%s"' % (out / ("cache_%d" % r)).as_posix(), 'num_repeats = 1', '']
         (out / "dataset.toml").write_text("\n".join(toml), encoding="utf-8")
         ver = " --model_version klein-base-4b" if model == "klein4b" else ""
-        base = []
-        if model == "zimage_turbo":
-            base.append('"$TURBO_ADAPTER"')
-        if mode == "residual":
-            base.append('"%s"' % Path(brand).as_posix())
+        base = (['"$TURBO_ADAPTER"'] if model == "zimage_turbo" else []) + (['"%s"' % Path(brand).as_posix()] if mode == "residual" else [])
         extra = (" --base_weights %s --base_weights_multiplier %s" % (" ".join(base), " ".join(["1.0"] * len(base)))) if base else ""
         if mode == "continue":
             extra += ' --network_weights "%s"' % Path(brand).as_posix()
@@ -1014,17 +983,15 @@ def cmd_train(args):
     log = tdir / ("%s.log" % name)
     py = toolkit_python(tk)
     kw = {"cwd": str(tk), "stdout": log.open("w", encoding="utf-8"), "stderr": subprocess.STDOUT, "stdin": subprocess.DEVNULL}
+    env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
+    if args.wait:  # block until training ends (for job runners that must know when the GPU is free)
+        code = subprocess.call([py, "run.py", str(path)], env=env, **kw)
+        print("training ended with exit code %d; log %s" % (code, log))
+        return code
     if os.name == "nt":
         kw["creationflags"] = 0x00000008 | 0x00000200  # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
     else:
         kw["start_new_session"] = True
-    env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUTF8="1")
-    if args.wait:  # block until training ends (for job runners that must know when the GPU is free)
-        kw.pop("creationflags", None)
-        kw.pop("start_new_session", None)
-        code = subprocess.call([py, "run.py", str(path)], env=env, **kw)
-        print("training ended with exit code %d; log %s" % (code, log))
-        return code
     p = subprocess.Popen([py, "run.py", str(path)], env=env, **kw)
     (tdir / ("%s.pid" % name)).write_text(str(p.pid), encoding="utf-8")
     print("started pid %d; log %s\n  progress: bw.py status %s" % (p.pid, log, args.kit))
@@ -1054,10 +1021,8 @@ def cmd_status(args):
             last = lines[-1][-160:] if lines else ""
         ckpts = sorted(out.glob("*.safetensors")) if out.is_dir() else []
         samples = sorted((out / "samples").glob("*")) if (out / "samples").is_dir() else []
-        alive = ""
         pidf = tdir / (name + ".pid")
-        if pidf.is_file():
-            alive = " pid %s" % pidf.read_text().strip()
+        alive = " pid %s" % pidf.read_text().strip() if pidf.is_file() else ""
         print("%s%s\n  step %s/%s  checkpoints %d  samples %d\n  last: %s" % (name, alive, step or "?", total or "?", len(ckpts),
                                                                              len(samples), last))
         if ckpts:
@@ -1138,11 +1103,8 @@ def cmd_score(args):
     Image = need_pil()
     kit = Kit(args.kit)
     pal = brand_palette(kit)
-    rows = []
-    for f in args.images:
-        for p in (sorted(Path(f).glob("*.png")) + sorted(Path(f).glob("*.jpg")) if Path(f).is_dir() else [Path(f)]):
-            de, off = palette_score(Image, p, pal)
-            rows.append((de, off, p))
+    rows = [(*palette_score(Image, p, pal), p) for f in args.images
+            for p in (sorted(Path(f).glob("*.png")) + sorted(Path(f).glob("*.jpg")) if Path(f).is_dir() else [Path(f)])]
     for de, off, p in sorted(rows):
         print("%6.1f dE  %5.1f%% off-palette  %s" % (de, off * 100, p))
     if args.json:
@@ -1170,10 +1132,8 @@ def contact_sheet(Image, paths, out, cols=4, cell=384, labels=None):
 
 def cmd_sheet(args):
     Image = need_pil()
-    paths = []
-    for f in args.images:
-        p = Path(f)
-        paths += sorted(q for q in p.iterdir() if q.suffix.lower() in IMG_EXT) if p.is_dir() else [p]
+    paths = [q for p in map(Path, args.images)
+             for q in (sorted(x for x in p.iterdir() if x.suffix.lower() in IMG_EXT) if p.is_dir() else [p])]
     if not paths:
         sys.exit("no images")
     print("wrote %s" % contact_sheet(Image, paths, args.out, cols=args.cols))
@@ -1187,6 +1147,13 @@ def main(argv=None):
     ap.add_argument("--version", action="version", version=VERSION)
     sub = ap.add_subparsers(dest="cmd", required=True)
 
+    def kit_cmd(name, help, site=False):
+        p = sub.add_parser(name, help=help)
+        p.add_argument("kit", help="kit folder (made by new)")
+        if site:
+            p.add_argument("--site", required=True, help="site name in brand.json")
+        return p
+
     p = sub.add_parser("doctor", help="what is installed: Pillow, Playwright, GPU, ai-toolkit, ComfyUI, Ollama")
     p.add_argument("--comfy", action="append", help="ComfyUI URL to check (repeat; default BRANDWRIGHT_COMFY or :8188)")
     p.add_argument("--toolkit", help="ostris ai-toolkit folder (or set BRANDWRIGHT_AI_TOOLKIT)")
@@ -1198,15 +1165,11 @@ def main(argv=None):
     p.add_argument("--site", action="append", help="NAME or NAME=URL; repeat for more sites")
     p.add_argument("--model", default=DEFAULT_MODEL, choices=sorted(MODELS), help="base model to train on (default zimage)")
 
-    p = sub.add_parser("login", help="open a browser window to sign in yourself; the session is kept in the kit")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("--site", required=True, help="site name in brand.json")
+    p = kit_cmd("login", "open a browser window to sign in yourself; the session is kept in the kit", site=True)
     p.add_argument("url", help="page to open for signing in")
     p.add_argument("--channel", help="msedge or chrome: use the installed browser")
 
-    p = sub.add_parser("capture", help="screenshot pages (with masks), component boxes and design tokens")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("--site", required=True, help="site name in brand.json")
+    p = kit_cmd("capture", "screenshot pages (with masks), component boxes and design tokens", site=True)
     p.add_argument("urls", nargs="*", help="pages to capture (default: the site's urls in brand.json)")
     p.add_argument("--crawl", type=int, default=0, help="also visit up to N same-site links found on the pages")
     p.add_argument("--crawl-all", action="store_true", help="also crawl cookie, privacy, terms and sitemap pages")
@@ -1221,36 +1184,29 @@ def main(argv=None):
     p.add_argument("--timeout", type=int, default=45)
     p.add_argument("--max-per-kind", type=int, default=8)
 
-    p = sub.add_parser("import", help="add your own screenshots (full screens or single components)")
-    p.add_argument("kit", help="kit folder (made by new)")
-    p.add_argument("--site", required=True, help="site name in brand.json")
+    p = kit_cmd("import", "add your own screenshots (full screens or single components)", site=True)
     p.add_argument("paths", nargs="+", help="image files or folders (png, jpg, webp)")
     p.add_argument("--kind", default="screen", choices=["screen", "component"])
     p.add_argument("--viewport", default="desktop", choices=["desktop", "laptop", "tablet", "mobile", "import"])
 
-    p = sub.add_parser("tokens", help="merge captured styles into tokens.json (DTCG), brand.css and tokens.md")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("tokens", "merge captured styles into tokens.json (DTCG), brand.css and tokens.md")
 
-    p = sub.add_parser("prep", help="build dataset/<lora>: tiles, component specimens, dedupe, caps, template captions")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("prep", "build dataset/<lora>: tiles, component specimens, dedupe, caps, template captions")
     p.add_argument("--tiles", type=int, default=3, help="viewport tiles per page, from the top")
     p.add_argument("--dedupe", type=int, default=4, help="max hash distance treated as a duplicate (0-64)")
     p.add_argument("--max-per-site", type=int, default=60)
     p.add_argument("--brand-max", type=int, default=90, help="brand dataset size, shared equally across sites")
 
-    p = sub.add_parser("caption", help="rewrite captions with a local vision model through Ollama")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("caption", "rewrite captions with a local vision model through Ollama")
     p.add_argument("--lora", help="one dataset only (default: all)")
     p.add_argument("--vlm", default="ollama", choices=["ollama", "none"])
     p.add_argument("--model", default=os.environ.get("BRANDWRIGHT_VLM", "qwen3-vl:8b"))
     p.add_argument("--host", help="Ollama URL (default BRANDWRIGHT_OLLAMA or http://127.0.0.1:11434)")
     p.add_argument("--force", action="store_true", help="re-caption pictures that already have a model caption")
 
-    p = sub.add_parser("review", help="write review.html: every training picture with its caption")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("review", "write review.html: every training picture with its caption")
 
-    p = sub.add_parser("train", help="write an ai-toolkit config for one LoRA (brand or a site); --run starts it")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("train", "write an ai-toolkit config for one LoRA (brand or a site); --run starts it")
     p.add_argument("--lora", default="brand", help="brand, or a site name")
     p.add_argument("--model", choices=sorted(MODELS), help="base model (default: the kit's)")
     p.add_argument("--mode", choices=["residual", "continue", "stack"],
@@ -1275,18 +1231,16 @@ def main(argv=None):
     p.add_argument("--resume", action="store_true",
                    help="with --run: continue the run already in train/out/<name>; without it, that folder is moved aside")
 
-    p = sub.add_parser("status", help="training progress, checkpoints and samples")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("status", "training progress, checkpoints and samples")
 
-    p = sub.add_parser("pick", help="copy a checkpoint to loras/ (and to ComfyUI's loras folder with --to)")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("pick", "copy a checkpoint to loras/ (and to ComfyUI's loras folder with --to)")
     p.add_argument("--lora", default="brand", help="brand, or a site name")
     p.add_argument("--step", type=int, help="checkpoint step (default: the final file)")
     p.add_argument("--model", choices=sorted(MODELS), help="base model (default: the kit's)")
     p.add_argument("--to", help="ComfyUI models/loras folder (or set BRANDWRIGHT_COMFY_LORAS)")
 
     import bw_comfy  # noqa: E402
-    bw_comfy.add_parsers(sub)
+    bw_comfy.add_parsers(sub, kit_cmd)
 
     p = sub.add_parser("render", help="screenshot an HTML mock-up built on brand.css (the code route)")
     p.add_argument("html", help="the mock-up page (link brand.css from it)")
@@ -1299,8 +1253,7 @@ def main(argv=None):
     p.add_argument("--dark", action="store_true")
     p.add_argument("--channel")
 
-    p = sub.add_parser("score", help="palette match of images to the brand tokens (delta-E, off-palette share)")
-    p.add_argument("kit", help="kit folder (made by new)")
+    p = kit_cmd("score", "palette match of images to the brand tokens (delta-E, off-palette share)")
     p.add_argument("images", nargs="+", help="images or folders")
     p.add_argument("--json", help="also write the scores to this file")
 
@@ -1310,13 +1263,9 @@ def main(argv=None):
     p.add_argument("--cols", type=int, default=4)
 
     args = ap.parse_args(argv)
-    if args.cmd in ("login", "capture"):
+    if args.cmd in ("login", "capture", "render"):
         import bw_browser
-        kit = Kit(args.kit)
-        return bw_browser.cmd_login(args, kit) if args.cmd == "login" else bw_browser.cmd_capture(args, kit)
-    if args.cmd == "render":
-        import bw_browser
-        return bw_browser.cmd_render(args)
+        return bw_browser.cmd_render(args) if args.cmd == "render" else getattr(bw_browser, "cmd_" + args.cmd)(args, Kit(args.kit))
     if args.cmd in ("gen", "sweep", "ref"):
         return bw_comfy.run(args, Kit)
     return {"doctor": cmd_doctor, "new": cmd_new, "import": cmd_import, "tokens": cmd_tokens, "prep": cmd_prep,
