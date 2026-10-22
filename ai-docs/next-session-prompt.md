@@ -8,10 +8,12 @@ Before you rely on it, check that this prompt is not older than `HANDOFF.md` and
 
 ## This step
 
-0.1.4 was released on 2026-10-21 (train reference refresh and the budget cut; wiki at 0.1.4). Nothing is unreleased and nothing is running. The size budget is green on every row (CLI 1,991 of 2,000 lines, skills folder about 225 of 250 KB). Due dates: the hub skill on 2026-10-29, brandwright-train claim 1 on 2026-10-30 and claims 2 to 4 on 2026-11-01. No work is queued, so start by asking the owner which of these they want, in one short message:
+`train --for musubi` was proven on 2026-10-21 (train T-20261021-1, PR #27 merged): the Z-Image brand LoRA job ran on musubi-tuner v0.3.6 with only its model paths set, and the LoRA is comparable to ai-toolkit's. That change is unreleased (CHANGELOG Unreleased). Nothing is running. The size budget is green (CLI 1,991 of 2,000 lines, skills folder about 227 of 250 KB). Due dates: the hub skill on 2026-10-29, brandwright-train claim 1 on 2026-10-30 and claims 2 to 4 on 2026-11-01. Start by asking the owner, in one short message, which of these they want (more than one is fine):
 
-1. Prove `train --for musubi` (or `onetrainer`) on a real trainer with the GOV.UK brand LoRA (HANDOFF Open item 1). This needs a trainer install, model downloads and GPU time, so it needs their yes.
-2. One idea from HANDOFF Open item 2, or a UI test of MOSS-Image or FLUX 3 klein (Open item 5, which needs downloads and GPU time). The CLI has about 9 lines of green headroom, so a feature needs cuts or the owner's agreement to raise the line.
+1. Release 0.1.5 with the musubi proof (needs their go-ahead).
+2. Delete the test-5 leftovers: 6 musubi LoRAs in ComfyUI's loras folder (about 1.7 GB) and the run's output and caches in the kit (HANDOFF State). Keep the musubi install unless they say otherwise.
+3. Prove the OneTrainer job, or a musubi residual site LoRA (GPU time, and a OneTrainer install for the first).
+4. One idea from HANDOFF Open item 2, or a UI test of MOSS-Image or FLUX 3 klein (Open item 5). The CLI has about 9 lines of green headroom, so a feature needs cuts or the owner's agreement to raise the line.
 
 If the owner does not answer: on or after 2026-10-29, refresh the hub skill (evergreen-refresh); on or after 2026-10-30, re-check the due brandwright-train claims (`evergreen.py claims skills/brandwright-train --due`). Before either date, record that nothing was due and stop. Do nothing that downloads, deletes or uses the GPU.
 

@@ -1,22 +1,23 @@
 # HANDOFF
 
-Updated 2026-10-21 (eleventh session). Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
+Updated 2026-10-21 (twelfth session). Read with [log.md](log.md) and [next-session-prompt.md](next-session-prompt.md).
 
 ## State
 
-- Public repo `m4bwav/brandwright`. **0.1.4 is the latest release** (tag `v0.1.4`, 2026-10-21): the 2026-10-18 train reference refresh and the budget cut, no behaviour change. 0.1.3 (2026-10-18) brought `train --for musubi|onetrainer`. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. Nothing unreleased.
+- Public repo `m4bwav/brandwright`. **0.1.4 is the latest release** (tag `v0.1.4`, 2026-10-21): the 2026-10-18 train reference refresh and the budget cut, no behaviour change. 0.1.3 (2026-10-18) brought `train --for musubi|onetrainer`. CI green on Windows, macOS and Linux, Python 3.10 and 3.14. **Unreleased:** PR #27 (musubi proven: train.sh header line, setup.md, TESTS); a 0.1.5 release needs the owner's go-ahead.
 - The size budget is **green on every row** since 2026-10-21 (released in 0.1.4): CLI 1,991 lines (green up to 2,000), installed skills folder 223 KB (green up to 250). Headroom is small on the CLI: about 9 lines. Before adding a feature, look for cuts first; prove any refactor with `ai-docs/notes/cli-diff-run.py` (old vs new transcripts must match). The three sub-skills' MAINTENANCE.md point to the hub's full copy; a future evergreen refresh must not paste the full protocol back into them.
 - Installed for the owner as `brandwright@mark-local` (the Ai folder's directory marketplace, so it follows the checkout).
 - Wiki: live at https://github.com/m4bwav/brandwright/wiki, Home, footer and Commands at 0.1.4. Working copy `../brandwright.wiki` (`git pull`, edit, `git push`). Commands page: `python ai-docs/notes/wiki-commands-page.py . ../brandwright.wiki/Commands.md`.
-- `train --for musubi|onetrainer` writes jobs from formats read in source (research/2026-10-18-musubi-onetrainer.md). **Neither trainer has run them.**
+- `train --for musubi` is **proven** for the Z-Image brand LoRA (2026-10-21, train T-20261021-1): musubi-tuner v0.3.6 installed next to ai-toolkit (path in the owner's notes; uv venv, cu130), 300 steps in 41 min, LoRA comparable to ai-toolkit's on one seed. Still unrun: OneTrainer, musubi for other models, and musubi residual/continue modes.
 - Linux: `tests/smoke_browser.py` passes in WSL 2 Ubuntu (venv `~/bw-venv`). The 4 eval action cases pass there, but capture and render cannot run inside `claude plugin eval` (sealed HOME, no env passthrough, network allowlist), so the smoke test is the proof.
 - GOV.UK test kit (path in the owner's notes): tests 1 to 4 done; test-3 leftovers deleted 2026-10-18 (their pictures are in the kit's `test3-outputs`). ComfyUI keeps `govuk-brand-s250`, `govuk-brand`, `govuk-design-system` and `govuk-ds-r2-s100/200/300`.
 - brandwright-train was refreshed 2026-10-18 (R-20261018-2, research/2026-10-18-train-refresh.md): all claims hold, defaults unchanged; MOSS-Image and FLUX 3 klein are now trainable in ai-toolkit (named in models.md, not in `MODELS`). It is verify-at-use, so it has no calendar date: claim 1 is due 2026-10-30, claims 2-4 on 2026-11-01 (`evergreen.py claims skills/brandwright-train --due`).
+- Leftovers from test 5, kept until the owner says otherwise: 6 converted LoRAs `govuk-brand-musubi-s50` to `-s300` in ComfyUI's loras folder (about 1.7 GB), the run's `output/` and caches in the kit's `train/govuk-brand-zimage-musubi`, and the musubi install.
 - Nothing is running. brandwright-train claims: claim 1 due 2026-10-30, claims 2-4 on 2026-11-01. The hub skill's next_due is 2026-10-29.
 
 ## Open
 
-1. Prove `--for` on a real trainer: install musubi-tuner (or OneTrainer) and train the GOV.UK brand LoRA from the exported job, then compare with the ai-toolkit LoRA in `bw.py sheet`. Needs the owner's yes: a trainer install, model downloads and GPU time.
+1. musubi proven for the brand LoRA (2026-10-21). Next, only with the owner's yes (GPU time, a OneTrainer install): the OneTrainer job, or a musubi residual site LoRA (`--base_weights`). Also ask whether to delete the test-5 leftovers and whether to release 0.1.5.
 2. Ideas not built (pick one only with the owner's interest; the CLI has about 9 lines of green headroom):
    - OCR text-accuracy scoring (would measure header text; needs an optional OCR dependency);
    - DTCG import from dembrandt;
@@ -37,3 +38,4 @@ Updated 2026-10-21 (eleventh session). Read with [log.md](log.md) and [next-sess
 - `bw.py sheet --cols 2 --out X.png <control pics> <test pics>` puts a control row above a test row: the quickest way to judge a run.
 - evergreen `checked --use-time` needs `--m 0`; without it the history says "refresh failed".
 - A 250-step Z-Image brand retraining (90 pictures, no samples) takes about 25 min; ComfyUI memory-maps loaded LoRAs, so `pick` writes a step-named copy; ai-toolkit resumes from any checkpoint in `train/out/<name>` (`train --run` moves an old run aside).
+- musubi on Windows: run train.sh with Git Bash and musubi's `.venv/Scripts` first on PATH (the kit's `run_test5.py` shows how). It saves `<name>-stepNNNNNNNN.safetensors` plus `<name>.safetensors`, a copy of the last step; convert with `src/musubi_tuner/convert_lora.py --target other` before ComfyUI.
