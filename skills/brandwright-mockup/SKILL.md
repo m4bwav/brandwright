@@ -2,7 +2,7 @@
 name: brandwright-mockup
 description: "Make on-brand UI mock-ups of new components, screens and pages for a brand kit: pixel-exact HTML on brand.css (real colours, fonts and component styles read from the live site) rendered to PNG; concept images from the brand and sub-site LoRAs through ComfyUI with prompt patterns per component; weight sweeps with contact sheets; training-free mock-ups from up to four reference screenshots with FLUX.2 klein; palette scoring against the brand. Use when the user asks for a mock-up, concept, wireframe-to-visual or variations of a new card, form, dashboard, modal, page or flow in their brand or a sub-site's style, wants LoRA weights tuned, or asks why generated text is wrong. Part of brandwright. Also for 'refresh brandwright-mockup'. Not for logos, illustrations or photos, or building the production front end."
 metadata:
-  version: "0.1.4"
+  version: "0.1.5"
 ---
 
 # brandwright-mockup
