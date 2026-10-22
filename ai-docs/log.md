@@ -95,3 +95,10 @@ Append-only, newest last.
   - Test 5 (runner `run_test5.py` in the kit): `train --lora brand --for musubi --steps 300 --save-every 50`, the job run as written except the three model paths. Waited for ComfyUI idle, freed it, trained 300 steps in 41.3 min with both caches (about 7.5 s a step). Converted every checkpoint with `convert_lora.py --target other` into ComfyUI as `govuk-brand-musubi-s50` to `-s300` (no missing-key warnings), then drew start page, status card and modal with ai-toolkit step 250 and musubi 150, 250 and 300 (seed 11, 2 each). Sheets `t5_*.png` in the kit: musubi is comparable to ai-toolkit on one seed. Train T-20261021-1.
   - Only snag: train.sh's bare `python` needs musubi's venv first on PATH. PR #27 (merged): train.sh header says so, setup.md has the install line and model files, CHANGELOG Unreleased. CLI still 1,991 lines.
   - Left on disk for the owner to decide: the 6 converted musubi LoRAs in ComfyUI's loras folder (about 1.7 GB), the musubi run's `output/` and caches in the kit, and the musubi install.
+
+## 2026-10-22
+
+- Thirteenth session: the owner chose the 0.1.5 release and deleting the test-5 leftovers.
+  - Deleted the 6 `govuk-brand-musubi-s50` to `-s300` LoRAs from ComfyUI's loras folder and the musubi run's `output/` (1.9 GB) and `cache_768`/`cache_1024` in the kit; kept `dataset.toml`, `train.sh` and the musubi install.
+  - Released 0.1.5 (PR #29, tag `v0.1.5`, https://github.com/m4bwav/brandwright/releases/tag/v0.1.5): the musubi proof and setup note, no behaviour change. Budget green, public check passes, 29 tests pass, CI green (the browser job's Playwright install hung about 15 minutes, then passed).
+  - Wiki at 0.1.5: Home, footer, Commands regenerated; Training's "neither trainer has run them yet" now says the musubi job is proven and OneTrainer and musubi residual mode are not.
