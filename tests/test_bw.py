@@ -272,7 +272,7 @@ class TestTrain(KitCase):
         self.assertIn("cache_768", toml)
         sh = (job / "train.sh").read_text(encoding="utf-8")
         for flag in ("zimage_train_network.py", "networks.lora_zimage", "--network_dim 32", "--network_alpha 32",
-                     "--max_train_steps 400", "--base_weights", "brand-zimage.safetensors", "--fp8_llm"):
+                     "--max_train_steps 400", "--base_weights", "brand-zimage.safetensors", "--fp8_llm", "venv"):
             self.assertIn(flag, sh)
         self.assertNotIn(chr(92), sh)  # posix paths only
         self.assertFalse(list((self.kit / "train").glob("*.json")))  # no ai-toolkit config

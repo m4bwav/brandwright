@@ -4,6 +4,12 @@ Test runs for [SKILL.md](SKILL.md). Cases live in `evals/evals.json` (runnable c
 
 ## Runs
 
+### T-20261021-1 · 2026-10-21 · real run · Windows 11, RTX 5060 Ti 16 GB, musubi-tuner v0.3.6 (torch 2.14.1+cu130), Z-Image base graph in ComfyUI 0.38.2 · passed
+- Test 5: the `train --lora brand --for musubi --steps 300 --save-every 50` job on the GOV.UK kit (90 pictures). The only edit to train.sh was its three model paths, set to ComfyUI's own `z_image_bf16`, `ae` and `qwen_3_4b`. Runner `run_test5.py` in the kit: it waited for ComfyUI to be idle, freed it, then ran `bash train.sh` with musubi's venv first on `PATH`.
+- Latent and text-encoder caching and 300 steps took 41.3 min in all (about 7.5 s a step), exit 0, on 16 GB. Each checkpoint went through `convert_lora.py --target other` into ComfyUI with no missing-key warnings.
+- Compared with ai-toolkit's step-250 brand LoRA at 1.0 on three prompts (start page, status card, modal), seed 11, 2 pictures each, sheets `t5_*.png` in the kit. musubi steps 150, 250 and 300 have the same look: navy panels, green "Start now", white headers with the trigger sometimes drawn in (L-002), and cards and modals as close to the brand as the control's. One seed, so this says "works and is comparable", not "better".
+- led to: C-20261021-2
+
 ### T-20261017-2 · 2026-10-17 · claude plugin eval 2.1.281 (1 run a case, with and without the plugin, `--scaffold`) · WSL 2 Ubuntu on Windows 11, bubblewrap sandbox, Python 3.14, no Pillow or Playwright · 1/1
 - action-2 (write, do not start, the brand LoRA config for `./fixture-kit`): loaded `brandwright-train`, ran `doctor` and `bw.py train . --lora brand` without `--run`, then read the written `train/northwind-brand-zimage.json`. Fixture: 8 synthetic 1-pixel pictures with captions, made by the case's `fixture.sh`.
 - All 4 action cases, both arms: $1.46, 71 s at `-j 4`. Without the plugin no case ran `bw.py` (0/4).

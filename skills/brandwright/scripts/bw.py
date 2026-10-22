@@ -881,8 +881,8 @@ def export_config(kit, name, cfg, args):
         if mode == "continue":
             extra += ' --network_weights "%s"' % Path(brand).as_posix()
         s = "src/musubi_tuner/%s_" % pre
-        sh = ["#!/usr/bin/env bash", "# musubi-tuner job written by brandwright %s. Run from the musubi-tuner folder after "
-              "setting the model files below (see its docs/%s.md)." % (VERSION, "flux_2" if pre == "flux_2" else pre),
+        sh = ["#!/usr/bin/env bash", "# musubi-tuner job written by brandwright %s. Run from the musubi-tuner folder with its venv "
+              "active, after setting the model files below (see its docs/%s.md)." % (VERSION, "flux_2" if pre == "flux_2" else pre),
               "set -euo pipefail", 'DIT="path/to/dit.safetensors"', 'VAE="path/to/vae.safetensors"',
               'TEXT_ENCODER="path/to/text_encoder.safetensors"']
         if model == "zimage_turbo":

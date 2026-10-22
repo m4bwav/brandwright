@@ -23,7 +23,9 @@ Linux and macOS: the same with `python3 -m venv venv` and `source venv/bin/activ
 
 ## Other trainers
 
-`BW train KIT --lora LORA --for musubi` writes the same job (dataset, rank, alpha, steps, lr, checkpoints, residual or continue) as `train/<name>-musubi/dataset.toml` and `train.sh` (set the DiT, VAE and text-encoder paths at its top). `--for onetrainer` writes `config.json` and `concepts.json` for `python scripts/train.py --config-path`; OneTrainer trains by epochs and cannot merge a LoRA during training, so residual mode is refused there. Formats read from musubi-tuner v0.3.6 and OneTrainer b08db37 on 2026-10-18 ([research note](../../../ai-docs/research/2026-10-18-musubi-onetrainer.md)); neither trainer was run with them yet. `--run` starts ai-toolkit only.
+`BW train KIT --lora LORA --for musubi` writes the same job (dataset, rank, alpha, steps, lr, checkpoints, residual or continue) as `train/<name>-musubi/dataset.toml` and `train.sh` (set the DiT, VAE and text-encoder paths at its top). `--for onetrainer` writes `config.json` and `concepts.json` for `python scripts/train.py --config-path`; OneTrainer trains by epochs and cannot merge a LoRA during training, so residual mode is refused there. Formats read from musubi-tuner v0.3.6 and OneTrainer b08db37 on 2026-10-18 ([research note](../../../ai-docs/research/2026-10-18-musubi-onetrainer.md)). `--run` starts ai-toolkit only.
+
+The musubi job for a Z-Image brand LoRA ran unchanged on 2026-10-21 (musubi v0.3.6, Windows, RTX 5060 Ti 16 GB): install with `uv sync --python 3.12 --extra cu130` in the musubi-tuner folder, put its venv first on `PATH` (or activate it) so train.sh's `python` is the right one, and point `DIT`, `VAE` and `TEXT_ENCODER` at ComfyUI's own files (`z_image_bf16`, `ae`, `qwen_3_4b`), so nothing else downloads. 300 steps took 41 min with caching; `convert_lora.py --target other` gives a file ComfyUI loads with no missing keys. The OneTrainer job has not been run.
 
 | Trainer | Notes |
 |---|---|

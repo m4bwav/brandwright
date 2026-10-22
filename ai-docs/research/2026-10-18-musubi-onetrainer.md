@@ -31,4 +31,8 @@ Related: builds on [2026-10-15-models-trainers-licences.md](2026-10-15-models-tr
 
 ## Not verified
 
-Neither trainer was run. Model file paths are left as placeholders at the top of the musubi `train.sh`.
+Neither trainer was run on 2026-10-18. Model file paths are left as placeholders at the top of the musubi `train.sh`.
+
+## Run on 2026-10-21 (musubi, Z-Image brand LoRA)
+
+The musubi job ran unchanged apart from the three model paths (train T-20261021-1): v0.3.6, `uv sync --python 3.12 --extra cu130` (torch 2.14.1+cu130), ComfyUI's `z_image_bf16`, `ae` and `qwen_3_4b` files, 90 pictures at 768 and 1024, 300 steps, about 7.5 s a step, 41 min with both caches. The two-dataset TOML, `--fp8_base --fp8_scaled --fp8_llm` and `--network_alpha` all worked on 16 GB. The checkpoints are `<name>-step00000050.safetensors` and so on, plus `<name>.safetensors` for the last step, 280 MB at rank 32 (ai-toolkit's fp16 save is 170 MB). `src/musubi_tuner/convert_lora.py --target other` (not the `networks/` path in the docs) gives a file ComfyUI 0.38.2 loads without "lora key not loaded" warnings. Steps 150 to 300 were close to the ai-toolkit step-250 LoRA on one seed: same navy and green, white header, and the trigger sometimes drawn in the header (train L-002). Still unverified: the OneTrainer job, the other models, residual `--base_weights` and continue `--network_weights`.
