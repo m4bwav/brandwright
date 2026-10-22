@@ -2,7 +2,9 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
-## Unreleased
+## 0.1.5 · 2026-10-22
+
+A training test of the musubi-tuner job, and a setup note. No change in behaviour.
 
 - `train --for musubi` is proven on the real trainer: the Z-Image brand LoRA job ran unchanged on musubi-tuner v0.3.6 apart from its three model paths, and the converted LoRA loads in ComfyUI and draws on brand as the ai-toolkit LoRA does. `train.sh` now says to run it with musubi's venv active. The setup reference has the install line and the ComfyUI model files to point it at. The OneTrainer job is still unrun.
 
