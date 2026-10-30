@@ -14,8 +14,8 @@
   "topic": "Brand-consistent UI mock-ups with image models: routes (code from design tokens, reference conditioning, brand and sub-site LoRAs), how brand and sub-site LoRAs combine, licences of open image models for company use",
   "tier": "fast",
   "interval_days": 14.0,
-  "last_checked": "2026-10-15",
-  "next_due": "2026-10-29",
+  "last_checked": "2026-10-30",
+  "next_due": "2026-11-11",
   "verify_at_use": false,
   "volatile_claims": [
     "Default base model is Z-Image (Apache-2.0); Qwen-Image-2512 for 24 GB; FLUX.2 klein 4B for the reference route (2026-10-15)",
@@ -36,12 +36,18 @@
       "m": null,
       "interval_after": 14,
       "note": "created; two research subagents (177 tool calls) plus the ai-toolkit source on disk"
+    },
+    {
+      "date": "2026-10-30",
+      "m": 0.1,
+      "interval_after": 14.0,
+      "note": "quiet; cost: searches 1 · fetches 0 · tool calls 2"
     }
   ],
   "counts": {
     "learnings": 0,
     "changes": 1,
-    "research": 2,
+    "research": 3,
     "tests": 0
   },
   "consolidate_every": 25,
