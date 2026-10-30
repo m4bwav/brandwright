@@ -43,6 +43,10 @@ Testing (how work on this subject is verified, and how skills for it are tuned):
 
 ## Findings
 
+### R-20261030-1 · 2026-10-30 · Quiet check
+- Subject: no new open image model with text rendering or licence change found since 2026-10-15 (Ideogram 4 open weights from June stay non-commercial; Qwen-Image and Z-Image remain the text renderers). Tooling: dembrandt had a dependabot merge only (2026-10-22). Practice: nothing new on brand or UI LoRAs. Testing: nothing new.
+- magnitude 0.1 · applied: none
+
 ### R-20261015-1 · 2026-10-15 · Fact-check of the common two-LoRA advice; multi-LoRA interference; differential training
 - Track: subject, tooling, practice, testing
 - Sources: [2026-10-15-ui-lora-practice-and-fact-check.md](../../ai-docs/research/2026-10-15-ui-lora-practice-and-fact-check.md) (every source and its date is listed there)
