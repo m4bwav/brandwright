@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261031-1 · 2026-10-31 · LoRA training book rules (unverified)
+- because: Hands-On Generative AI ch. 6-7, read in Ai/books/plugin-learnings/diffusion-hands-on-genai.md (P6)
+- files: SKILL.md (after the defaults line)
+- Keep alpha / rank fixed when changing rank, sample one prompt without the brand trigger to catch bleed, filter weak screenshots, caption what varies. Marked unverified until a run tests them.
+
 ### C-20261021-2 · 2026-10-21 · musubi job proven
 - because: T-20261021-1
 - files: references/setup.md (Other trainers), ../brandwright/scripts/bw.py (train.sh header says to run it with musubi's venv active)

@@ -38,6 +38,12 @@ BW train KIT --lora brand --for musubi   # or --for onetrainer: the same job for
 
 Defaults: rank 32 (flat UI needs less than photos), lr 1e-4, buckets 768 and 1024, about 5 passes over the pictures (5 steps a picture, 400 to 1,500), a checkpoint every 100 steps, and samples on held-out prompts (pricing table, settings page, modal, toast: kinds the capture rarely has, so samples show generalisation): 4 at every checkpoint for the brand LoRA, 2 every 200 steps and none at step 0 for a residual site LoRA, whose samples cost about 2 min a picture and leave the brand out (`--samples`, `--sample-every`; `--samples 0` turns them off). The first run downloads the base model (Z-Image about 20 GB).
 
+- Book rules, unverified (Hands-On GenAI ch. 6-7): keep alpha / rank fixed when changing rank (it acts as an lr
+  multiplier); add one sample prompt with no brand trigger (a generic web page) and stop at the checkpoint before
+  it starts looking like the brand (bleed); filter low-quality screenshots out before training, since dataset
+  quality outweighs size; captions name what varies (page type, layout, section) and leave the fixed brand look
+  to the trigger.
+
 ## Step 4: then each site, on top of the brand
 
 | `--mode` | What the site LoRA learns | Use at generation |
