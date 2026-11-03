@@ -2,6 +2,10 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
+## Unreleased
+
+- `caption --vlm comfyui [--comfyui URL]`: captions with Qwen3.5 4B through a local ComfyUI's TextGenerate node (greedy, so the same picture gets the same caption), for a PC with ComfyUI but no Ollama. Default host `BRANDWRIGHT_COMFYUI` or http://127.0.0.1:8199. Tested on the banner: an accurate, style-free description.
+
 ## 0.1.5 · 2026-10-22
 
 A training test of the musubi-tuner job, and a setup note. No change in behaviour.

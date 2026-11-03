@@ -170,6 +170,12 @@ class TestPrep(KitCase):
         self.assertTrue(any('text reads "Add to basket"' in c for c in caps))
         self.assertFalse(any(bw.STYLE_WORDS.search(c) for c in caps), "template captions never name colours or fonts")
 
+    def test_comfyui_caption_graph(self):
+        g = bw.comfyui_caption_graph("x.png", bw.VLM_PROMPT)
+        self.assertEqual(g["gen"]["inputs"]["sampling_mode"], "off", "greedy: same picture, same caption")
+        self.assertEqual(g["gen"]["inputs"]["image"], ["img", 0])
+        self.assertEqual(g["save"]["class_type"], "PreviewAny")
+
     def test_specimen_pads_small_components(self):
         crop = Image.new("RGB", (160, 40), "#f2a541")
         s = bw.specimen(Image, crop, (251, 248, 242))

@@ -66,7 +66,7 @@ BW render mock.html --out mock.png
 
 ## Rules
 
-- **Screenshots are the company's data.** The kit stays on storage the user's company approves; never commit it, upload it, or paste it into a public service. Ask before sending any screenshot to a cloud model (that includes captioning with a hosted vision model). Local captioning (Ollama) and local training keep everything on the machine.
+- **Screenshots are the company's data.** The kit stays on storage the user's company approves; never commit it, upload it, or paste it into a public service. Ask before sending any screenshot to a cloud model (that includes captioning with a hosted vision model). Local captioning (Ollama, or `caption --vlm comfyui` on a local ComfyUI) and local training keep everything on the machine.
 - Personal data: capture staging or test accounts where possible. Capture masks e-mail addresses, digit runs and typed field values by default; names cannot be detected, so pages showing customers' names need `--hide` on those regions or a test account.
 - Licences: Z-Image, Qwen-Image-2512 and FLUX.2 klein 4B are Apache-2.0. Do not use Qwen-Image-2.1, FLUX.2 dev or klein 9B, or Ideogram 4 for company work (non-commercial or research licences). FLUX 3 klein and Krea 2 have revenue limits. Tables in brandwright-train.
 - **Never train on a brand the user does not work for or have rights to**, and never publish a trained brand LoRA: it reproduces trademarks.
