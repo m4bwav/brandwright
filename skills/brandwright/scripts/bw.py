@@ -731,6 +731,51 @@ def ollama_caption(host, model, path, timeout=180):
     return re.sub(r"\s+", " ", text)
 
 
+COMFY_CAPTION_CLIP = "qwen3.5_4b_bf16.safetensors"  # ComfyUI template llm_qwen3_5_text_gen.json
+
+
+def comfyui_caption_graph(name, prompt, max_len=300):
+    """Qwen3.5 4B reads the picture through ComfyUI's TextGenerate node, greedy (same picture, same caption)."""
+    return {
+        "img": {"class_type": "LoadImage", "inputs": {"image": name}},
+        "clip": {"class_type": "CLIPLoader", "inputs": {"clip_name": COMFY_CAPTION_CLIP, "type": "stable_diffusion",
+                                                        "device": "default"}},
+        "gen": {"class_type": "TextGenerate", "inputs": {"clip": ["clip", 0], "prompt": prompt, "image": ["img", 0],
+                "max_length": max_len, "sampling_mode": "off", "thinking": False}},
+        "save": {"class_type": "PreviewAny", "inputs": {"source": ["gen", 0]}},
+    }
+
+
+def comfyui_caption(host, path, timeout=600):
+    host = host.rstrip("/")
+    boundary = "bw%d" % int(time.time() * 1000)
+    data = Path(path).read_bytes()
+    body = (("--%s\r\nContent-Disposition: form-data; name=\"image\"; filename=\"bw_%s\"\r\n"
+             "Content-Type: image/png\r\n\r\n") % (boundary, Path(path).name)).encode() + data + \
+        ("\r\n--%s\r\nContent-Disposition: form-data; name=\"overwrite\"\r\n\r\ntrue\r\n--%s--\r\n"
+         % (boundary, boundary)).encode()
+    req = urllib.request.Request(host + "/upload/image", data=body,
+                                 headers={"Content-Type": "multipart/form-data; boundary=" + boundary})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        name = json.loads(r.read().decode("utf-8"))["name"]
+    pid = http_json(host + "/prompt", {"prompt": comfyui_caption_graph(name, VLM_PROMPT)}, timeout=60)["prompt_id"]
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        try:
+            h = http_json(host + "/history/" + pid, timeout=30).get(pid)
+        except OSError:  # a busy server can stall one poll; the job is still queued
+            h = None
+        if h and h.get("status", {}).get("status_str") == "error":
+            raise RuntimeError(json.dumps(h["status"])[:300])
+        if h and h.get("status", {}).get("completed"):
+            out = h["outputs"]["save"]
+            t = out.get("text") or out.get("string") or [""]
+            text = t[0] if isinstance(t, list) else str(t)
+            return re.sub(r"\s+", " ", re.sub(r"<think>.*?</think>", "", text, flags=re.S)).strip()
+        time.sleep(2)
+    raise TimeoutError("ComfyUI caption %s" % pid)
+
+
 STYLE_WORDS = re.compile(r"\b(?:colou?rs?|colou?red|blue|red|green|yellow|orange|purple|pink|teal|navy|black|white|grey|gray|"
                          r"font|typeface|serif|sans-serif|rounded|shadow|gradient|minimalist|modern|clean|sleek|brand(?:ed)?|logo)\b", re.I)
 
@@ -739,6 +784,8 @@ def cmd_caption(args):
     kit = Kit(args.kit)
     loras = [args.lora] if args.lora else [l for l, _, _ in kit.loras()]
     host = args.host or os.environ.get("BRANDWRIGHT_OLLAMA", "http://127.0.0.1:11434")
+    comfy = args.comfyui or os.environ.get("BRANDWRIGHT_COMFYUI", "http://127.0.0.1:8199")
+    who = {"ollama": args.model, "comfyui": "Qwen3.5 4B on " + comfy}.get(args.vlm)
     cache_path = kit.root / "dataset" / ".captions.json"  # the brand set shares pictures with the site sets
     cache = json.loads(cache_path.read_text(encoding="utf-8")) if cache_path.is_file() else {}
     for lora in loras:
@@ -759,7 +806,8 @@ def cmd_caption(args):
             try:
                 desc = cache.get(key) if not args.force else None
                 if not desc:
-                    desc = ollama_caption(host, args.model, d / m["file"])
+                    desc = comfyui_caption(comfy, d / m["file"]) if args.vlm == "comfyui" else \
+                        ollama_caption(host, args.model, d / m["file"])
                     cache[key] = desc
                     cache_path.write_text(json.dumps(cache), encoding="utf-8")
             except Exception as e:
@@ -777,7 +825,7 @@ def cmd_caption(args):
             print("  %s %s%s" % (m["file"], desc[:100], ("  [style words: %s]" % ", ".join(m["style_words"])) if flagged else ""))
             man_path.write_text("".join(json.dumps(x) + "\n" for x in man), encoding="utf-8")  # progress survives a crash
         man_path.write_text("".join(json.dumps(m) + "\n" for m in man), encoding="utf-8")
-        print("%s: %d caption(s) written by %s" % (lora, done, args.model if args.vlm != "none" else "nothing (templates kept)"))
+        print("%s: %d caption(s) written by %s" % (lora, done, who or "nothing (templates kept)"))
     return 0
 
 
@@ -1197,9 +1245,10 @@ def main(argv=None):
     p.add_argument("--max-per-site", type=int, default=60)
     p.add_argument("--brand-max", type=int, default=90, help="brand dataset size, shared equally across sites")
 
-    p = kit_cmd("caption", "rewrite captions with a local vision model through Ollama")
+    p = kit_cmd("caption", "rewrite captions with a local vision model (Ollama, or Qwen3.5 4B in ComfyUI)")
     p.add_argument("--lora", help="one dataset only (default: all)")
-    p.add_argument("--vlm", default="ollama", choices=["ollama", "none"])
+    p.add_argument("--vlm", default="ollama", choices=["ollama", "comfyui", "none"])
+    p.add_argument("--comfyui", help="ComfyUI URL for --vlm comfyui (default BRANDWRIGHT_COMFYUI or http://127.0.0.1:8199)")
     p.add_argument("--model", default=os.environ.get("BRANDWRIGHT_VLM", "qwen3-vl:8b"))
     p.add_argument("--host", help="Ollama URL (default BRANDWRIGHT_OLLAMA or http://127.0.0.1:11434)")
     p.add_argument("--force", action="store_true", help="re-caption pictures that already have a model caption")

@@ -102,3 +102,4 @@ Append-only, newest last.
   - Deleted the 6 `govuk-brand-musubi-s50` to `-s300` LoRAs from ComfyUI's loras folder and the musubi run's `output/` (1.9 GB) and `cache_768`/`cache_1024` in the kit; kept `dataset.toml`, `train.sh` and the musubi install.
   - Released 0.1.5 (PR #29, tag `v0.1.5`, https://github.com/m4bwav/brandwright/releases/tag/v0.1.5): the musubi proof and setup note, no behaviour change. Budget green, public check passes, 29 tests pass, CI green (the browser job's Playwright install hung about 15 minutes, then passed).
   - Wiki at 0.1.5: Home, footer, Commands regenerated; Training's "neither trainer has run them yet" now says the musubi job is proven and OneTrainer and musubi residual mode are not.
+## [2026-11-02] build | bw.py caption --vlm comfyui: Qwen3.5 4B via ComfyUI TextGenerate (comfyui-gen image_extras caption route, L-189); test_comfyui_caption_graph; live-tested on the PC (8199)

@@ -39,7 +39,7 @@ For pictures and LoRAs, add a GPU machine with ComfyUI and ai-toolkit:
 
 ```
 python bw.py prep D:\kits\acme
-python bw.py caption D:\kits\acme                 # local vision model through Ollama (optional)
+python bw.py caption D:\kits\acme                 # local vision model through Ollama (optional; --vlm comfyui uses Qwen3.5 4B in ComfyUI)
 python bw.py train D:\kits\acme --lora brand --run
 python bw.py pick D:\kits\acme --lora brand --to <ComfyUI>\models\loras
 python bw.py train D:\kits\acme --lora portal --run    # residual: learns what the portal adds
