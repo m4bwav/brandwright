@@ -15,7 +15,7 @@ Re-check before quoting: licences and model versions change monthly. Primary sou
 | FLUX.2 dev / klein 9B / FLUX.1 dev | 32 / 9 / 12B | FLUX [dev] Non-Commercial | **no**, unless licensed from BFL | 0.866 (klein 9B) | 22 GB+ |
 | MOSS-Image (2026-10-11) | 5B | Apache-2.0 | yes | not scored | not measured; ai-toolkit and SimpleTuner since 2026-10-16 |
 | FLUX 3 klein (2026-10-13) | 5.6B | FLUX Kommunity v1.0 (gated) | under US$5M annual revenue | not scored | 16 GB unverified; ai-toolkit `flux3` since 2026-10-15, no residual |
-| Krea 2 | 12B | Krea 2 Community (content filter required; distributed models named "Krea…" with a Notice) | under US$1M revenue | not scored; headlines right, body text gibberish in a 2026-11-05 test | 16 GB unmeasured; train on Raw, run on Turbo |
+| Krea 2 | 12B | Krea 2 Community (content filter required; distributed models named "Krea…" with a Notice) | under US$1M revenue | not scored; headlines right, body text gibberish in a 2026-11-05 test | 16 GB fits but is tight, measured below; train on Raw, run on Turbo |
 | Ideogram 4 | 9.3B | non-commercial | **no** | best claimed | not checked |
 | HunyuanImage 2.1 / 3.0 | 17B / 80B | Tencent Hunyuan Community | not in the EU, UK or South Korea | | 24 GB+ |
 
@@ -28,3 +28,12 @@ Apache-2.0, top-tier text scores, any aspect ratio between 512² and 2048² of a
 ## Generating with the LoRA
 
 ComfyUI needs the matching model files. Z-Image base: `z_image_bf16.safetensors` (diffusion_models), `qwen_3_4b.safetensors` (text_encoders, CLIPLoader type `lumina2`), `ae.safetensors` (vae). LoRAs trained on the base also load on Z-Image-Turbo (`--graph zimage_turbo`) for 9-step drafts; check them against the base before trusting a draft. Graph presets and file names: `GRAPHS` in `scripts/bw_comfy.py`, overridable per kit in `brand.json` `comfy_models`.
+
+## Krea 2 on 16 GB (measured 2026-11-05)
+
+A 300-step test on ai-toolkit, `arch: krea2`, `krea/Krea-2-Raw`, RTX 5060 Ti 16 GB, 90 UI pictures, buckets 768 and 1024, rank 32, qfloat8 on model and text encoder, `low_vram`, cached text embeddings, no samples. Not in `bw.py` `MODELS` yet: the job was written by hand.
+
+- Time: 1 h 43 min, 20.6 s a step on average, about three times the Z-Image figure above. Steps began near 11 s and later ran near 19 s; the cause was not found.
+- Memory, logged from about step 53, so model load and caching are not covered: card peak 16.0 of 16.3 GB, including about 1.8 GB held by other apps; trainer peak 10.1 GB RAM, system peak 36.8 GB. No out-of-memory error.
+- Generation: the LoRA loads on Krea Turbo in ComfyUI at 8 steps, and stacks with the 4-step distill LoRA (chk133000, both at strength 1.0) at about 8.4 s against 14.2 s at 1024x768.
+- Result on one seed and 4 prompts: the look moved by step 300, but it did not reach the brand. The trigger word is drawn as a logo, even with no LoRA, so a real word or no trigger may suit Krea better. A prompt without the trigger shifted toward the brand's navy by step 300, so check bleed. The agent reviewed this, not a person.
