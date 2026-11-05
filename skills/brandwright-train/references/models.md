@@ -15,7 +15,7 @@ Re-check before quoting: licences and model versions change monthly. Primary sou
 | FLUX.2 dev / klein 9B / FLUX.1 dev | 32 / 9 / 12B | FLUX [dev] Non-Commercial | **no**, unless licensed from BFL | 0.866 (klein 9B) | 22 GB+ |
 | MOSS-Image (2026-10-11) | 5B | Apache-2.0 | yes | not scored | not measured; ai-toolkit and SimpleTuner since 2026-10-16 |
 | FLUX 3 klein (2026-10-13) | 5.6B | FLUX Kommunity v1.0 (gated) | under US$5M annual revenue | not scored | 16 GB unverified; ai-toolkit `flux3` since 2026-10-15, no residual |
-| Krea 2 | 12B | Krea 2 Community | under US$1M revenue | not scored | not checked |
+| Krea 2 | 12B | Krea 2 Community (content filter required; distributed models named "Krea…" with a Notice) | under US$1M revenue | not scored; headlines right, body text gibberish in a 2026-11-05 test | 16 GB unmeasured; train on Raw, run on Turbo |
 | Ideogram 4 | 9.3B | non-commercial | **no** | best claimed | not checked |
 | HunyuanImage 2.1 / 3.0 | 17B / 80B | Tencent Hunyuan Community | not in the EU, UK or South Korea | | 24 GB+ |
 
