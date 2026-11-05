@@ -17,7 +17,7 @@ Linux and macOS: the same with `python3 -m venv venv` and `source venv/bin/activ
 
 - **Blackwell (RTX 50xx, sm_120)** needs PyTorch 2.7+ built for CUDA 12.8 or later; ai-toolkit's cu130 wheels need NVIDIA driver 580+. "no kernel image is available" means an older wheel.
 - Out of memory: first `git pull` an older checkout (2026-10-17 fix: the text encoder stayed on the GPU after caching embeddings), then lower `--res` to `768` (or `512 768`), keep rank 32 or lower, close ComfyUI or free its memory (`POST /free` with `{"unload_models": true, "free_memory": true}`) only if no one else is using it.
-- Gated download (401/403 from Hugging Face): accept the model's terms on its page and `huggingface-cli login` in the trainer's venv; Z-Image, Qwen-Image-2512 and FLUX.2 klein base 4B are not gated as of 2026-10-18; FLUX 3 klein and Krea 2 are.
+- Gated download (401/403 from Hugging Face): accept the model's terms on its page and `hf auth login` in the trainer's venv; Z-Image, Qwen-Image-2512 and FLUX.2 klein base 4B are not gated as of 2026-10-18; FLUX 3 klein and Krea 2 are.
 - Log not moving: the first steps cache latents and text embeddings; the download of the base model can take a long time. `bw.py status` prints the last log line.
 - **Windows symlink warning** from Hugging Face: harmless; the cache uses more disk.
 
