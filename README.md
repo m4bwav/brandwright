@@ -80,6 +80,16 @@ claude plugin install brandwright@brandwright
 
 Other agents that read Agent Skills (`SKILL.md`): link or copy the four folders under `skills/` into the agent's skills folder. The CLI on its own: `python skills/brandwright/scripts/bw.py --help`. The [wiki](https://github.com/m4bwav/brandwright/wiki) has every command, the kit layout, recipes and an FAQ.
 
+## Works with
+
+Each of these plugins works on its own. Together:
+
+- **[artwright](https://github.com/m4bwav/artwright)**: After brandwright ranks mock-ups by brand distance, artwright-judge ranks the survivors on light, composition and brief fit.
+- **[askwright](https://github.com/m4bwav/askwright)**: The final mock-up choice is often a person's: brandwright's ranked mock-ups go on an askwright page side by side.
+- **[tokenwright](https://github.com/m4bwav/tokenwright)**: Captioning, sweeps and captures produce a lot of output. tokenwright's habits (scripts that print short results, outlines before reads) keep long brand-kit sessions cheap.
+
+More on each pairing, with an example flow: [Works with](https://github.com/m4bwav/brandwright/wiki/Works-with) on the wiki.
+
 ## Tests
 
 - `python tests/test_bw.py`: offline tests on synthetic kits, captures and tokens (dataset tests need Pillow).
