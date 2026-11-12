@@ -2,7 +2,11 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
-## Unreleased
+## 0.1.6 · 2026-11-11
+
+A captioning option and a training note. No change to defaults.
+
+- brandwright-train `references/models.md`: style LoRA arms from one maker's 50+ one-variable runs (r/FluxAI 1qwasra): an unseen-subject sample prompt to catch memorising, weight decay as the texture knob, dims 128/64/64/32 as an arm to try. Unverified.
 
 - `caption --vlm comfyui [--comfyui URL]`: captions with Qwen3.5 4B through a local ComfyUI's TextGenerate node (greedy, so the same picture gets the same caption), for a PC with ComfyUI but no Ollama. Default host `BRANDWRIGHT_COMFYUI` or http://127.0.0.1:8199. Tested on the banner: an accurate, style-free description.
 

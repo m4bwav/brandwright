@@ -107,3 +107,4 @@ Append-only, newest last.
 ## 2026-11-11: Works with section
 
 Added a README "Works with" section and a wiki Works-with page covering artwright, askwright, tokenwright, taken from the real handoffs in both plugins' skills (askwright and tokenwright added where they fit). Part of a cross-plugin pass on Mark's request that each pairing be described from both sides.
+- 2026-11-11 technique-harvest 1qwasra: brandwright-train models.md style LoRA arms (unverified); released 0.1.6.

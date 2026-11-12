@@ -37,3 +37,11 @@ A 300-step test on ai-toolkit, `arch: krea2`, `krea/Krea-2-Raw`, RTX 5060 Ti 16 
 - Memory, logged from about step 53, so model load and caching are not covered: card peak 16.0 of 16.3 GB, including about 1.8 GB held by other apps; trainer peak 10.1 GB RAM, system peak 36.8 GB. No out-of-memory error.
 - Generation: the LoRA loads on Krea Turbo in ComfyUI at 8 steps, and stacks with the 4-step distill LoRA (chk133000, both at strength 1.0) at about 8.4 s against 14.2 s at 1024x768.
 - Result on one seed and 4 prompts: the look moved by step 300, but it did not reach the brand. The trigger word is drawn as a logo, even with no LoRA, so a real word or no trigger may suit Krea better. A prompt without the trigger shifted toward the brand's navy by step 300, so check bleed. The agent reviewed this, not a person.
+
+## Style LoRAs: one practitioner's arms to try (unverified)
+
+From one maker's 50+ one-variable FLUX.2 Klein / dev runs with ai-toolkit on a photo style (r/FluxAI 1qwasra, 2026-02; one dataset, judged by eye). His target was a texture look and ours is layouts, so none of this changes the defaults or step counts above.
+
+- Add one sample prompt with a subject that is not in the set (he used "dog on a log"). If it comes out looking like a training picture, the LoRA is memorising, not learning the style.
+- Weight decay is the texture knob: about ten times lower kept grain and shadow detail; raise it for flat illustration.
+- Network dims 128 / 64 / 64 / 32 (linear, linear_alpha, conv, conv_alpha) were his best for style LoRAs on every base; 256 everywhere broke images. Try it as an arm against the default, not as a default.

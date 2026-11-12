@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261111-1 · 2026-11-11 · style LoRA arms (unverified)
+- because: technique-harvest post 1qwasra (r/FluxAI, one maker's 50+ Klein/dev LoRA runs), verdict adopt-partly
+- files: references/models.md (new "Style LoRAs" block)
+- An unseen-subject sample prompt as a memorising check, weight decay as the texture knob, dims 128/64/64/32 as an arm to try. Defaults and step counts unchanged; untested here.
+
 ### C-20261031-1 · 2026-10-31 · LoRA training book rules (unverified)
 - because: Hands-On Generative AI ch. 6-7, read in Ai/books/plugin-learnings/diffusion-hands-on-genai.md (P6)
 - files: SKILL.md (after the defaults line)
