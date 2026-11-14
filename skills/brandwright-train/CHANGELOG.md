@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261114-1 · 2026-11-14 · style LoRA arms measured
+- because: technique-harvest GPU test of 1qwasra (default vs dims vs weight decay /10 on Klein 4B), verdict note
+- files: references/models.md (one measured line in the "Style LoRAs" block)
+- Defaults unchanged; wd/10 worse on all scores, dims helps unseen subjects at 4x size.
+
 ### C-20261111-1 · 2026-11-11 · style LoRA arms (unverified)
 - because: technique-harvest post 1qwasra (r/FluxAI, one maker's 50+ Klein/dev LoRA runs), verdict adopt-partly
 - files: references/models.md (new "Style LoRAs" block)
