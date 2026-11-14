@@ -45,3 +45,4 @@ From one maker's 50+ one-variable FLUX.2 Klein / dev runs with ai-toolkit on a p
 - Add one sample prompt with a subject that is not in the set (he used "dog on a log"). If it comes out looking like a training picture, the LoRA is memorising, not learning the style.
 - Weight decay is the texture knob: about ten times lower kept grain and shadow detail; raise it for flat illustration.
 - Network dims 128 / 64 / 64 / 32 (linear, linear_alpha, conv, conv_alpha) were his best for style LoRAs on every base; 256 everywhere broke images. Try it as an arm against the default, not as a default.
+- Measured here 2026-11-14 (Klein 4B, one UI set, CLIP style scores): weight decay /10 was worse on every score, so keep it as a photo-texture knob only; 128/64/64/32 carried the style to unseen subjects best (0.574 vs 0.498) but is 4x larger and edges toward memorising; the default 32/32 scored best in-set (0.664 vs 0.625). The default stays.
