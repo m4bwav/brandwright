@@ -1037,7 +1037,7 @@ def cmd_train(args):
         print("training ended with exit code %d; log %s" % (code, log))
         return code
     if os.name == "nt":
-        kw["creationflags"] = 0x00000008 | 0x00000200  # DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP
+        kw["creationflags"] = 0x08000000 | 0x00000200  # CREATE_NO_WINDOW | NEW_PROCESS_GROUP; DETACHED_PROCESS made each child flash a console
     else:
         kw["start_new_session"] = True
     p = subprocess.Popen([py, "run.py", str(path)], env=env, **kw)
