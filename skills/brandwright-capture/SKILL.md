@@ -28,6 +28,7 @@ Ask the user, per site; never assume a login or a crawl is allowed.
 - Never type, request or store a password. The `auth/` folder is a live session: private, never shared.
 - Crawling visits same-site links by GET only and skips sign-out, delete, cancel, mailto and file links. Nothing is clicked except what `--click` names. Keep `--crawl` modest (10-30): the aim is variety of page types, not volume.
 - Name at least one page with the main call-to-action button (a form, a start or sign-up page) among the URLs. Crawls follow navigation, and index pages rarely carry it (L-002).
+- Competitor pages for side-by-side review: capture public pages only, as their own site with `"lora": false` and `"competitor": true`; never put them in a dataset (Wheeler pp. 130-131). For a redesign, capture the old pages and marks first as a dated "before" site, and list marks worth keeping in `marks_to_keep` (Wheeler p. 129).
 - Default viewports: `desktop` (1440x900) and `mobile` (390x844 at 2x). `--viewports desktop,tablet,mobile,laptop`.
 
 ## Step 2: masks

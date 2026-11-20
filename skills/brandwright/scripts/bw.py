@@ -8,7 +8,7 @@ A kit is one folder per brand, kept out of every repository (it holds screenshot
 
 Commands (run with --help for options):
   doctor   new   login   capture   import   tokens   prep   caption   review
-  train    status   pick   gen   sweep   ref   render   score   sheet
+  train    status   pick   gen   sweep   ref   render   score   sheet   check
 Core commands need only Python 3.10+. capture/login/render need Playwright; prep/score/sheet need Pillow;
 gen/sweep/ref need a ComfyUI server; train needs a trainer (ostris ai-toolkit).
 """
@@ -1119,13 +1119,68 @@ def cmd_pick(args):
 # ---------------------------------------------------------------- score and sheet
 
 def brand_palette(kit):
+    """tokens.json colours plus the guideline colours named in brand.json (colors, chart_colors, backgrounds)."""
+    cfg, cols = kit.cfg, []
+    cols += [c.get("hex") for c in cfg.get("colors", []) if isinstance(c, dict)]
+    cols += list(cfg.get("chart_colors", [])) + list(cfg.get("backgrounds", []))
     tp = kit.root / "tokens.json"
-    if not tp.is_file():
-        sys.exit("no tokens.json: run tokens first")
-    t = json.loads(tp.read_text(encoding="utf-8"))["brand"]
-    cols = [t["color"][k]["$value"] for k in ("background", "text", "primary")]
-    cols += [v["$value"] for k, v in t["palette"].items() if not k.startswith("$")]
-    return [parse_color(c) for c in cols if parse_color(c)]
+    if tp.is_file():
+        t = json.loads(tp.read_text(encoding="utf-8"))["brand"]
+        cols += [t["color"][k]["$value"] for k in ("background", "text", "primary")]
+        cols += [v["$value"] for k, v in t["palette"].items() if not k.startswith("$")]
+    elif not cols:
+        sys.exit("no tokens.json and no colors in brand.json: run tokens first")
+    return [parse_color(c) for c in cols if isinstance(c, str) and parse_color(c)]
+
+
+# optional guideline fields in brand.json (Wheeler, Designing Brand Identity, pp. 150-159, 204): name -> item type
+GUIDE_LISTS = {"signatures": dict, "colors": dict, "type": dict, "backgrounds": str, "chart_colors": str,
+               "misuse": str, "marks_to_keep": str, "media": dict}
+COLOR_ROLES = {"primary", "secondary", "accent", "functional", "neutral"}
+PLACEHOLDER = re.compile(r"lorem ipsum|dolor sit amet|heading here|your (?:text|title|headline) here|"
+                         r"placeholder text|\bTBD\b|\bxxx+\b", re.I)
+
+
+def lint_brand(cfg):
+    """Problems in the optional guideline fields; an old kit without them has none."""
+    bad = []
+    for key, typ in GUIDE_LISTS.items():
+        v = cfg.get(key)
+        if v is not None and not (isinstance(v, list) and all(isinstance(i, typ) for i in v)):
+            bad.append("%s: must be a list of %s" % (key, "objects" if typ is dict else "strings"))
+    for key in ("backgrounds", "chart_colors"):
+        bad += ["%s: %r is not a colour" % (key, c) for c in cfg.get(key) or [] if isinstance(c, str) and not parse_color(c)]
+    for c in cfg.get("colors") or []:
+        if isinstance(c, dict):
+            if not c.get("name") or not parse_color(c.get("hex", "")):
+                bad.append("colors: %r needs a name and a hex" % c)
+            if c.get("role") and c["role"] not in COLOR_ROLES:
+                bad.append("colors: role %r is not one of %s" % (c["role"], ", ".join(sorted(COLOR_ROLES))))
+    need = {"signatures": ("name", "file"), "type": ("role", "family"), "media": ("medium", "note")}
+    for key, fields in need.items():
+        bad += ["%s: %r needs %s" % (key, i, " and ".join(fields)) for i in cfg.get(key) or []
+                if isinstance(i, dict) and not all(i.get(f) for f in fields)]
+    if "min_size_px" in cfg and not (isinstance(cfg["min_size_px"], int) and cfg["min_size_px"] > 0):
+        bad.append("min_size_px: must be a positive whole number")
+    if "clear_space" in cfg and not isinstance(cfg["clear_space"], str):
+        bad.append("clear_space: describe it as text, e.g. 'cap height of the logotype on every side'")
+    return bad
+
+
+def cmd_check(args):
+    kit = Kit(args.kit)
+    bad = lint_brand(kit.cfg)
+    warn = ["type: %s has no web licence recorded" % t.get("family") for t in kit.cfg.get("type") or []
+            if isinstance(t, dict) and t.get("family") and not t.get("web_licence")]
+    for f in args.html or []:
+        bad += ["placeholder-text: %r in %s" % (m.group(0), f)
+                for m in PLACEHOLDER.finditer(Path(f).read_text(encoding="utf-8", errors="replace"))]
+    for line in bad:
+        print("FAIL  " + line)
+    for line in warn:
+        print("warn  " + line)
+    print("%s: %d problems, %d warnings" % (kit.cfg_path, len(bad), len(warn)))
+    return 1 if bad else 0
 
 
 def palette_score(Image, path, pal):
@@ -1306,6 +1361,9 @@ def main(argv=None):
     p.add_argument("images", nargs="+", help="images or folders")
     p.add_argument("--json", help="also write the scores to this file")
 
+    p = kit_cmd("check", "lint brand.json guideline fields; --html finds placeholder text in code-route mock-ups")
+    p.add_argument("--html", nargs="+", help="mock-up HTML files to scan for lorem ipsum and the like")
+
     p = sub.add_parser("sheet", help="contact sheet of images or folders")
     p.add_argument("images", nargs="+", help="images or folders")
     p.add_argument("--out", default="sheet.jpg")
@@ -1319,7 +1377,7 @@ def main(argv=None):
         return bw_comfy.run(args, Kit)
     return {"doctor": cmd_doctor, "new": cmd_new, "import": cmd_import, "tokens": cmd_tokens, "prep": cmd_prep,
             "caption": cmd_caption, "review": cmd_review, "train": cmd_train, "status": cmd_status, "pick": cmd_pick,
-            "score": cmd_score, "sheet": cmd_sheet}[args.cmd](args)
+            "score": cmd_score, "sheet": cmd_sheet, "check": cmd_check}[args.cmd](args)
 
 
 if __name__ == "__main__":

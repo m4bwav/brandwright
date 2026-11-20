@@ -54,7 +54,11 @@ FLUX.2 klein 4B (Apache-2.0) takes up to 4 reference images (captured pages from
 - `BW score KIT out/<dir>`: delta-E from the picture's main colours to the brand palette and the off-palette share; lower is closer. Rough (photos score worse); use it to rank seeds and sweep cells, not as a pass mark.
 - Read the text in every generated picture. Wrong or invented words are normal for small text: say so, and offer the code route for the final.
 - Never present a generated picture as a real page of the site, and never put real customer data into a prompt.
+- `BW check KIT --html out/*.html`: lints the kit's guideline fields and fails on placeholder text (lorem ipsum, "Heading here", TBD). Mock-ups for review carry real text.
+- Cover the logo: look at the mock-up with the mark hidden; if nobody could name the brand, the look is carried by the logo alone (Wheeler p. 152). Also check the mark against the kit's `min_size_px`, `clear_space`, `backgrounds` and `misuse` when present.
+- For each concept, show a best case, a worst case (longest real headline, smallest mark, darkest allowed background) and the logo-covered version (Wheeler p. 163).
 - `BW sheet DIR... --out sheet.jpg` for a set the user can compare at a glance.
+- Presenting directions: at most three, each in a real context, one recommended with the reason in terms of what it says, not how it looks; dated, versioned file names (Wheeler p. 165).
 
 ## Maintenance
 

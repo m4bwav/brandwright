@@ -108,3 +108,4 @@ Append-only, newest last.
 
 Added a README "Works with" section and a wiki Works-with page covering artwright, askwright, tokenwright, taken from the real handoffs in both plugins' skills (askwright and tokenwright added where they fit). Part of a cross-plugin pass on Mark's request that each pairing be described from both sides.
 - 2026-11-11 technique-harvest 1qwasra: brandwright-train models.md style LoRA arms (unverified); released 0.1.6.
+- 2026-11-19: books round 6 track 48: brand.json guideline fields (optional), `bw.py check` (field lint, placeholder text), score uses named colours; mockup Step 5 cover-the-logo, best/worst/covered renders, three directions max; capture competitor and before sets.
