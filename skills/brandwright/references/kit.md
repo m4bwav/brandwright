@@ -60,11 +60,14 @@ Copy them from the brand's guidelines when it has some; `BW check KIT` lints the
 "misuse": ["no drop shadow on the mark", "never stretch the signature"],
 "chart_colors": ["#0b6e4f", "#c8553d", "#3d6ec8"],
 "marks_to_keep": ["the 1952 seal on the footer"],
-"media": [{"medium": "signage", "note": "same letter skeleton, heavier stroke"}]
+"media": [{"medium": "signage", "note": "same letter skeleton, heavier stroke"}],
+"system_test": ["menu card", "tote bag", "web home page"]
 ```
 
 - `colors` roles: primary, secondary, accent, functional, neutral. `colors`, `chart_colors` and `backgrounds` join the tokens palette in `score`, and `score` works from them alone before any capture.
 - `type`: the proper family name per role (display, text, documents). `check` warns when no `web_licence` is recorded. `small_caps`, `text_figures`, `true_bold` say what the face really has; a mock-up never fakes a style the face lacks (no synthetic bold or scaled-down capitals).
+- `type` `axes`: for a variable face, the exact axis values the wordmark uses, as numbers (`{"wght": 640, "opsz": 72}`); an in-between weight is fine, an unrecorded one cannot be rebuilt. Test the wordmark at favicon, nav and poster sizes with the optical cut that suits each (display cut only large). Tighten its tracking at display sizes; open it only for all-caps or small-caps lines (Lupton, *Thinking with Type*, 3rd ed., pp. 80-84, 134).
+- `system_test`: three applications (products, pages or packs) set with the same type rules before the kit is accepted; `check` warns with fewer than three (Lupton pp. 98-99).
 - `misuse`: the guidelines' "incorrect use" list; check mock-ups against it by eye.
 - `media`: one letter skeleton across media, the stroke weight adjusted per medium (screen, neon, cast metal, print).
 - `chart_colors`: hand them to chartwright or the dataviz palette when a mock-up holds a chart.

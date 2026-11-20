@@ -1135,7 +1135,7 @@ def brand_palette(kit):
 
 # optional guideline fields in brand.json (Wheeler, Designing Brand Identity, pp. 150-159, 204): name -> item type
 GUIDE_LISTS = {"signatures": dict, "colors": dict, "type": dict, "backgrounds": str, "chart_colors": str,
-               "misuse": str, "marks_to_keep": str, "media": dict}
+               "misuse": str, "marks_to_keep": str, "media": dict, "system_test": str}
 COLOR_ROLES = {"primary", "secondary", "accent", "functional", "neutral"}
 PLACEHOLDER = re.compile(r"lorem ipsum|dolor sit amet|heading here|your (?:text|title|headline) here|"
                          r"placeholder text|\bTBD\b|\bxxx+\b", re.I)
@@ -1160,6 +1160,12 @@ def lint_brand(cfg):
     for key, fields in need.items():
         bad += ["%s: %r needs %s" % (key, i, " and ".join(fields)) for i in cfg.get(key) or []
                 if isinstance(i, dict) and not all(i.get(f) for f in fields)]
+    for t in cfg.get("type") or []:
+        ax = t.get("axes") if isinstance(t, dict) else None
+        if ax is not None and not (isinstance(ax, dict) and all(
+                isinstance(k, str) and len(k) == 4 and isinstance(v, (int, float)) and not isinstance(v, bool)
+                for k, v in ax.items())):
+            bad.append("type: axes of %s must map four-letter tags to numbers, e.g. {\"wght\": 640}" % t.get("family"))
     if "min_size_px" in cfg and not (isinstance(cfg["min_size_px"], int) and cfg["min_size_px"] > 0):
         bad.append("min_size_px: must be a positive whole number")
     if "clear_space" in cfg and not isinstance(cfg["clear_space"], str):
@@ -1172,6 +1178,9 @@ def cmd_check(args):
     bad = lint_brand(kit.cfg)
     warn = ["type: %s has no web licence recorded" % t.get("family") for t in kit.cfg.get("type") or []
             if isinstance(t, dict) and t.get("family") and not t.get("web_licence")]
+    st = kit.cfg.get("system_test")
+    if isinstance(st, list) and len(st) < 3:
+        warn.append("system_test: %d application(s); test the type rules on three before accepting the kit" % len(st))
     for f in args.html or []:
         bad += ["placeholder-text: %r in %s" % (m.group(0), f)
                 for m in PLACEHOLDER.finditer(Path(f).read_text(encoding="utf-8", errors="replace"))]
