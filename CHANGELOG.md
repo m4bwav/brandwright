@@ -2,6 +2,13 @@
 
 Plugin versions, newest first. Skill-level changes are in each skill's `CHANGELOG.md`; the session log is `ai-docs/log.md`.
 
+## 0.2.0 · 2026-11-19
+
+Brand guideline fields and a `check` command (books round 6). Existing brand.json files still pass.
+
+- `brand.json` gains optional guideline fields (`signatures`, `clear_space`, `min_size_px`, `backgrounds`, `colors`, `type`, `misuse`, `chart_colors`) and `bw.py check` lints them; mock-up review rules added (#43).
+- `type[].axes` records a variable wordmark's axis values and `system_test` lists the applications the type rules were tried on; `check` validates both (#44).
+
 ## 0.1.6 · 2026-11-11
 
 A captioning option and a training note. No change to defaults.
