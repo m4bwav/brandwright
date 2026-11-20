@@ -392,7 +392,8 @@ class TestCheck(KitCase):
             "colors": [{"name": "Grove", "hex": "#0b6e4f", "role": "primary"}],
             "type": [{"role": "text", "family": "Source Serif 4", "web_licence": "OFL"}],
             "misuse": ["no drop shadow"], "chart_colors": ["#0b6e4f", "#c8553d"], "marks_to_keep": ["old seal"],
-            "media": [{"medium": "neon", "note": "same skeleton, lighter stroke"}]}
+            "media": [{"medium": "neon", "note": "same skeleton, lighter stroke"}],
+            "system_test": ["menu card", "tote bag", "web home page"]}
 
     def write(self, extra):
         cfg = self.cfg()
@@ -416,6 +417,18 @@ class TestCheck(KitCase):
         for word in ("needs a name and a hex", "role 'loud'", "chart_colors: must be a list", "min_size_px",
                      "type: {'family': 'Inter'} needs role", "clear_space", "Inter has no web licence"):
             self.assertIn(word, out)
+
+    def test_axes_and_system_test(self):
+        good = dict(self.GOOD, type=[{"role": "wordmark", "family": "Fraunces", "web_licence": "OFL",
+                                       "axes": {"wght": 640, "opsz": 72}}])
+        self.write(good)
+        self.assertEqual(run("check", str(self.kit))[0], 0)
+        self.write(dict(good, type=[{"role": "wordmark", "family": "Fraunces", "web_licence": "OFL",
+                                     "axes": {"weight": "bold"}}], system_test=["menu card"]))
+        code, out = run("check", str(self.kit))
+        self.assertEqual(code, 1)
+        self.assertIn("axes of Fraunces", out)
+        self.assertIn("system_test: 1 application", out)
 
     def test_placeholder_text(self):
         bad, good = self.tmp / "bad.html", self.tmp / "good.html"

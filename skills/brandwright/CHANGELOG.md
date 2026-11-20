@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261119-2 · 2026-11-19 · variable axes and the three-application system test
+- because: books round 6 (Lupton, Thinking with Type, 3rd ed., pp. 80-84, 98-99, 134)
+- files: scripts/bw.py (`lint_brand`, `check`), references/kit.md, tests/test_bw.py
+- `type[].axes` records a variable wordmark's exact axis values (four-letter tag to number; `check` fails otherwise). `system_test` lists the applications the type rules were tried on; `check` warns under three. kit.md adds the wordmark size, optical-cut and tracking rules.
+
 ### C-20261119-1 · 2026-11-19 · guideline fields in brand.json and `check`
 - because: books round 6 (Wheeler, Designing Brand Identity pp. 150-159, 204; Bringhurst 3.3, 6.5; Villagomez ch. 6)
 - files: scripts/bw.py (`check`, `lint_brand`, `brand_palette`), references/kit.md, tests/test_bw.py
