@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261119-1 · 2026-11-19 · cover-the-logo, best and worst cases, three directions at most
+- because: books round 6 (Wheeler pp. 152, 162-165)
+- files: SKILL.md (Step 5)
+- Step 5 adds `check --html` for placeholder text, the cover-the-logo look, a best, worst and logo-covered render per concept, and at most three directions with one recommended.
+
 ### C-20261021-1 · 2026-10-21 · MAINTENANCE.md points to the hub's copy
 - because: owner's choice on 2026-10-21 to cut the installed skills folder back under 250 KB; the four MAINTENANCE.md files were the same 9.6 KB protocol copy
 - files: MAINTENANCE.md

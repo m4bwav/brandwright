@@ -386,5 +386,53 @@ class TestScore(KitCase):
         self.assertGreater(bw.palette_score(Image, off, pal)[1], 0.9)
 
 
+class TestCheck(KitCase):
+    GOOD = {"signatures": [{"name": "horizontal", "file": "marks/h.svg"}], "clear_space": "cap height on every side",
+            "min_size_px": 24, "backgrounds": ["#ffffff", "#0b6e4f"],
+            "colors": [{"name": "Grove", "hex": "#0b6e4f", "role": "primary"}],
+            "type": [{"role": "text", "family": "Source Serif 4", "web_licence": "OFL"}],
+            "misuse": ["no drop shadow"], "chart_colors": ["#0b6e4f", "#c8553d"], "marks_to_keep": ["old seal"],
+            "media": [{"medium": "neon", "note": "same skeleton, lighter stroke"}]}
+
+    def write(self, extra):
+        cfg = self.cfg()
+        cfg.update(extra)
+        (self.kit / "brand.json").write_text(json.dumps(cfg), encoding="utf-8")
+
+    def test_old_kit_without_fields_passes(self):
+        self.assertEqual(run("check", str(self.kit))[0], 0)
+
+    def test_good_fields_pass(self):
+        self.write(self.GOOD)
+        code, out = run("check", str(self.kit))
+        self.assertEqual(code, 0, out)
+        self.assertIn("0 warnings", out)
+
+    def test_bad_fields_fail(self):
+        self.write({"colors": [{"name": "X", "hex": "green", "role": "loud"}], "chart_colors": "#fff",
+                    "min_size_px": -3, "type": [{"family": "Inter"}], "clear_space": 12})
+        code, out = run("check", str(self.kit))
+        self.assertEqual(code, 1)
+        for word in ("needs a name and a hex", "role 'loud'", "chart_colors: must be a list", "min_size_px",
+                     "type: {'family': 'Inter'} needs role", "clear_space", "Inter has no web licence"):
+            self.assertIn(word, out)
+
+    def test_placeholder_text(self):
+        bad, good = self.tmp / "bad.html", self.tmp / "good.html"
+        bad.write_text("<h1>Heading here</h1><p>Lorem ipsum dolor</p>", encoding="utf-8")
+        good.write_text("<h1>Plans for every team</h1><p>Start free.</p>", encoding="utf-8")
+        code, out = run("check", str(self.kit), "--html", str(bad))
+        self.assertEqual(code, 1)
+        self.assertIn("placeholder-text: 'Heading here'", out)
+        self.assertEqual(run("check", str(self.kit), "--html", str(good))[0], 0)
+
+    @unittest.skipIf(Image is None, "Pillow not installed")
+    def test_palette_from_brand_json_without_tokens(self):
+        self.write(self.GOOD)
+        pal = bw.brand_palette(bw.Kit(self.kit))
+        self.assertIn((11, 110, 79), pal)
+        self.assertIn((200, 85, 61), pal)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)

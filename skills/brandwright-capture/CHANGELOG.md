@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261119-1 · 2026-11-19 · competitor and "before" captures
+- because: books round 6 (Wheeler pp. 129-131)
+- files: SKILL.md (Step 1)
+- Competitor pages go in their own site with `lora: false`, never into a dataset; a redesign captures the old pages first and records `marks_to_keep`.
+
 ### C-20261021-1 · 2026-10-21 · MAINTENANCE.md points to the hub's copy
 - because: owner's choice on 2026-10-21 to cut the installed skills folder back under 250 KB; the four MAINTENANCE.md files were the same 9.6 KB protocol copy
 - files: MAINTENANCE.md

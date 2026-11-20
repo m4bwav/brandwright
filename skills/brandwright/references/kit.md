@@ -46,6 +46,29 @@ KIT/
 - `comfy_models`: override any loader file name per graph (`unet`, `clip`, `clip_type`, `vae`, `steps`, `cfg`, `sampler`, `scheduler`, `shift`).
 - `ai_toolkit`: the trainer folder, or set `BRANDWRIGHT_AI_TOOLKIT`.
 
+## Guideline fields (optional)
+
+Copy them from the brand's guidelines when it has some; `BW check KIT` lints them, and kits without them still pass. Sources: Wheeler, *Designing Brand Identity* (5th ed.) pp. 150-159, 204; Bringhurst, *Elements of Typographic Style* 3.3, 6.5; Villagomez, *Culture + Typography* intro, ch. 6.
+
+```json
+"signatures": [{"name": "horizontal", "file": "marks/h.svg"}, {"name": "stacked", "file": "marks/v.svg"}],
+"clear_space": "cap height of the logotype on every side",
+"min_size_px": 24,
+"backgrounds": ["#ffffff", "#0b6e4f"],
+"colors": [{"name": "Grove", "hex": "#0b6e4f", "role": "primary"}],
+"type": [{"role": "text", "family": "Source Serif 4", "web_licence": "OFL", "small_caps": true, "text_figures": true, "true_bold": true}],
+"misuse": ["no drop shadow on the mark", "never stretch the signature"],
+"chart_colors": ["#0b6e4f", "#c8553d", "#3d6ec8"],
+"marks_to_keep": ["the 1952 seal on the footer"],
+"media": [{"medium": "signage", "note": "same letter skeleton, heavier stroke"}]
+```
+
+- `colors` roles: primary, secondary, accent, functional, neutral. `colors`, `chart_colors` and `backgrounds` join the tokens palette in `score`, and `score` works from them alone before any capture.
+- `type`: the proper family name per role (display, text, documents). `check` warns when no `web_licence` is recorded. `small_caps`, `text_figures`, `true_bold` say what the face really has; a mock-up never fakes a style the face lacks (no synthetic bold or scaled-down capitals).
+- `misuse`: the guidelines' "incorrect use" list; check mock-ups against it by eye.
+- `media`: one letter skeleton across media, the stroke weight adjusted per medium (screen, neon, cast metal, print).
+- `chart_colors`: hand them to chartwright or the dataviz palette when a mock-up holds a chart.
+
 ## Environment variables
 
 `BRANDWRIGHT_COMFY` (default ComfyUI URL for new kits), `BRANDWRIGHT_COMFY_LORAS` (ComfyUI `models/loras` folder for `pick`), `BRANDWRIGHT_AI_TOOLKIT`, `BRANDWRIGHT_OLLAMA` (default `http://127.0.0.1:11434`), `BRANDWRIGHT_VLM` (default `qwen3-vl:8b`).
