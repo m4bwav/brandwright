@@ -13,9 +13,9 @@
   "source": null,
   "topic": "Training LoRAs for UI and brand style: ostris ai-toolkit configs and model support, Z-Image / Qwen-Image / FLUX.2 klein training memory and settings, Blackwell requirements, other trainers, private hosted training, licences of base models",
   "tier": "fast",
-  "interval_days": 14,
-  "last_checked": "2026-11-06",
-  "next_due": "2026-11-20",
+  "interval_days": 14.0,
+  "last_checked": "2026-11-20",
+  "next_due": "2026-12-04",
   "verify_at_use": false,
   "volatile_claims": [
     {
@@ -67,12 +67,18 @@
       "m": 0.0,
       "interval_after": 14,
       "note": "use-time claims pass: all 4 hold (z_image.py, adapter files, cu130, HF licence tags). cost: fetches 8"
+    },
+    {
+      "date": "2026-11-20",
+      "m": 0.25,
+      "interval_after": 14.0,
+      "note": "ai-toolkit UI auth/path-traversal fix, H3 Image adapter, ZenTrainer; cost: searches 2 · fetches 3 · tool calls 7"
     }
   ],
   "counts": {
     "learnings": 2,
     "changes": 2,
-    "research": 2,
+    "research": 3,
     "tests": 1
   },
   "consolidate_every": 25,

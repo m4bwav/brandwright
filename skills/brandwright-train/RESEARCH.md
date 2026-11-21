@@ -10,6 +10,7 @@ Findings behind [SKILL.md](SKILL.md). Changes they caused are in [CHANGELOG.md](
 
 ## Open questions
 
+- MiniMax H3 Image licence and VRAM before listing it; can ZenTrainer train residual LoRAs? (R-20261120-1)
 - No controlled test of trigger words on LLM text encoders (Z-Image, Qwen-Image, FLUX.2) was found.
 - No published dataset-size study for UI LoRAs; the 20-40 and 40-100 counts are style-LoRA numbers.
 - MOSS-Image: real UI text quality and 16 GB training VRAM. FLUX 3 klein: does it train on 16 GB with convrot8?
@@ -40,6 +41,13 @@ Testing (how work on this subject is verified, and how skills for it are tuned):
 - `checkpoint selection metrics`
 
 ## Findings
+
+### R-20261120-1 · 2026-11-20 · Refresh: ai-toolkit UI auth and path-traversal fix; H3 Image adapter; ZenTrainer
+- Summary: ostris/ai-toolkit main (2026-11-18) adds an auth token on UI write routes, a rolling read key when a password is set, and fixes a path traversal hole in caption/delete routes; anyone exposing the UI should pull. Same week: fixed negative self-correction noise scale, an adamconvrot fix (may matter for FLUX 3 klein convrot8), faster noise pairing, lighter memory flushing, merged LoRAs keep per-weight dtype. 2026-11-10: MiniMax H3 Image training adapter (licence and VRAM unchecked, so not listed in models). Tooling: Nynxz/ZenTrainer v0.4.1 (MIT), a ComfyUI-native LoRA trainer covering Z-Image, FLUX 3, Krea 2 and others; secondary source only, repo not read. musubi-tuner still v0.3.6. Practice/testing: RunComfy and evo-hq skills confirm "a finished job is not proof", matching L-001.
+- Track: subject, tooling (practice and testing confirm only)
+- Sources: https://github.com/ostris/ai-toolkit/commits/main, https://comfyui-wiki.com/en/news/2026-11-07-zentrainer, https://github.com/kohya-ss/musubi-tuner/releases, https://www.skills.sh/runcomfy-com/skills/lora-training
+- Magnitude: 0.25
+- Applied: none (note; search plan: add comfyui-wiki.com/news as a trainer lead source)
 
 ### R-20261018-2 · 2026-10-18 · Refresh: claims hold; MOSS-Image and FLUX 3 klein now trainable
 - Track: subject, tooling, practice, testing
