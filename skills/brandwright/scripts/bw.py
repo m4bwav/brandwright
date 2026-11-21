@@ -1154,6 +1154,9 @@ def lint_brand(cfg):
         if isinstance(c, dict):
             if not c.get("name") or not parse_color(c.get("hex", "")):
                 bad.append("colors: %r needs a name and a hex" % c)
+            sh = c.get("share")
+            if sh is not None and not (isinstance(sh, (int, float)) and not isinstance(sh, bool) and 0 <= sh <= 1):
+                bad.append("colors: share of %s must be a number from 0 to 1 (its area share)" % c.get("name"))
             if c.get("role") and c["role"] not in COLOR_ROLES:
                 bad.append("colors: role %r is not one of %s" % (c["role"], ", ".join(sorted(COLOR_ROLES))))
     need = {"signatures": ("name", "file"), "type": ("role", "family"), "media": ("medium", "note")}
@@ -1173,11 +1176,34 @@ def lint_brand(cfg):
     return bad
 
 
+def colour_warnings(cfg):
+    """Albers, Interaction of Color: equal lightness with opposed hue vibrates (p. 61); a colour within a few delta-E
+    of a background vanishes on it (pp. 20-21, 62); area share sets dominance (p. 43)."""
+    cols = [c for c in cfg.get("colors") or [] if isinstance(c, dict) and parse_color(c.get("hex", ""))]
+    grounds = [g for g in cfg.get("backgrounds") or [] if isinstance(g, str) and parse_color(g)]
+    warn = []
+    for c in cols:
+        for g in grounds:
+            (L1, a1, b1), (L2, a2, b2) = rgb_to_lab(parse_color(c["hex"])), rgb_to_lab(parse_color(g))
+            dh = abs(math.degrees(math.atan2(b1, a1) - math.atan2(b2, a2))) % 360
+            if 0 < delta_e(parse_color(c["hex"]), parse_color(g)) < 10:
+                warn.append("colors: %s nearly matches background %s and will vanish on it" % (c["name"], g))
+            elif abs(L1 - L2) < 5 and min(dh, 360 - dh) > 90 and math.hypot(a1, b1) > 15 and math.hypot(a2, b2) > 15:
+                warn.append("colors: %s on background %s vibrates (same lightness, opposed hue)" % (c["name"], g))
+    sh = {c.get("role"): c["share"] for c in cols if isinstance(c.get("share"), (int, float))}
+    if sum(c["share"] for c in cols if isinstance(c.get("share"), (int, float))) > 1.05:
+        warn.append("colors: area shares add up to more than 1")
+    if "primary" in sh and sh.get("accent", 0) > sh["primary"]:
+        warn.append("colors: the accent's area share is larger than the primary's; it will read as the main colour")
+    return warn
+
+
 def cmd_check(args):
     kit = Kit(args.kit)
     bad = lint_brand(kit.cfg)
     warn = ["type: %s has no web licence recorded" % t.get("family") for t in kit.cfg.get("type") or []
             if isinstance(t, dict) and t.get("family") and not t.get("web_licence")]
+    warn += colour_warnings(kit.cfg)
     st = kit.cfg.get("system_test")
     if isinstance(st, list) and len(st) < 3:
         warn.append("system_test: %d application(s); test the type rules on three before accepting the kit" % len(st))

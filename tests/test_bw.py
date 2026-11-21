@@ -430,6 +430,22 @@ class TestCheck(KitCase):
         self.assertIn("axes of Fraunces", out)
         self.assertIn("system_test: 1 application", out)
 
+    def test_colour_warnings(self):
+        self.write(dict(self.GOOD, colors=[{"name": "Grove", "hex": "#0b6e4f", "role": "primary", "share": 0.6},
+                                          {"name": "Clay", "hex": "#c8553d", "role": "accent", "share": 0.1}]))
+        code, out = run("check", str(self.kit))
+        self.assertIn("0 warnings", out)
+        self.write(dict(self.GOOD, backgrounds=["#ffffff", "#0b6e4f", "#6a8a3a"],
+                        colors=[{"name": "Grove", "hex": "#0b6e4f", "role": "primary", "share": 0.2},
+                                {"name": "Moss", "hex": "#0f7050", "role": "secondary"},
+                                {"name": "Rose", "hex": "#b9707e", "role": "accent", "share": 0.5}]))
+        code, out = run("check", str(self.kit))
+        for word in ("Moss nearly matches background #0b6e4f", "Rose on background #6a8a3a vibrates",
+                     "accent's area share is larger"):
+            self.assertIn(word, out)
+        self.write(dict(self.GOOD, colors=[{"name": "Grove", "hex": "#0b6e4f", "role": "primary", "share": 2}]))
+        self.assertEqual(run("check", str(self.kit))[0], 1)
+
     def test_placeholder_text(self):
         bad, good = self.tmp / "bad.html", self.tmp / "good.html"
         bad.write_text("<h1>Heading here</h1><p>Lorem ipsum dolor</p>", encoding="utf-8")

@@ -70,6 +70,7 @@ Copy them from the brand's guidelines when it has some; `BW check KIT` lints the
 - `system_test`: three applications (products, pages or packs) set with the same type rules before the kit is accepted; `check` warns with fewer than three (Lupton pp. 98-99).
 - `misuse`: the guidelines' "incorrect use" list; check mock-ups against it by eye.
 - `media`: one letter skeleton across media, the stroke weight adjusted per medium (screen, neon, cast metal, print).
+- `colors` `share`: the planned area share of each colour (0 to 1), e.g. primary 0.6, secondary 0.3, accent 0.1. The same colours read as a different palette when their areas change, so a kit names who dominates. `check` warns when shares add past 1 or the accent outweighs the primary. `check` also warns when a colour nearly matches a background (it vanishes there: the ground subtracts its own hue and lightness) or sits on one at the same lightness with an opposed hue (the edge vibrates). Text and marks need a lightness step, not only a hue step (Albers, *Interaction of Color*, pp. 20-21, 43, 61-64).
 - `chart_colors`: hand them to chartwright or the dataviz palette when a mock-up holds a chart.
 
 ## Environment variables
