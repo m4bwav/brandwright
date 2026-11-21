@@ -42,6 +42,7 @@ Put the file in the kit (so `brand.css` and the fonts resolve) and keep it self-
 - Icons: simple inline SVG strokes or Unicode arrows; never copy the brand's logo file into a mock-up meant to leave the company.
 - Fonts load from the site's own URLs in `@font-face`. `render` uses a fresh browser with no login, so fonts behind a login, offline, or served without CORS headers fail and the browser falls back (the stack is in `--bw-font`). `render` prints `warning: font X did not load` when that happens: ask for the font files, put them in the kit, point `@font-face` at them and render again (L-004).
 - One file per mock-up; states (hover, error, empty) as extra sections or extra files.
+- Overlays, scrims and tints: the overlap colour stays between its two parents in lightness and chroma (alpha blending does this; a hand-picked "tint" often does not and reads as a new opaque shape). The layer it leans toward reads on top (Albers pp. 24-31).
 
 ## Render and check
 

@@ -2,6 +2,11 @@
 
 Every change to [SKILL.md](SKILL.md) and its companions, newest first, each with the reason (`R-` findings in [RESEARCH.md](RESEARCH.md), `L-` lessons in [LEARNINGS.md](LEARNINGS.md), `T-` runs in [TESTS.md](TESTS.md)). Protocol: [MAINTENANCE.md](MAINTENANCE.md).
 
+### C-20261121-1 · 2026-11-21 · colour area shares and edge warnings in `check`
+- because: books round 7 track 66 (Albers, *Interaction of Color*, pp. 20-21, 24-31, 43, 61-64)
+- files: scripts/bw.py (`lint_brand`, `colour_warnings`, `check`), references/kit.md, brandwright-mockup references/code-route.md, tests/test_bw.py
+- `colors[].share` (area share 0 to 1; fails outside). `check` warns when shares exceed 1, the accent outweighs the primary, a colour nearly matches a background (vanishes) or meets one at equal lightness with opposed hue (vibrates). code-route.md: overlay colours stay between their parents. Thresholds are first guesses.
+
 ### C-20261119-2 · 2026-11-19 · variable axes and the three-application system test
 - because: books round 6 (Lupton, Thinking with Type, 3rd ed., pp. 80-84, 98-99, 134)
 - files: scripts/bw.py (`lint_brand`, `check`), references/kit.md, tests/test_bw.py
